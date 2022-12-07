@@ -1,0 +1,9 @@
+{
+    "network" : "optimism",
+    "startBlock": 0,
+    "RubiconMarket-address" : "0x7a512d3609211e719737E82c7bb7271eC05Da70d", 
+    "RubiconRouter-address" : "0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf",
+    "BathHouse-address" : "0x203328C161D23dCEee3E439DeEB25cA19e2c4984",
+    "BathPair-address" : "0xF8780E00Ce8ed2e79aeC10908a169900eD1D4AFe", 
+    "MarketAidFactory-address" : "0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7"
+}
