@@ -1,6 +1,6 @@
 import { ZERO_BD, ZERO_BI } from "../utils/constants"
-import { ethereum } from "@graphprotocol/graph-ts"
-import { Offer } from "../../generated/schema"
+import { Bytes, ethereum } from "@graphprotocol/graph-ts"
+import { Offer, Take } from "../../generated/schema"
 import { fetchUser } from "../utils/entities/user"
 import { fetchTransaction } from "../utils/entities/transaction"
 import { fetchToken, toBigDecimal } from "../utils/entities/token"
@@ -11,9 +11,9 @@ export function handleLogMake(event: LogMake): void {
 
     // decode the offer ID
     let offerID = event.params.id.toHexString()
-    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id);
+    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
     if (!decoded) {
-        offerID = event.params.id.toHexString();
+        offerID = event.params.id.toHexString()
     } else {
         offerID = decoded.toBigInt().toString()
     }
@@ -56,5 +56,106 @@ export function handleLogMake(event: LogMake): void {
     offer.filled = false
     offer.cancelled = false
     offer.live = true
+    offer.save()
+}
+
+export function handleLogTake(event: LogTake): void {
+
+    // decode the offer ID
+    let offerID = event.params.id.toHexString()
+    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
+    if (!decoded) {
+        offerID = event.params.id.toHexString()
+    } else {
+        offerID = decoded.toBigInt().toString()
+    }
+
+    let offer = Offer.load(offerID)
+    if (offer == null) {
+        return
+    }
+
+    // get the transaction entity
+    let transaction = fetchTransaction(event)
+
+    // get the user entity
+    let taker = fetchUser(event.params.maker)
+
+    // get the token entities
+    let payGem = fetchToken(event.params.pay_gem)
+    let buyGem = fetchToken(event.params.buy_gem)
+
+    // format the amounts based on the token decimals
+    let payAmtFormatted = toBigDecimal(event.params.take_amt, payGem.decimals)
+    let buyAmtFormatted = toBigDecimal(event.params.give_amt, buyGem.decimals)
+
+    // get the USD amounts for the pay_amt and buy_amt
+    let payAmtUsd = getUsdPrice(event.params.pay_gem, payAmtFormatted)
+    let buyAmtUsd = getUsdPrice(event.params.buy_gem, buyAmtFormatted)
+
+    // update the offer entity
+    offer.paid_amt = offer.paid_amt.plus(event.params.take_amt)
+    offer.bought_amt = offer.bought_amt.plus(event.params.give_amt)
+    offer.paid_amt_formatted = offer.paid_amt_formatted.plus(payAmtFormatted)
+    offer.bought_amt_formatted = offer.bought_amt_formatted.plus(buyAmtFormatted)
+    offer.paid_amt_usd = offer.paid_amt_usd.plus(payAmtUsd)
+    offer.bought_amt_usd = offer.bought_amt_usd.plus(buyAmtUsd)
+    offer.save()
+
+    let take = new Take(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
+    take.transaction = transaction.id
+    take.taker = taker.id
+    take.pay_gem = payGem.id
+    take.buy_gem = buyGem.id
+    take.pay_amt = event.params.take_amt
+    take.buy_amt = event.params.give_amt
+    take.pay_amt_formatted = payAmtFormatted
+    take.buy_amt_formatted = buyAmtFormatted
+    take.pay_amt_usd = payAmtUsd
+    take.buy_amt_usd = buyAmtUsd
+    take.offer = offer.id
+    take.save()
+}
+
+export function handleLogKill(event: LogKill): void {
+
+    // decode the offer ID
+    let offerID = event.params.id.toHexString()
+    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
+    if (!decoded) {
+        offerID = event.params.id.toHexString()
+    } else {
+        offerID = decoded.toBigInt().toString()
+    }
+
+    let offer = Offer.load(offerID)
+    if (offer == null) {
+        return
+    }
+
+    // update the offer entity
+    offer.cancelled = true
+    offer.live = false
+    offer.save()
+}
+
+export function handleOfferDeleted(event: OfferDeleted): void {
+
+    // decode the offer ID
+    let offerID = event.params.id.toHexString()
+    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
+    if (!decoded) {
+        offerID = event.params.id.toHexString()
+    } else {
+        offerID = decoded.toBigInt().toString()
+    }
+
+    let offer = Offer.load(offerID)
+    if (offer == null) {
+        return
+    }
+
+    // update the offer entity
+    offer.live = false
     offer.save()
 }

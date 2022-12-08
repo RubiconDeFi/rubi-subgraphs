@@ -32,7 +32,7 @@ type Offer @entity {
     maker: User!
     " the token that the offer will pay with "
     pay_gem: Token!
-    " the token that the offer offer to buy "
+    " the token that the maker offers to buy "
     buy_gem: Token!
     " the amount of the pay token that the offer will pay - in the integer format "
     pay_amt: BigInt!
@@ -66,4 +66,31 @@ type Offer @entity {
     live: Boolean!
     " the timestamp that offer was removed at"
     removed_timestamp: BigInt
+}
+
+type Take @entity {
+    " the transaction hash and log index of the take event "
+    id: Bytes!
+    " the transaction entity that this offer was created from "
+    transaction: Transaction!
+    " the user entity that took the offer "
+    taker: User!
+    " the token that the offer will pay with "
+    pay_gem: Token!
+    " the token that the offer offer to buy "
+    buy_gem: Token!
+    " the amount of the pay token that the offer will pay - in the integer format "
+    pay_amt: BigInt!
+    " the amount of the buy token that the offer will buy - in the integer format "
+    buy_amt: BigInt!
+    " the amount of the pay token in human readable format "
+    pay_amt_formatted: BigDecimal!
+    " the amount of the buy token in human readable format "
+    buy_amt_formatted: BigDecimal!
+    " the USD value of the pay token at that block "
+    pay_amt_usd: BigDecimal!
+    " the USD value of the buy token at that block "
+    buy_amt_usd: BigDecimal!
+    " the offer entity that was taken "
+    offer: Offer!
 }
