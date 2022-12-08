@@ -94,3 +94,45 @@ type Take @entity {
     " the offer entity that was taken "
     offer: Offer!
 }
+
+type Pool @entity {
+    " the pool address "
+    id: Bytes!
+    " the pool asset, mapped to the token entity "
+    asset: Token!
+    " the underlying balance of the pool in the integer format "
+    underlying: BigInt!
+    " the underlying balance of the pool in human readable format "
+    underlying_formatted: BigDecimal!
+    " the amount of shares outstanding in the integer format "
+    shares: BigInt!
+    " the amount of shares outstanding in human readable format "
+    shares_formatted: BigDecimal!
+    " the amount of outstanding assets in the integer format "
+    outstanding: BigInt!
+    " the amount of outstanding assets in human readable format "
+    outstanding_formatted: BigDecimal!
+}
+
+type Deposit @entity {
+    " the transaction hash and log index of the deposit event "
+    id: Bytes!
+    " the transaction entity of the deposit "
+    transaction: Transaction!
+    " the depositing user entity "
+    depositor: User!
+    " the pool entity that the deposit was made to "
+    pool: Pool!
+    " the amount of the underlying asset that was deposited in the integer format "
+    amount: BigInt!
+    " the amount of the underlying asset that was deposited in human readable format "
+    amount_formatted: BigDecimal!
+    " the amount in USD of the underlying asset that was deposited at that block "
+    amount_usd: BigDecimal!
+    " the amount of share received at the time of the deposit in the integer format "
+    shares: BigInt!
+    " the amount of share received at the time of the deposit in human readable format "
+    shares_formatted: BigDecimal!
+    " the price of the bathtoken based upon the ratio of the deposit amount to shares received "
+    price: BigDecimal!
+}
