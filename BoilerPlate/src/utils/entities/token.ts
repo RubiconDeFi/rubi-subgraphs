@@ -1,6 +1,6 @@
 import { _ERC20 } from '../../../generated/RubiconMarket/_ERC20' 
 import { Token } from '../../../generated/schema' 
-import { BigInt, Address } from '@graphprotocol/graph-ts'
+import { BigInt, Address, BigDecimal } from '@graphprotocol/graph-ts'
 
 
 export function fetchToken(tokenAddress: Address): Token {
@@ -32,4 +32,12 @@ export function fetchToken(tokenAddress: Address): Token {
         token.save()
     }
     return token as Token
+}
+
+export function toBigDecimal(quantity: BigInt, decimals: BigInt): BigDecimal {
+    return quantity.divDecimal(
+      BigInt.fromI32(10)
+        .pow(decimals.toU32() as u8)
+        .toBigDecimal(),
+    );
 }

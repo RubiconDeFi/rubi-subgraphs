@@ -1,3 +1,8 @@
+type User @entity {
+    " the user address "
+    id: Bytes!
+}
+
 type Transaction @entity {
     " the transaction hash "
     id: Bytes!
@@ -5,6 +10,8 @@ type Transaction @entity {
     block: BigInt!
     " the timestamp "
     timestamp: BigInt!
+    " map to a user entity "
+    user: User!
 }
 
 type Token @entity {
@@ -16,14 +23,9 @@ type Token @entity {
     decimals: BigInt!
 }
 
-type User @entity {
-    " the user address "
-    id: Bytes!
-}
-
 type Offer @entity {
     " the id of the offer on the RubiconMarket contract "
-    id: Bytes!
+    id: ID!
     " the transaction entity that this offer was created from "
     transaction: Transaction!
     " the user entity that created this offer "
