@@ -1,10 +1,11 @@
 import { ZERO_BD, ZERO_BI } from "../utils/constants"
 import { Bytes, ethereum, BigDecimal } from "@graphprotocol/graph-ts"
 import { Offer, Take } from "../../generated/schema"
+import { fetchRubicon } from '../utils/entities/rubicon'
 import { fetchUser } from "../utils/entities/user"
 import { fetchTransaction } from "../utils/entities/transaction"
 import { fetchToken, toBigDecimal } from "../utils/entities/token"
-import { getUsdPrice, getUsdPricePerToken } from "../prices"
+import { getUsdPricePerToken } from "../prices"
 import { LogMake, LogTake, LogKill, OfferDeleted } from "../../generated/RubiconMarket/RubiconMarket"
 
 export function handleLogMake(event: LogMake): void {
@@ -135,6 +136,11 @@ export function handleLogTake(event: LogTake): void {
     offer.paid_amt_usd = offer.paid_amt_usd.plus(payAmtUsd)
     offer.bought_amt_usd = offer.bought_amt_usd.plus(buyAmtUsd)
     offer.save()
+
+    // update the rubicon entity 
+    let rubicon = fetchRubicon()
+    rubicon.total_volume_usd = rubicon.total_volume_usd.plus(buyAmtUsd)
+    rubicon.save()
 
     let take = new Take(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
     take.transaction = transaction.id

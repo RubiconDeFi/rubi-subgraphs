@@ -13,7 +13,7 @@ export function handleLogDeposit(event: LogDeposit): void {
     let asset = fetchToken(event.params.asset)
     let bathToken = fetchToken(event.address)
 
-    // load the pool entities
+    // load the related entities
     let transaction = fetchTransaction(event)
     let depositor = fetchUser(event.params.depositor)
     let pool = fetchPool(event, asset, event.params.underlyingBalance, event.params.outstandingAmount, event.params.totalSupply, asset.decimals, bathToken.decimals)
@@ -104,4 +104,7 @@ export function handleLogClaimBonusToken(event: LogClaimBonusTokn): void {
     
     // fetch the user to make sure they are in the database
     let user = fetchUser(event.transaction.from)
+
+    // make sure the transaction is recorded
+    let transaction = fetchTransaction(event)
 }

@@ -180,10 +180,3 @@ type Withdraw @entity {
     " the price of the bathtoken based upon the ratio of the withdrawn amount to shares received "
     price: BigDecimal!
 }
-
-
-
-
-
-
-
