@@ -1,0 +1,162 @@
+specVersion: 0.0.5
+description: a boiler plate subgraph for the Rubicon Protocol
+repository: 
+schema: 
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: RubiconMarket
+    network: optimism
+    source: 
+      address: '0x7a512d3609211e719737E82c7bb7271eC05Da70d'
+      abi: RubiconMarket
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/RubiconMarket.ts
+      entities: 
+        - Offer
+        - Take
+      abis: 
+        - name: RubiconMarket
+          file: ./abis/Rubicon/RubiconMarket.json
+        ############## Price Oracle ###############
+        # ERC20
+        - name: _ERC20
+          file: ./abis/Prices/ERC20.json
+        # Curve Contracts
+        - name: CurveRegistry
+          file: ./abis/Prices/Curve/Registry.json
+        - name: CurvePoolRegistry
+          file: ./abis/Prices/Curve/PoolRegistry.json
+        - name: CalculationsCurve
+          file: ./abis/Prices/Calculations/Curve.json
+        # YearnLens Contracts
+        - name: YearnLensContract
+          file: ./abis/Prices/YearnLens.json
+        # ChainLink Contracts
+        - name: ChainLinkContract
+          file: ./abis/Prices/ChainLink.json
+        # 1Inch Contracts
+        - name: OneInchOracleContract
+          file: ./abis/Prices/1Inch/Oracle.json
+        # Aave Contracts
+        - name: AaveOracleContract
+          file: ./abis/Prices/Aave/Oracle.json
+        # Uniswap Contracts
+        - name: UniswapRouter
+          file: ./abis/Prices/Uniswap/Router.json
+        - name: UniswapFactory
+          file: ./abis/Prices/Uniswap/Factory.json
+        - name: UniswapPair
+          file: ./abis/Prices/Uniswap/Pair.json
+        # SushiSwap Contracts
+        - name: SushiSwapRouter
+          file: ./abis/Prices/SushiSwap/Router.json
+        - name: SushiSwapFactory
+          file: ./abis/Prices/SushiSwap/Factory.json
+        - name: SushiSwapPair
+          file: ./abis/Prices/SushiSwap/Pair.json
+        - name: CalculationsSushiSwap
+          file: ./abis/Prices/Calculations/SushiSwap.json
+      eventHandlers: 
+      - event: LogMake(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
+        handler: handleLogMake
+      - event: LogTake(bytes32,indexed bytes32,indexed address,address,address,indexed address,uint128,uint128,uint64)
+        handler: handleLogTake
+      - event: LogKill(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
+        handler: handleLogKill
+      - event: OfferDeleted(indexed bytes32)
+        handler: handleOfferDeleted 
+      # - event: LogMatch(uint256,uint256)
+      #   handler: handleLogMatch     
+  - kind: ethereum/contract
+    name: BathHouse
+    network: optimism
+    source: 
+      address: '0x203328C161D23dCEee3E439DeEB25cA19e2c4984'
+      abi: BathHouse
+      startBlock: 0
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/BathHouse.ts
+      entities: 
+        - Pool
+      abis: 
+        - name: BathHouse
+          file: ./abis/Rubicon/BathHouse.json
+        - name: BathToken
+          file: ./abis/Rubicon/BathToken.json     
+      eventHandlers: 
+        - event: LogNewBathToken(address,address,address,uint256,address)
+          handler: handleLogNewBathToken
+templates: 
+  - kind: ethereum/contract
+    name: BathToken
+    network: optimism
+    source:
+      abi: BathToken
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/BathToken.ts
+      entities: 
+        - Pool
+        - User
+        - Position
+      abis:
+        - name: BathToken
+          file: ./abis/Rubicon/BathToken.json
+        ############## Price Oracle ###############
+        # ERC20
+        - name: _ERC20
+          file: ./abis/Prices/ERC20.json
+        # Curve Contracts
+        - name: CurveRegistry
+          file: ./abis/Prices/Curve/Registry.json
+        - name: CurvePoolRegistry
+          file: ./abis/Prices/Curve/PoolRegistry.json
+        - name: CalculationsCurve
+          file: ./abis/Prices/Calculations/Curve.json
+        # YearnLens Contracts
+        - name: YearnLensContract
+          file: ./abis/Prices/YearnLens.json
+        # ChainLink Contracts
+        - name: ChainLinkContract
+          file: ./abis/Prices/ChainLink.json
+        # 1Inch Contracts
+        - name: OneInchOracleContract
+          file: ./abis/Prices/1Inch/Oracle.json
+        # Aave Contracts
+        - name: AaveOracleContract
+          file: ./abis/Prices/Aave/Oracle.json
+        # Uniswap Contracts
+        - name: UniswapRouter
+          file: ./abis/Prices/Uniswap/Router.json
+        - name: UniswapFactory
+          file: ./abis/Prices/Uniswap/Factory.json
+        - name: UniswapPair
+          file: ./abis/Prices/Uniswap/Pair.json
+        # SushiSwap Contracts
+        - name: SushiSwapRouter
+          file: ./abis/Prices/SushiSwap/Router.json
+        - name: SushiSwapFactory
+          file: ./abis/Prices/SushiSwap/Factory.json
+        - name: SushiSwapPair
+          file: ./abis/Prices/SushiSwap/Pair.json
+        - name: CalculationsSushiSwap
+          file: ./abis/Prices/Calculations/SushiSwap.json
+      eventHandlers:
+        - event: LogDeposit(uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleLogDeposit
+        - event: LogWithdraw(uint256,address,uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleLogWithdraw
+        #- event: Transfer(indexed address,indexed address,uint256)
+        #  handler: handleTransfer
+        - event: LogClaimBonusTokn(indexed address,indexed address,indexed address,uint256,uint256,address)
+          handler: handleLogClaimBonusToken
+        

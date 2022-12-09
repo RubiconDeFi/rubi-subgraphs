@@ -1,0 +1,264 @@
+type Rubicon @entity {
+    " the address of the RubiconMarket contract "
+    id: Bytes!
+    " the total user count recorded by the subgraph "
+    total_users: BigInt!
+    " the total transaction count recorded by the subgraph "
+    total_transactions: BigInt!
+    " the total volume of the market in USD "
+    total_volume_usd: BigDecimal!
+}
+
+type User @entity {
+    " the user address "
+    id: Bytes!
+}
+
+type HourVolume @entity {
+    " the unix timestamp divided by 3600 "
+    id: ID!
+    " the unix timestamp "
+    hourStartUnix: BigInt!
+    " the volume in USD "
+    volume_usd: BigDecimal!
+}
+
+type DayVolume @entity {
+    " the unix timestamp divided by 86400 "
+    id: ID!
+    " the unix timestamp "
+    dayStartUnix: BigInt!
+    " the volume in USD "
+    volume_usd: BigDecimal!
+}
+
+type Transaction @entity {
+    " the transaction hash "
+    id: Bytes!
+    " the block number "
+    block: BigInt!
+    " the timestamp "
+    timestamp: BigInt!
+    " map to a user entity "
+    user: User!
+}
+
+type Token @entity {
+    " token address "
+    id: Bytes!
+    " token address "
+    address: String!
+    " token decimals "
+    decimals: BigInt!
+    " the total volume of the token in the token denomination "
+    total_volume: BigInt!
+    " the total volume of the token in USD "
+    total_volume_usd: BigDecimal!
+}
+
+type TokenHourData @entity {
+    " the token address and the hour unix timestamp divided by 3600 "
+    id: Bytes!
+    " the token entity that this data is for "
+    token: Token!
+    " the start of the hour in unix timestamp "
+    hour_start_unix: BigInt!
+    " the total volume of the token in the token denomination "
+    total_volume: BigInt!
+    " the total volume of the token in USD "
+    total_volume_usd: BigDecimal!
+}
+
+type TokenDayData @entity {
+    " the token address and the day unix timestamp divided by 86400 "
+    id: Bytes!
+     " the token entity that this data is for "
+    token: Token!
+    " the start of the day in unix timestamp "
+    day_start_unix: BigInt!
+    " the total volume of the token in the token denomination "
+    total_volume: BigInt!
+    " the total volume of the token in USD "
+    total_volume_usd: BigDecimal!
+}
+
+type Offer @entity {
+    " the id of the offer on the RubiconMarket contract "
+    id: ID!
+    " the transaction entity that this offer was created from "
+    transaction: Transaction!
+    " the user entity that created this offer "
+    maker: User!
+    " the token that the offer will pay with "
+    pay_gem: Token!
+    " the token that the maker offers to buy "
+    buy_gem: Token!
+    " the amount of the pay token that the offer will pay - in the integer format "
+    pay_amt: BigInt!
+    " the amount of the buy token that the offer will buy - in the integer format "
+    buy_amt: BigInt!
+    " the amount of the pay token in human readable format "
+    pay_amt_formatted: BigDecimal!
+    " the amount of the buy token in human readable format "
+    buy_amt_formatted: BigDecimal!
+    " the USD value of the pay token at that block "
+    pay_amt_usd: BigDecimal!
+    " the USD value of the buy token at that block "
+    buy_amt_usd: BigDecimal!
+    " the amount of the pay token that the offer has paid out - in the integer format "
+    paid_amt: BigInt!
+    " the amount of the buy token that the offer has bought - in the integer format "
+    bought_amt: BigInt!
+    " the amount of the pay token that the offer has paid out in human readable format "
+    paid_amt_formatted: BigDecimal!
+    " the amount of the buy token that the offer has bought in human readable format "
+    bought_amt_formatted: BigDecimal!
+    " the sum of the USD value of the pay token that the offer has paid out at each fill instance "
+    paid_amt_usd: BigDecimal!
+    " the sum of the USD value of the buy token that the offer has bought at each fill instance "
+    bought_amt_usd: BigDecimal!
+    " boolean indicating if the offer was filled or not "
+    filled: Boolean!
+    " boolean indicating if the offer was cancelled or not "
+    cancelled: Boolean!
+    " boolean indicating if the offer is live or not "
+    live: Boolean!
+    " the timestamp that offer was removed at"
+    removed_timestamp: BigInt
+}
+
+type Take @entity {
+    " the transaction hash and log index of the take event "
+    id: Bytes!
+    " the transaction entity that this offer was created from "
+    transaction: Transaction!
+    " the user entity that took the offer "
+    taker: User!
+    " the token that the offer will pay with "
+    pay_gem: Token!
+    " the token that the offer offer to buy "
+    buy_gem: Token!
+    " the amount of the pay token that the offer will pay - in the integer format "
+    pay_amt: BigInt!
+    " the amount of the buy token that the offer will buy - in the integer format "
+    buy_amt: BigInt!
+    " the amount of the pay token in human readable format "
+    pay_amt_formatted: BigDecimal!
+    " the amount of the buy token in human readable format "
+    buy_amt_formatted: BigDecimal!
+    " the USD value of the pay token at that block "
+    pay_amt_usd: BigDecimal!
+    " the USD value of the buy token at that block "
+    buy_amt_usd: BigDecimal!
+    " the price of the pay gem at the time of the take "
+    pay_gem_price: BigDecimal!
+    " the price of the buy gem at the time of the take "
+    buy_gem_price: BigDecimal!
+    " the offer entity that was taken "
+    offer: Offer!
+}
+
+type Pool @entity {
+    " the pool address "
+    id: Bytes!
+    " the pool asset, mapped to the token entity "
+    asset: Token!
+    " the underlying balance of the pool in the integer format "
+    underlying: BigInt!
+    " the underlying balance of the pool in human readable format "
+    underlying_formatted: BigDecimal!
+    " the amount of outstanding assets in the integer format "
+    outstanding: BigInt!
+    " the amount of outstanding assets in human readable format "
+    outstanding_formatted: BigDecimal!
+    " the amount of shares outstanding in the integer format "
+    shares: BigInt!
+    " the amount of shares outstanding in human readable format "
+    shares_formatted: BigDecimal!
+}
+
+type PoolHourData @entity {
+    " the pool address and the hour unix timestamp divided by 3600 "
+    id: Bytes!
+    " map to the pool entity "
+    pool: Pool!
+    " the start of the hour in unix timestamp "
+    hour_start_unix: BigInt!
+    " the total amount of underlying assets that were deposited in the pool in the integer format "
+    total_deposit: BigInt!
+    " the total USD value of the underlying assets that were deposited in the pool "
+    total_deposit_usd: BigDecimal!
+    " the total amount of underlying assets that were withdrawn from the pool in the integer format "
+    total_withdrawal: BigInt!
+    " the total USD value of the underlying assets that were withdrawn from the pool "
+    total_withdrawal_usd: BigDecimal!
+}
+
+type PoolDayData @entity {
+    " the pool address and the day unix timestamp divided by 86400 "
+    id: Bytes!
+    " map to the pool entity "
+    pool: Pool!
+    " the start of the day in unix timestamp "
+    day_start_unix: BigInt!
+    " the total amount of underlying assets that were deposited in the pool in the integer format "
+    total_deposit: BigInt!
+    " the total USD value of the underlying assets that were deposited in the pool "
+    total_deposit_usd: BigDecimal!
+    " the total amount of underlying assets that were withdrawn from the pool in the integer format "
+    total_withdrawal: BigInt!
+    " the total USD value of the underlying assets that were withdrawn from the pool "
+    total_withdrawal_usd: BigDecimal!
+}
+
+type Deposit @entity {
+    " the transaction hash and log index of the deposit event "
+    id: Bytes!
+    " the transaction entity of the deposit "
+    transaction: Transaction!
+    " the depositing user entity "
+    depositor: User!
+    " the pool entity that the deposit was made to "
+    pool: Pool!
+    " the amount of the underlying asset that was deposited in the integer format "
+    amount: BigInt!
+    " the amount of the underlying asset that was deposited in human readable format "
+    amount_formatted: BigDecimal!
+    " the amount in USD of the underlying asset that was deposited at that block "
+    amount_usd: BigDecimal!
+    " the amount of share received at the time of the deposit in the integer format "
+    shares: BigInt!
+    " the amount of share received at the time of the deposit in human readable format "
+    shares_formatted: BigDecimal!
+    " the price of the bathtoken based upon the ratio of the deposit amount to shares received "
+    price: BigDecimal!
+}
+
+type Withdraw @entity {
+    " the transaction hash and log index of the withdraw event "
+    id: Bytes!
+    " the transaction entity of the withdraw "
+    transaction: Transaction!
+    " the withdrawing user entity "
+    withdrawer: User!
+    " the pool entity that the withdrawn was made to "
+    pool: Pool!
+    " the amount of the underlying asset that was withdrawn in the integer format "
+    amount: BigInt!
+    " the amount of the underlying asset that was withdrawn in human readable format "
+    amount_formatted: BigDecimal!
+    " the amount in USD of the underlying asset that was withdrawn at that block "
+    amount_usd: BigDecimal!
+    " the amount of share received at the time of the withdrawn in the integer format "
+    shares: BigInt!
+    " the amount of share received at the time of the withdrawn in human readable format "
+    shares_formatted: BigDecimal!
+    " the fee amount from the withdrawal event "
+    fee: BigInt!
+    " the fee amount from the withdrawal event in human readable format "
+    fee_formatted: BigDecimal!
+    " the fee amount in USD from the withdrawal event at that block "
+    fee_usd: BigDecimal!
+    " the price of the bathtoken based upon the ratio of the withdrawn amount to shares received "
+    price: BigDecimal!
+}
