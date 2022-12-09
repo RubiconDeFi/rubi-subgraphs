@@ -4,34 +4,20 @@ import { CustomPriceType } from "../common/types";
 import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { CalculationsCurve as CalculationsCurveContract } from "../../../generated/RubiconMarket/CalculationsCurve";
 
-export function getCalculationsCurveContract(
-  contractAddress: Address
-): CalculationsCurveContract | null {
-  if (utils.isNullAddress(contractAddress)) return null;
-
-  return CalculationsCurveContract.bind(contractAddress);
+export function getCalculationsCurveContract(network: string): CalculationsCurveContract {
+  return CalculationsCurveContract.bind(constants.CURVE_CALCULATIONS_ADDRESS_MAP.get(network)!);
 }
 
-export function getTokenPriceUSDC(tokenAddr: Address): CustomPriceType {
-  const config = utils.getConfig();
+export function getTokenPriceFromCalculationCurve(tokenAddr: Address, network: string): CustomPriceType {
+  const calculationCurveContract = getCalculationsCurveContract(network);
 
-  if (!config || config.curveCalculationsBlacklist().includes(tokenAddr))
+  if (!calculationCurveContract) {
     return new CustomPriceType();
+  }
 
-  const calculationCurveContract = getCalculationsCurveContract(
-    config.curveCalculations()
-  );
-  if (!calculationCurveContract) return new CustomPriceType();
-
-  const tokenPrice: BigDecimal = utils
-    .readValue<BigInt>(
-      calculationCurveContract.try_getCurvePriceUsdc(tokenAddr),
-      constants.BIGINT_ZERO
-    )
+  let tokenPrice: BigDecimal = utils
+    .readValue<BigInt>(calculationCurveContract.try_getCurvePriceUsdc(tokenAddr), constants.BIGINT_ZERO)
     .toBigDecimal();
 
-  return CustomPriceType.initialize(
-    tokenPrice,
-    constants.DEFAULT_USDC_DECIMALS
-  );
+  return CustomPriceType.initialize(tokenPrice, constants.DEFAULT_USDC_DECIMALS);
 }

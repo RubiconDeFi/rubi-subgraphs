@@ -4,34 +4,19 @@ import { CustomPriceType } from "../common/types";
 import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { CalculationsSushiSwap as CalculationsSushiContract } from "../../../generated/RubiconMarket/CalculationsSushiSwap";
 
-export function getSushiSwapContract(
-  contractAddress: Address
-): CalculationsSushiContract | null {
-  if (utils.isNullAddress(contractAddress)) return null;
-
-  return CalculationsSushiContract.bind(contractAddress);
+export function getSushiSwapContract(network: string): CalculationsSushiContract {
+  return CalculationsSushiContract.bind(constants.SUSHISWAP_CALCULATIONS_ADDRESS_MAP.get(network)!);
 }
 
-export function getTokenPriceUSDC(tokenAddr: Address): CustomPriceType {
-  const config = utils.getConfig();
-
-  if (!config || config.sushiCalculationsBlacklist().includes(tokenAddr))
-    return new CustomPriceType();
-
-  const sushiContract = getSushiSwapContract(config.sushiCalculations());
-  if (!sushiContract) {
+export function getTokenPriceFromSushiSwap(tokenAddr: Address, network: string): CustomPriceType {
+  const curveContract = getSushiSwapContract(network);
+  if (!curveContract) {
     return new CustomPriceType();
   }
 
-  const tokenPrice: BigDecimal = utils
-    .readValue<BigInt>(
-      sushiContract.try_getPriceUsdc(tokenAddr),
-      constants.BIGINT_ZERO
-    )
+  let tokenPrice: BigDecimal = utils
+    .readValue<BigInt>(curveContract.try_getPriceUsdc(tokenAddr), constants.BIGINT_ZERO)
     .toBigDecimal();
 
-  return CustomPriceType.initialize(
-    tokenPrice,
-    constants.DEFAULT_USDC_DECIMALS
-  );
+  return CustomPriceType.initialize(tokenPrice, constants.DEFAULT_USDC_DECIMALS);
 }

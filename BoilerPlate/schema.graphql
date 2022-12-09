@@ -1,3 +1,14 @@
+type Rubicon @entity {
+    " the address of the RubiconMarket contract "
+    id: Bytes!
+    " the total user count recorded by the subgraph "
+    total_users: BigInt!
+    " the total transaction count recorded by the subgraph "
+    total_transactions: BigInt!
+    " the total volume of the market in USD "
+    total_volume_usd: BigDecimal!
+}
+
 type User @entity {
     " the user address "
     id: Bytes!
@@ -91,6 +102,10 @@ type Take @entity {
     pay_amt_usd: BigDecimal!
     " the USD value of the buy token at that block "
     buy_amt_usd: BigDecimal!
+    " the price of the pay gem at the time of the take "
+    pay_gem_price: BigDecimal!
+    " the price of the buy gem at the time of the take "
+    buy_gem_price: BigDecimal!
     " the offer entity that was taken "
     offer: Offer!
 }
@@ -104,14 +119,14 @@ type Pool @entity {
     underlying: BigInt!
     " the underlying balance of the pool in human readable format "
     underlying_formatted: BigDecimal!
-    " the amount of shares outstanding in the integer format "
-    shares: BigInt!
-    " the amount of shares outstanding in human readable format "
-    shares_formatted: BigDecimal!
     " the amount of outstanding assets in the integer format "
     outstanding: BigInt!
     " the amount of outstanding assets in human readable format "
     outstanding_formatted: BigDecimal!
+    " the amount of shares outstanding in the integer format "
+    shares: BigInt!
+    " the amount of shares outstanding in human readable format "
+    shares_formatted: BigDecimal!
 }
 
 type Deposit @entity {
@@ -136,3 +151,39 @@ type Deposit @entity {
     " the price of the bathtoken based upon the ratio of the deposit amount to shares received "
     price: BigDecimal!
 }
+
+type Withdraw @entity {
+    " the transaction hash and log index of the withdraw event "
+    id: Bytes!
+    " the transaction entity of the withdraw "
+    transaction: Transaction!
+    " the withdrawing user entity "
+    withdrawer: User!
+    " the pool entity that the withdrawn was made to "
+    pool: Pool!
+    " the amount of the underlying asset that was withdrawn in the integer format "
+    amount: BigInt!
+    " the amount of the underlying asset that was withdrawn in human readable format "
+    amount_formatted: BigDecimal!
+    " the amount in USD of the underlying asset that was withdrawn at that block "
+    amount_usd: BigDecimal!
+    " the amount of share received at the time of the withdrawn in the integer format "
+    shares: BigInt!
+    " the amount of share received at the time of the withdrawn in human readable format "
+    shares_formatted: BigDecimal!
+    " the fee amount from the withdrawal event "
+    fee: BigInt!
+    " the fee amount from the withdrawal event in human readable format "
+    fee_formatted: BigDecimal!
+    " the fee amount in USD from the withdrawal event at that block "
+    fee_usd: BigDecimal!
+    " the price of the bathtoken based upon the ratio of the withdrawn amount to shares received "
+    price: BigDecimal!
+}
+
+
+
+
+
+
+

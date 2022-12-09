@@ -1,110 +1,143 @@
-import * as utils from "./common/utils";
 import * as constants from "./common/constants";
-import * as AaveOracle from "./oracles/AaveOracle";
-import * as CurveRouter from "./routers/CurveRouter";
-import * as ChainLinkFeed from "./oracles/ChainLinkFeed";
-import * as YearnLensOracle from "./oracles/YearnLensOracle";
-import * as UniswapForksRouter from "./routers/UniswapForksRouter";
-import * as CurveCalculations from "./calculations/CalculationsCurve";
-import * as SushiCalculations from "./calculations/CalculationsSushiswap";
-
 import { CustomPriceType } from "./common/types";
+import { getCurvePriceUsdc } from "./routers/CurveRouter";
+import { getTokenPriceFromOneInch } from "./oracles/1InchOracle";
+import { getTokenPriceFromAaveOracle } from "./oracles/AaveOracle";
+import { getTokenPriceFromChainLink } from "./oracles/ChainLinkFeed";
+import { getTokenPriceFromYearnLens } from "./oracles/YearnLensOracle";
+import { getPriceUsdc as getPriceUsdcUniswap } from "./routers/UniswapRouter";
 import { log, Address, BigDecimal, dataSource } from "@graphprotocol/graph-ts";
+import { getPriceUsdc as getPriceUsdcSushiswap } from "./routers/SushiSwapRouter";
+import { getTokenPriceFromSushiSwap } from "./calculations/CalculationsSushiswap";
+import { getTokenPriceFromCalculationCurve } from "./calculations/CalculationsCurve";
+
+// import known stables and default their price to 1 if they are not found
+import { USDC, USDT, DAI, USDC_DECIMALS, USDT_DECIMALS, DAI_DECIMALS } from "../utils/constants";
+
 
 export function getUsdPricePerToken(tokenAddr: Address): CustomPriceType {
-  if (tokenAddr.equals(constants.NULL.TYPE_ADDRESS)) {
+  // Check if tokenAddr is a NULL Address
+  if (tokenAddr.toHex() == constants.ZERO_ADDRESS_STRING) {
     return new CustomPriceType();
   }
 
-  const config = utils.getConfig();
-  if (config.network() == "default") {
-    log.warning("Failed to fetch price: network {} not implemented", [
-      dataSource.network(),
-    ]);
-
-    return new CustomPriceType();
-  }
-
-  if (config.hardcodedStables().includes(tokenAddr)) {
-    return CustomPriceType.initialize(
-      constants.BIGDECIMAL_USD_PRICE,
-      constants.DEFAULT_USDC_DECIMALS
-    );
-  }
+  let network = dataSource.network();
 
   // 1. Yearn Lens Oracle
-  const yearnLensPrice = YearnLensOracle.getTokenPriceUSDC(tokenAddr);
+  let yearnLensPrice = getTokenPriceFromYearnLens(tokenAddr, network);
   if (!yearnLensPrice.reverted) {
-    log.info("[YearnLensOracle] tokenAddress: {}, Price: {}", [
+    log.warning("[YearnLensOracle] tokenAddress: {}, Price: {}", [
       tokenAddr.toHexString(),
-      yearnLensPrice.usdPrice.toString(),
+      yearnLensPrice.usdPrice.div(yearnLensPrice.decimalsBaseTen).toString(),
     ]);
     return yearnLensPrice;
   }
 
   // 2. ChainLink Feed Registry
-  const chainLinkPrice = ChainLinkFeed.getTokenPriceUSDC(tokenAddr);
+  let chainLinkPrice = getTokenPriceFromChainLink(tokenAddr, network);
   if (!chainLinkPrice.reverted) {
-    log.info("[ChainLinkFeed] tokenAddress: {}, Price: {}", [
+    log.warning("[ChainLinkFeed] tokenAddress: {}, Price: {}", [
       tokenAddr.toHexString(),
-      chainLinkPrice.usdPrice.toString(),
+      chainLinkPrice.usdPrice.div(chainLinkPrice.decimalsBaseTen).toString(),
     ]);
     return chainLinkPrice;
   }
 
   // 3. CalculationsCurve
-  const calculationsCurvePrice = CurveCalculations.getTokenPriceUSDC(tokenAddr);
+  let calculationsCurvePrice = getTokenPriceFromCalculationCurve(tokenAddr, network);
   if (!calculationsCurvePrice.reverted) {
-    log.info("[CalculationsCurve] tokenAddress: {}, Price: {}", [
+    log.warning("[CalculationsCurve] tokenAddress: {}, Price: {}", [
       tokenAddr.toHexString(),
-      calculationsCurvePrice.usdPrice.toString(),
+      calculationsCurvePrice.usdPrice
+        .div(calculationsCurvePrice.decimalsBaseTen)
+        .toString(),
     ]);
     return calculationsCurvePrice;
   }
 
   // 4. CalculationsSushiSwap
-  const calculationsSushiSwapPrice =
-    SushiCalculations.getTokenPriceUSDC(tokenAddr);
+  let calculationsSushiSwapPrice = getTokenPriceFromSushiSwap(tokenAddr, network);
   if (!calculationsSushiSwapPrice.reverted) {
-    log.info("[CalculationsSushiSwap] tokenAddress: {}, Price: {}", [
+    log.warning("[CalculationsSushiSwap] tokenAddress: {}, Price: {}", [
       tokenAddr.toHexString(),
-      calculationsSushiSwapPrice.usdPrice.toString(),
+      calculationsSushiSwapPrice.usdPrice
+        .div(calculationsSushiSwapPrice.decimalsBaseTen)
+        .toString(),
     ]);
     return calculationsSushiSwapPrice;
   }
 
-  // 6. Aave Oracle
-  const aaveOraclePrice = AaveOracle.getTokenPriceUSDC(tokenAddr);
-  if (!aaveOraclePrice.reverted) {
-    log.info("[AaveOracle] tokenAddress: {}, Price: {}", [
+  // 5. One Inch Oracle
+  let oneInchOraclePrice = getTokenPriceFromOneInch(tokenAddr, network);
+  if (!oneInchOraclePrice.reverted) {
+    log.warning("[OneInchOracle] tokenAddress: {}, Price: {}", [
       tokenAddr.toHexString(),
-      aaveOraclePrice.usdPrice.toString(),
+      oneInchOraclePrice.usdPrice
+        .div(oneInchOraclePrice.decimalsBaseTen)
+        .toString(),
+    ]);
+    return oneInchOraclePrice;
+  }
+
+  // 6. Yearn Lens Oracle
+  let aaveOraclePrice = getTokenPriceFromAaveOracle(tokenAddr, network);
+  if (!aaveOraclePrice.reverted) {
+    log.warning("[AaveOracle] tokenAddress: {}, Price: {}", [
+      tokenAddr.toHexString(),
+      aaveOraclePrice.usdPrice.div(aaveOraclePrice.decimalsBaseTen).toString(),
     ]);
     return aaveOraclePrice;
   }
 
   // 7. Curve Router
-  const curvePrice = CurveRouter.getCurvePriceUsdc(tokenAddr);
+  let curvePrice = getCurvePriceUsdc(tokenAddr, network);
   if (!curvePrice.reverted) {
-    log.info("[CurveRouter] tokenAddress: {}, Price: {}", [
+    log.warning("[CurveRouter] tokenAddress: {}, Price: {}", [
       tokenAddr.toHexString(),
-      curvePrice.usdPrice.toString(),
+      curvePrice.usdPrice.div(curvePrice.decimalsBaseTen).toString(),
     ]);
     return curvePrice;
   }
 
   // 8. Uniswap Router
-  const uniswapPrice = UniswapForksRouter.getTokenPriceUSDC(tokenAddr);
+  let uniswapPrice = getPriceUsdcUniswap(tokenAddr, network);
   if (!uniswapPrice.reverted) {
-    log.info("[UniswapRouter] tokenAddress: {}, Price: {}", [
+    log.warning("[UniswapRouter] tokenAddress: {}, Price: {}", [
       tokenAddr.toHexString(),
-      uniswapPrice.usdPrice.toString(),
+      uniswapPrice.usdPrice.div(uniswapPrice.decimalsBaseTen).toString(),
     ]);
     return uniswapPrice;
   }
 
-  log.warning("[Oracle] Failed to Fetch Price, Name: {} Address: {}", [
-    utils.getTokenName(tokenAddr),
+  // 9. SushiSwap Router
+  let sushiswapPrice = getPriceUsdcSushiswap(tokenAddr, network);
+  if (!sushiswapPrice.reverted) {
+    log.warning("[SushiSwapRouter] tokenAddress: {}, Price: {}", [
+      tokenAddr.toHexString(),
+      sushiswapPrice.usdPrice.div(sushiswapPrice.decimalsBaseTen).toString(),
+    ]);
+    return sushiswapPrice;
+  }
+
+  // 10. Known Stables  // return CustomPriceType.initialize(amountOutBigDecimal, constants.DEFAULT_USDC_DECIMALS);
+  if (tokenAddr == USDC) {
+    return CustomPriceType.initialize(
+      BigDecimal.fromString("1000000"),
+      USDC_DECIMALS.toU32()
+    );
+  } else if (tokenAddr == USDT) {
+    return CustomPriceType.initialize(
+      BigDecimal.fromString("1000000"),
+      USDT_DECIMALS.toU32()
+    );
+  } else if (tokenAddr == DAI) {
+    return CustomPriceType.initialize(
+      BigDecimal.fromString("1000000000000000000"),
+      DAI_DECIMALS.toU32()
+    );
+  }
+
+  log.warning("[Oracle] Failed to Fetch Price, tokenAddr: {}", [
     tokenAddr.toHexString(),
   ]);
 
@@ -115,10 +148,10 @@ export function getUsdPrice(
   tokenAddr: Address,
   amount: BigDecimal
 ): BigDecimal {
-  const tokenPrice = getUsdPricePerToken(tokenAddr);
+  let tokenPrice = getUsdPricePerToken(tokenAddr);
 
   if (!tokenPrice.reverted) {
-    return tokenPrice.usdPrice.times(amount);
+    return tokenPrice.usdPrice.times(amount).div(tokenPrice.decimalsBaseTen);
   }
 
   return constants.BIGDECIMAL_ZERO;
