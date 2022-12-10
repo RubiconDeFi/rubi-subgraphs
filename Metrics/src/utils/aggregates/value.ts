@@ -46,6 +46,7 @@ export function fetchPoolHourData(asset: Address, event: ethereum.Event): PoolHo
         let pool = getPool(asset, event.address)
 
         poolHourData = new PoolHourData(poolHourID)
+        poolHourData.pool = pool.id
         poolHourData.hour_start_unix = event.block.timestamp
         poolHourData.total_deposit = ZERO_BI
         poolHourData.total_deposit_usd = ZERO_BD
@@ -73,6 +74,7 @@ export function fetchPoolDayData(asset: Address, event: ethereum.Event): PoolDay
         let pool = getPool(asset, event.address)
 
         poolDayData = new PoolDayData(poolDayID)
+        poolDayData.pool = pool.id
         poolDayData.day_start_unix = event.block.timestamp
         poolDayData.total_deposit = ZERO_BI
         poolDayData.total_deposit_usd = ZERO_BD
