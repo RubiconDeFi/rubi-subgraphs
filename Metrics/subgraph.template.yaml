@@ -10,6 +10,7 @@ dataSources:
     source: 
       address: '{{ RubiconMarket-address }}'
       abi: RubiconMarket
+      startBlock: {{ startBlock }}
     mapping: 
       kind: ethereum/events
       apiVersion: 0.0.7
