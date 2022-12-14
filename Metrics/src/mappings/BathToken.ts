@@ -16,6 +16,10 @@ export function handleLogDeposit(event: LogDeposit): void {
         return
     }
 
+    if (event.params.sharesReceived.equals(ZERO_BI)) {
+        return
+    }
+
     // retrieve the underlying asset and bathtoken entities
     let asset = fetchToken(event.params.asset)
     //let bathToken = fetchToken(event.address)
@@ -76,6 +80,10 @@ export function handleLogWithdraw(event: LogWithdraw): void {
 
     // make sure the withdraw amount is greater than 0
     if (event.params.amountWithdrawn.equals(ZERO_BI)) {
+        return
+    }
+
+    if (event.params.sharesWithdrawn.equals(ZERO_BI)) {
         return
     }
 
