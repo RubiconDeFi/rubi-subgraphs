@@ -1,0 +1,87 @@
+type User @entity {
+    " the user address "
+    id: ID!
+    " the user offers "
+    offers: [Offer!]! @derivedFrom(field: "maker")
+    " the user takes "
+    takes: [Take!]! @derivedFrom(field: "taker")
+    " the user transactions "
+    transactions: [Transaction!]! @derivedFrom(field: "user")
+}
+
+type Transaction @entity {
+    " the transaction hash "
+    id: ID!
+    " the block number "
+    block: BigInt!
+    " the timestamp of the transaction "
+    timestamp: BigInt!
+    " map to a user entity "
+    user: User!
+}
+
+type Token @entity {
+    " token address "
+    id: ID!
+    " token address "
+    address: String!
+    " token decimals "
+    decimals: BigInt!
+    " token symbol "
+    symbol: String!
+}
+
+type Offer @entity {
+    " the id of the offer on the RubiconMarket contract "
+    id: ID!
+    " the timestamp of the offer "
+    timestamp: BigInt!
+    " the transaction entity that this offer was created from "
+    transaction: Transaction!
+    " the user entity that created this offer "
+    maker: User!
+    " the token that the offer will pay with "
+    pay_gem: Token!
+    " the token that the maker offers to buy "
+    buy_gem: Token!
+    " the amount of the pay token that the offer will pay - in the integer format "
+    pay_amt: BigInt!
+    " the amount of the buy token that the offer will buy - in the integer format "
+    buy_amt: BigInt!
+    " the amount of the pay token that the offer has paid out - in the integer format "
+    paid_amt: BigInt!
+    " the amount of the buy token that the offer has bought - in the integer format "
+    bought_amt: BigInt!
+    " boolean indicating if the offer was filled or not "
+    filled: Boolean!
+    " boolean indicating if the offer was cancelled or not "
+    cancelled: Boolean!
+    " boolean indicating if the offer is live or not "
+    live: Boolean!
+    " the timestamp that offer was removed at"
+    removed_timestamp: BigInt
+    " the take events from this offer "
+    takes: [Take!]! @derivedFrom(field: "offer")
+}
+
+type Take @entity {
+    " the transaction hash and log index of the take event "
+    id: ID!
+    " the timestamp of the offer "
+    timestamp: BigInt!
+    " the transaction entity that this offer was created from "
+    transaction: Transaction!
+    " the user entity that took the offer "
+    taker: User!
+    " the token that the offer will pay with "
+    pay_gem: Token!
+    " the token that the offer offer to buy "
+    buy_gem: Token!
+    " the amount of the pay token that the offer will pay - in the integer format "
+    pay_amt: BigInt!
+    " the amount of the buy token that the offer will buy - in the integer format "
+    buy_amt: BigInt!
+    " the offer entity that was taken "
+    offer: Offer!
+}
+

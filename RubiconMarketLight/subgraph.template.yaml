@@ -1,0 +1,35 @@
+specVersion: 0.0.5
+description: a lightweight subgraph for the Rubicon Market
+repository: 
+schema: 
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: RubiconMarket
+    network: {{ network }}
+    source: 
+      address: '{{ RubiconMarket-address }}'
+      abi: RubiconMarket
+      startBlock: {{ startBlock }}
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/RubiconMarket.ts
+      entities: 
+        - Offer
+        - Take
+      abis: 
+        - name: RubiconMarket
+          file: ./abis/Rubicon/RubiconMarket.json
+        - name: ERC20
+          file: ./abis/Ethereum/ERC20.json
+      eventHandlers: 
+      - event: LogMake(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
+        handler: handleLogMake
+      - event: LogTake(bytes32,indexed bytes32,indexed address,address,address,indexed address,uint128,uint128,uint64)
+        handler: handleLogTake
+      - event: LogKill(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
+        handler: handleLogKill
+      - event: OfferDeleted(indexed bytes32)
+        handler: handleOfferDeleted 

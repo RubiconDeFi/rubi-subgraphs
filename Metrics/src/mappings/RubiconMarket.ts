@@ -98,7 +98,7 @@ export function handleLogTake(event: LogTake): void {
     let transaction = fetchTransaction(event)
 
     // get the user entity
-    let taker = fetchUser(event.params.maker)
+    let taker = fetchUser(event.transaction.from)
 
     // get the token entities
     let payGem = fetchToken(event.params.pay_gem)

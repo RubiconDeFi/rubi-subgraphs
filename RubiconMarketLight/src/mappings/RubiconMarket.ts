@@ -1,11 +1,9 @@
-import { ZERO_BD, ZERO_BI } from "../utils/constants"
-import { Bytes, ethereum, BigDecimal } from "@graphprotocol/graph-ts"
+import { ZERO_BI } from "../utils/constants"
+import { ethereum } from "@graphprotocol/graph-ts"
 import { Offer, Take } from "../../generated/schema"
-import { fetchRubicon } from '../utils/entities/rubicon'
 import { fetchUser } from "../utils/entities/user"
 import { fetchTransaction } from "../utils/entities/transaction"
-import { fetchToken, toBigDecimal } from "../utils/entities/token"
-import { getUsdPricePerToken } from "../prices"
+import { fetchToken } from "../utils/entities/token"
 import { LogMake, LogTake, LogKill, OfferDeleted } from "../../generated/RubiconMarket/RubiconMarket"
 
 export function handleLogMake(event: LogMake): void {
@@ -29,48 +27,16 @@ export function handleLogMake(event: LogMake): void {
     let payGem = fetchToken(event.params.pay_gem)
     let buyGem = fetchToken(event.params.buy_gem)
 
-    // format the amounts based on the token decimals
-    let payAmtFormatted = toBigDecimal(event.params.pay_amt, payGem.decimals)
-    let buyAmtFormatted = toBigDecimal(event.params.buy_amt, buyGem.decimals)
-
-    // get the USD price of the gems and calculate the USD amounts
-    let payGemPrice: BigDecimal
-    let buyGemPrice: BigDecimal
-    let fetchPayGemPrice = getUsdPricePerToken(event.params.pay_gem)
-    let fetchBuyGemPrice = getUsdPricePerToken(event.params.buy_gem)
-
-    if (!fetchPayGemPrice.reverted) {
-        payGemPrice = fetchPayGemPrice.usdPrice.div(fetchPayGemPrice.decimalsBaseTen)
-    } else {
-        payGemPrice = fetchPayGemPrice.usdPrice
-    }
-
-    if (!fetchBuyGemPrice.reverted) {
-        buyGemPrice = fetchBuyGemPrice.usdPrice.div(fetchBuyGemPrice.decimalsBaseTen)
-    } else {
-        buyGemPrice = fetchBuyGemPrice.usdPrice
-    }
-
-    let payAmtUsd = payAmtFormatted.times(payGemPrice)
-    let buyAmtUsd = buyAmtFormatted.times(buyGemPrice)
-
     let offer = new Offer(offerID)
     offer.transaction = transaction.id
+    offer.timestamp = event.block.timestamp
     offer.maker = maker.id
     offer.pay_gem = payGem.id
     offer.buy_gem = buyGem.id
     offer.pay_amt = event.params.pay_amt
     offer.buy_amt = event.params.buy_amt
-    offer.pay_amt_formatted = payAmtFormatted
-    offer.buy_amt_formatted = buyAmtFormatted
-    offer.pay_amt_usd = payAmtUsd
-    offer.buy_amt_usd = buyAmtUsd
     offer.paid_amt = ZERO_BI
     offer.bought_amt = ZERO_BI
-    offer.paid_amt_formatted = ZERO_BD
-    offer.bought_amt_formatted = ZERO_BD
-    offer.paid_amt_usd = ZERO_BD
-    offer.bought_amt_usd = ZERO_BD
     offer.filled = false
     offer.cancelled = false
     offer.live = true
@@ -103,58 +69,19 @@ export function handleLogTake(event: LogTake): void {
     let payGem = fetchToken(event.params.pay_gem)
     let buyGem = fetchToken(event.params.buy_gem)
 
-    // format the amounts based on the token decimals
-    let payAmtFormatted = toBigDecimal(event.params.take_amt, payGem.decimals)
-    let buyAmtFormatted = toBigDecimal(event.params.give_amt, buyGem.decimals)
-
-    // get the USD price of the gems and calculate the USD amounts
-    let payGemPrice: BigDecimal
-    let buyGemPrice: BigDecimal
-    let fetchPayGemPrice = getUsdPricePerToken(event.params.pay_gem)
-    let fetchBuyGemPrice = getUsdPricePerToken(event.params.buy_gem)
-
-    if (!fetchPayGemPrice.reverted) {
-        payGemPrice = fetchPayGemPrice.usdPrice.div(fetchPayGemPrice.decimalsBaseTen)
-    } else {
-        payGemPrice = fetchPayGemPrice.usdPrice
-    }
-
-    if (!fetchBuyGemPrice.reverted) {
-        buyGemPrice = fetchBuyGemPrice.usdPrice.div(fetchBuyGemPrice.decimalsBaseTen)
-    } else {
-        buyGemPrice = fetchBuyGemPrice.usdPrice
-    }
-
-    let payAmtUsd = payAmtFormatted.times(payGemPrice)
-    let buyAmtUsd = buyAmtFormatted.times(buyGemPrice)
-
     // update the offer entity
     offer.paid_amt = offer.paid_amt.plus(event.params.take_amt)
     offer.bought_amt = offer.bought_amt.plus(event.params.give_amt)
-    offer.paid_amt_formatted = offer.paid_amt_formatted.plus(payAmtFormatted)
-    offer.bought_amt_formatted = offer.bought_amt_formatted.plus(buyAmtFormatted)
-    offer.paid_amt_usd = offer.paid_amt_usd.plus(payAmtUsd)
-    offer.bought_amt_usd = offer.bought_amt_usd.plus(buyAmtUsd)
     offer.save()
 
-    // update the rubicon entity 
-    let rubicon = fetchRubicon()
-    rubicon.total_volume_usd = rubicon.total_volume_usd.plus(buyAmtUsd)
-    rubicon.save()
-
-    let take = new Take(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
+    let take = new Take(event.transaction.hash.toHexString().concat(event.transaction.index.toHexString()))
     take.transaction = transaction.id
+    take.timestamp = event.block.timestamp
     take.taker = taker.id
     take.pay_gem = payGem.id
     take.buy_gem = buyGem.id
     take.pay_amt = event.params.take_amt
     take.buy_amt = event.params.give_amt
-    take.pay_amt_formatted = payAmtFormatted
-    take.buy_amt_formatted = buyAmtFormatted
-    take.pay_amt_usd = payAmtUsd
-    take.buy_amt_usd = buyAmtUsd
-    take.pay_gem_price = payGemPrice
-    take.buy_gem_price = buyGemPrice
     take.offer = offer.id
     take.save()
 }

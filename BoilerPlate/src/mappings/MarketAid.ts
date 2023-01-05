@@ -1,6 +1,6 @@
 import { LogBatchRequoteOffers } from '../../generated/templates/MarketAid/MarketAid'
 
-export function handleLogBatchRequoteOffers(even:LogBatchRequoteOffers): void {
+export function handleLogBatchRequoteOffers(event:LogBatchRequoteOffers): void {
 
     return
 

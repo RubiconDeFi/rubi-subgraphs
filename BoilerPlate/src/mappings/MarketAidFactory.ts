@@ -1,6 +1,9 @@
-import { MarketAid } from "../../generated/schema"
-import { LogBatchRequoteOffers } from "../../generated/templates/MarketAid/MarketAid"
+import { MarketAid } from "../../generated/templates"
+import { NotifyMarketAidSpawn } from "../../generated/MarketAidFactory/MarketAidFactory"
 
-export function handleLogBatchRequoteOffers(event: LogBatchRequoteOffers): void {
-    return
+export function handleNotifyMarketAidSpawn(event: NotifyMarketAidSpawn): void {
+    
+    // create the market aid template
+    MarketAid.create(event.params.newInstance)
+    
 }
