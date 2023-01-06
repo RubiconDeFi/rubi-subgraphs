@@ -72,6 +72,14 @@ export function handleLogTake(event: LogTake): void {
     // update the offer entity
     offer.paid_amt = offer.paid_amt.plus(event.params.take_amt)
     offer.bought_amt = offer.bought_amt.plus(event.params.give_amt)
+
+    // add a check for if the offer is filled
+    if (offer.pay_amt.equals(offer.paid_amt) && offer.buy_amt.equals(offer.bought_amt)) {
+        offer.removed_timestamp = event.block.timestamp
+        offer.filled = true
+        offer.live = false
+    }
+
     offer.save()
 
     let take = new Take(event.transaction.hash.toHexString().concat(event.transaction.index.toHexString()))

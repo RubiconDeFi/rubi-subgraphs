@@ -135,6 +135,14 @@ export function handleLogTake(event: LogTake): void {
     offer.bought_amt_formatted = offer.bought_amt_formatted.plus(buyAmtFormatted)
     offer.paid_amt_usd = offer.paid_amt_usd.plus(payAmtUsd)
     offer.bought_amt_usd = offer.bought_amt_usd.plus(buyAmtUsd)
+
+    // add a check for if the offer is filled
+    if (offer.pay_amt.equals(offer.paid_amt) && offer.buy_amt.equals(offer.bought_amt)) {
+        offer.removed_timestamp = event.block.timestamp
+        offer.filled = true
+        offer.live = false
+    }
+
     offer.save()
 
     // update the rubicon entity 

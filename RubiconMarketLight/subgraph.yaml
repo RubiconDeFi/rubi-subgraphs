@@ -8,7 +8,7 @@ dataSources:
     name: RubiconMarket
     network: optimism
     source: 
-      address: '0x6cD8666aBB003073e45D69E5b3aa0b0Fe9CDBF91'
+      address: '0x7a512d3609211e719737E82c7bb7271eC05Da70d'
       abi: RubiconMarket
       startBlock: 0
     mapping: 
