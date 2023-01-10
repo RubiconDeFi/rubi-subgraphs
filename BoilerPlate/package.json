@@ -7,6 +7,7 @@
         "prepare:optimism:goerli": "mustache config/optimism_goerli.json subgraph.template.yaml > subgraph.yaml",
         "codegen": "graph codegen",
         "build": "graph build",
+        "deploy:dev": "graph deploy --product hosted-service denverbaumgartner/boilerplate",
         "deploy:optimism": "graph deploy --product hosted-service denverbaumgartner/boilerplateoptimism",
         "deploy:optimism:goerli": "graph deploy --product hosted-service <username>/<subgraph>",
         "create-local": "graph create --node http://localhost:8020/ BoilerPlate",

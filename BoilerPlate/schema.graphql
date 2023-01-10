@@ -15,14 +15,46 @@ type User @entity {
 }
 
 type Transaction @entity {
-    " the transaction hash "
+    " the transaction hash :check:"
     id: Bytes!
-    " the block number "
+    " transaction hash as a hex string :check:"
+    txn: String!
+    " the block number :check:"
     block: BigInt!
-    " the timestamp "
+    " the timestamp :check:"
     timestamp: BigInt!
-    " map to a user entity "
+    " map to a user entity :check:"
     user: User!
+    " the price of eth at the time of the transaction :check:"
+    eth_price: BigDecimal!
+    " the data input of the transaction "
+    data: Bytes!
+    " the l2 gas price in eth :check:"
+    l2_gas_price: BigDecimal!
+    " the amount of gas used by the l2 transaction :check:"
+    l2_gas_used: BigInt!
+    " the l2 executino fee in eth "
+    l2_execution_fee: BigDecimal!
+    " the l2 execution fee in USD "
+    l2_execution_fee_usd: BigDecimal!
+    " the l1 base fee in eth :check:"
+    l1_base_fee: BigDecimal!
+    " the l1_gas_used :underestimate:"
+    l1_gas_used: BigDecimal!
+    " overhead in the l1 transaction "
+    l1_overhead: BigInt!
+    " the l1 scalar "
+    l1_scalar: BigDecimal!
+    " the l1 decimal to make dynamic scalar value "
+    l1_decimal: BigInt!
+    " the l1 fee in eth "
+    l1_fee: BigDecimal!
+    " the l1 fee in usd "
+    l1_fee_usd: BigDecimal!
+    " the total gas fee in eth "
+    total_gas_fee: BigDecimal!
+    " the total gas fee in usd "
+    total_gas_fee_usd: BigDecimal!    
 }
 
 type Token @entity {
@@ -185,3 +217,8 @@ type MarketAid @entity {
     " the market aid address "
     id: Bytes!
 }
+
+
+
+
+

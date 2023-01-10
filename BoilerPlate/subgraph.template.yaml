@@ -22,6 +22,11 @@ dataSources:
       abis: 
         - name: RubiconMarket
           file: ./abis/Rubicon/RubiconMarket.json
+
+        ################ Gas Oracle ###############
+        - name: OVMOracle
+          file: ./abis/Optimism/OVMOracle.json
+  
         ############## Price Oracle ###############
         # ERC20
         - name: _ERC20
@@ -64,12 +69,16 @@ dataSources:
       eventHandlers: 
       - event: LogMake(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
         handler: handleLogMake
+        receipt: true
       - event: LogTake(bytes32,indexed bytes32,indexed address,address,address,indexed address,uint128,uint128,uint64)
         handler: handleLogTake
+        receipt: true
       - event: LogKill(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
         handler: handleLogKill
+        receipt: true
       - event: OfferDeleted(indexed bytes32)
         handler: handleOfferDeleted 
+        receipt: true
       # - event: LogMatch(uint256,uint256)
       #   handler: handleLogMatch     
   - kind: ethereum/contract
@@ -91,87 +100,92 @@ dataSources:
           file: ./abis/Rubicon/BathHouse.json
         - name: BathToken
           file: ./abis/Rubicon/BathToken.json     
+
+        ################ Gas Oracle ###############
+        - name: OVMOracle
+          file: ./abis/Optimism/OVMOracle.json
       eventHandlers: 
         - event: LogNewBathToken(address,address,address,uint256,address)
           handler: handleLogNewBathToken
-  - kind: ethereum/contract
-    name: MarketAidFactory
-    network: {{ network }}
-    source: 
-      address: '{{ MarketAidFactory-address }}'
-      abi: MarketAidFactory
-      startBlock: {{ startBlock }}
-    mapping: 
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      file: ./src/mappings/MarketAidFactory.ts
-      entities: 
-        - MarketAid
-      abis: 
-        - name: MarketAidFactory
-          file: ./abis/Rubicon/MarketAidFactory.json
-      eventHandlers: 
-        - event: NotifyMarketAidSpawn(address)
-          handler: handleNotifyMarketAidSpawn
+          receipt: true
+  #- kind: ethereum/contract
+  #  name: MarketAidFactory
+  #  network: {{ network }}
+  #  source: 
+  #    address: '{{ MarketAidFactory-address }}'
+  #    abi: MarketAidFactory
+  #    startBlock: {{ startBlock }}
+  #  mapping: 
+  #    kind: ethereum/events
+  #    apiVersion: 0.0.7
+  #    language: wasm/assemblyscript
+  #    file: ./src/mappings/MarketAidFactory.ts
+  #    entities: 
+  #      - MarketAid
+  #    abis: 
+  #      - name: MarketAidFactory
+  #        file: ./abis/Rubicon/MarketAidFactory.json
+  #    eventHandlers: 
+  #      - event: NotifyMarketAidSpawn(address)
+  #        handler: handleNotifyMarketAidSpawn
 templates: 
-  - kind: ethereum/contract
-    name: MarketAid
-    network: {{ network }}
-    source:
-      abi: MarketAid
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      file: ./src/mappings/MarketAid.ts
-      entities: 
-        - MarketAid
-      abis:
-        - name: MarketAid
-          file: ./abis/Rubicon/MarketAid.json
-        ############## Price Oracle ###############
-        # ERC20
-        - name: _ERC20
-          file: ./abis/Prices/ERC20.json
-        # Curve Contracts
-        - name: CurveRegistry
-          file: ./abis/Prices/Curve/Registry.json
-        - name: CurvePoolRegistry
-          file: ./abis/Prices/Curve/PoolRegistry.json
-        - name: CalculationsCurve
-          file: ./abis/Prices/Calculations/Curve.json
-        # YearnLens Contracts
-        - name: YearnLensContract
-          file: ./abis/Prices/YearnLens.json
-        # ChainLink Contracts
-        - name: ChainLinkContract
-          file: ./abis/Prices/ChainLink.json
-        # 1Inch Contracts
-        - name: OneInchOracleContract
-          file: ./abis/Prices/1Inch/Oracle.json
-        # Aave Contracts
-        - name: AaveOracleContract
-          file: ./abis/Prices/Aave/Oracle.json
-        # Uniswap Contracts
-        - name: UniswapRouter
-          file: ./abis/Prices/Uniswap/Router.json
-        - name: UniswapFactory
-          file: ./abis/Prices/Uniswap/Factory.json
-        - name: UniswapPair
-          file: ./abis/Prices/Uniswap/Pair.json
-        # SushiSwap Contracts
-        - name: SushiSwapRouter
-          file: ./abis/Prices/SushiSwap/Router.json
-        - name: SushiSwapFactory
-          file: ./abis/Prices/SushiSwap/Factory.json
-        - name: SushiSwapPair
-          file: ./abis/Prices/SushiSwap/Pair.json
-        - name: CalculationsSushiSwap
-          file: ./abis/Prices/Calculations/SushiSwap.json
-      eventHandlers:
-        - event: LogBatchRequoteOffers(address,uint256[])
-          handler: handleLogBatchRequoteOffers
+  #- kind: ethereum/contract
+  #  name: MarketAid
+  #  network: {{ network }}
+  #  source:
+  #    abi: MarketAid
+  #  mapping:
+  #    kind: ethereum/events
+  #    apiVersion: 0.0.7
+  #    language: wasm/assemblyscript
+  #    file: ./src/mappings/MarketAid.ts
+  #    entities: 
+  #      - MarketAid
+  #    abis:
+  #      - name: MarketAid
+  #        file: ./abis/Rubicon/MarketAid.json
+  #      ############## Price Oracle ###############
+  #      # ERC20
+  #      - name: _ERC20
+  #        file: ./abis/Prices/ERC20.json
+  #      # Curve Contracts
+  #      - name: CurveRegistry
+  #        file: ./abis/Prices/Curve/Registry.json
+  #      - name: CurvePoolRegistry
+  #        file: ./abis/Prices/Curve/PoolRegistry.json
+  #      - name: CalculationsCurve
+  #        file: ./abis/Prices/Calculations/Curve.json
+  #      # YearnLens Contracts
+  #      - name: YearnLensContract
+  #        file: ./abis/Prices/YearnLens.json
+  #      # ChainLink Contracts
+  #      - name: ChainLinkContract
+  #        file: ./abis/Prices/ChainLink.json
+  #      # 1Inch Contracts
+  #      - name: OneInchOracleContract
+  #        file: ./abis/Prices/1Inch/Oracle.json
+  #      # Aave Contracts
+  #      - name: AaveOracleContract
+  #        file: ./abis/Prices/Aave/Oracle.json
+  #      # Uniswap Contracts
+  #      - name: UniswapRouter
+  #        file: ./abis/Prices/Uniswap/Router.json
+  #      - name: UniswapFactory
+  #        file: ./abis/Prices/Uniswap/Factory.json
+  #      - name: UniswapPair
+  #        file: ./abis/Prices/Uniswap/Pair.json
+  #      # SushiSwap Contracts
+  #      - name: SushiSwapRouter
+  #        file: ./abis/Prices/SushiSwap/Router.json
+  #      - name: SushiSwapFactory
+  #        file: ./abis/Prices/SushiSwap/Factory.json
+  #      - name: SushiSwapPair
+  #        file: ./abis/Prices/SushiSwap/Pair.json
+  #      - name: CalculationsSushiSwap
+  #        file: ./abis/Prices/Calculations/SushiSwap.json
+  #    eventHandlers:
+  #      - event: LogBatchRequoteOffers(address,uint256[])
+  #        handler: handleLogBatchRequoteOffers
   - kind: ethereum/contract
     name: BathToken
     network: {{ network }}
@@ -189,7 +203,12 @@ templates:
       abis:
         - name: BathToken
           file: ./abis/Rubicon/BathToken.json
-        ############## Price Oracle ###############
+
+        ################ Gas Oracle ###############
+        - name: OVMOracle
+          file: ./abis/Optimism/OVMOracle.json
+
+        ############## Price Oracle ###############        
         # ERC20
         - name: _ERC20
           file: ./abis/Prices/ERC20.json
@@ -231,10 +250,13 @@ templates:
       eventHandlers:
         - event: LogDeposit(uint256,address,uint256,address,uint256,uint256,uint256)
           handler: handleLogDeposit
+          receipt: true
         - event: LogWithdraw(uint256,address,uint256,address,uint256,address,uint256,uint256,uint256)
           handler: handleLogWithdraw
+          receipt: true
         #- event: Transfer(indexed address,indexed address,uint256)
         #  handler: handleTransfer
         - event: LogClaimBonusTokn(indexed address,indexed address,indexed address,uint256,uint256,address)
           handler: handleLogClaimBonusToken
+          receipt: true
         
