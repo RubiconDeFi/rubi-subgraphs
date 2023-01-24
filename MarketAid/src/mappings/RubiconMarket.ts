@@ -1,5 +1,5 @@
-import { Aid, AidToken, AidTokenHistory, Offer, Take} from "../../generated/schema"
-import { LogMake, LogTake, LogKill, OfferDeleted } from "../../generated/RubiconMarket/RubiconMarket"
+import { Aid, AidToken, AidTokenHistory, Offer, Take, Transaction } from "../../generated/schema"
+import { LogMake, LogTake, LogKill, OfferDeleted, FeeTake } from "../../generated/RubiconMarket/RubiconMarket"
 import { Bytes, ethereum } from "@graphprotocol/graph-ts"
 import { fetchToken } from "../utils/entities/token"
 import { fetchTransaction } from "../utils/entities/transaction"
@@ -82,6 +82,7 @@ export function handleLogTake(event: LogTake): void {
         let buyTokenHistory = AidTokenHistory.load(takerAid.id.concat(event.params.pay_gem).concat(transaction.id))
         if (!buyTokenHistory) {
             buyTokenHistory = new AidTokenHistory(takerAid.id.concat(event.params.pay_gem).concat(transaction.id))
+            buyTokenHistory.timestamp = event.block.timestamp
             buyTokenHistory.aid_token = buyToken.id
             buyTokenHistory.balance = buyToken.balance
             buyTokenHistory.balance_change = event.params.take_amt
@@ -107,6 +108,7 @@ export function handleLogTake(event: LogTake): void {
             let payTokenHistory = AidTokenHistory.load(takerAid.id.concat(event.params.buy_gem).concat(transaction.id))
             if (!payTokenHistory) {
                 payTokenHistory = new AidTokenHistory(takerAid.id.concat(event.params.buy_gem).concat(transaction.id))
+                payTokenHistory.timestamp = event.block.timestamp
                 payTokenHistory.aid_token = payToken.id
                 payTokenHistory.balance = payToken.balance
                 payTokenHistory.balance_change = ZERO_BI.minus(event.params.give_amt)
@@ -138,12 +140,14 @@ export function handleLogTake(event: LogTake): void {
         let buyTokenHistory = AidTokenHistory.load(makerAid.id.concat(event.params.buy_gem).concat(transaction.id))
         if (!buyTokenHistory) {
             buyTokenHistory = new AidTokenHistory(makerAid.id.concat(event.params.buy_gem).concat(transaction.id))
+            buyTokenHistory.timestamp = event.block.timestamp
             buyTokenHistory.aid_token = buyToken.id
             buyTokenHistory.balance = buyToken.balance
             buyTokenHistory.balance_change = event.params.give_amt
             buyTokenHistory.transaction = transaction.id
             buyTokenHistory.save()
         } else {
+            buyTokenHistory.timestamp = event.block.timestamp
             buyTokenHistory.balance = buyToken.balance
             buyTokenHistory.balance_change = buyTokenHistory.balance_change.plus(event.params.give_amt)
             buyTokenHistory.save()
@@ -163,12 +167,14 @@ export function handleLogTake(event: LogTake): void {
             let payTokenHistory = AidTokenHistory.load(makerAid.id.concat(event.params.pay_gem).concat(transaction.id))
             if (!payTokenHistory) {
                 payTokenHistory = new AidTokenHistory(makerAid.id.concat(event.params.pay_gem).concat(transaction.id))
+                payTokenHistory.timestamp = event.block.timestamp
                 payTokenHistory.aid_token = payToken.id
                 payTokenHistory.balance = payToken.balance
                 payTokenHistory.balance_change = ZERO_BI.minus(event.params.take_amt)
                 payTokenHistory.transaction = transaction.id
                 payTokenHistory.save()
             } else {
+                payTokenHistory.timestamp = event.block.timestamp
                 payTokenHistory.balance = payToken.balance
                 payTokenHistory.balance_change = payTokenHistory.balance_change.minus(event.params.take_amt)
                 payTokenHistory.save()
@@ -214,6 +220,45 @@ export function handleLogTake(event: LogTake): void {
         take.buy_amt = event.params.give_amt
         take.offer = offer.id
         take.save()
+    }
+}
+
+export function handleFeeTake(event: FeeTake): void {
+
+    // get the aid entity, if the taker was not an aid contract, return
+    let aid = Aid.load(event.params.taker)
+    if (!aid) {
+        return
+    }  
+    var transaction = fetchTransaction(event)
+
+    // the fee is paid in the asset the taker is paying the maker, so in theory there should always be an aid token entity tracking this
+    // if there is not, then we should query the chain state and populate a new entity
+    // for now, we are just going to return
+    // TODO: query the chain state and populate a new entity if it does not exist
+    let feeToken = AidToken.load(aid.id.concat(event.params.asset))
+    if (!feeToken) {
+        return
+    } else {
+        feeToken.balance = feeToken.balance.minus(event.params.feeAmt)
+        feeToken.save()
+
+        // get the transaction entity and update the token history entity to include the fee
+        let feeTokenHistory = AidTokenHistory.load(aid.id.concat(event.params.asset).concat(transaction.id))
+        if (!feeTokenHistory) {
+            feeTokenHistory = new AidTokenHistory(aid.id.concat(event.params.asset).concat(transaction.id))
+            feeTokenHistory.timestamp = event.block.timestamp
+            feeTokenHistory.aid_token = feeToken.id
+            feeTokenHistory.balance = feeToken.balance
+            feeTokenHistory.balance_change = ZERO_BI.minus(event.params.feeAmt)
+            feeTokenHistory.transaction = transaction.id
+            feeTokenHistory.save()
+        } else {
+            feeTokenHistory.timestamp = event.block.timestamp
+            feeTokenHistory.balance = feeToken.balance
+            feeTokenHistory.balance_change = feeTokenHistory.balance_change.minus(event.params.feeAmt)
+            feeTokenHistory.save()
+        }
     }
 }
 

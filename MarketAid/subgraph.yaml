@@ -33,6 +33,8 @@ dataSources:
         handler: handleLogKill
       - event: OfferDeleted(indexed bytes32)
         handler: handleOfferDeleted 
+      - event: FeeTake(indexed bytes32,indexed bytes32,address,indexed address,address,uint256,uint64)
+        handler: handleFeeTake
       # - event: LogMatch(uint256,uint256)
       #   handler: handleLogMatch     
   - kind: ethereum/contract

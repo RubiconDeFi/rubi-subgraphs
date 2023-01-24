@@ -25,6 +25,8 @@ type AidToken @entity {
 type AidTokenHistory @entity {
     " the address of the market aid contract, asset address, transaction hash "
     id: Bytes!
+    " the timestamp of the event that resulted in this change in token balance "
+    timestamp: BigInt!
     " the market aid token entity that this token balance history belongs to "
     aid_token: AidToken!
     " the amount of the asset that the market aid contract holds, after the change "
