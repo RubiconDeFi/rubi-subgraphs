@@ -1,0 +1,74 @@
+specVersion: 0.0.5
+description: a boiler plate subgraph for the Rubicon Protocol
+repository: 
+schema: 
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: RubiconMarket
+    network: {{ network }}
+    source: 
+      address: '{{ RubiconMarket-address }}'
+      abi: RubiconMarket
+      startBlock: {{ startBlock }}
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/RubiconMarket.ts
+      entities: 
+        - Offer
+        - Take
+      abis: 
+        - name: RubiconMarket
+          file: ./abis/Rubicon/RubiconMarket.json
+      eventHandlers: 
+      - event: LogMake(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
+        handler: handleLogMake
+      - event: LogTake(bytes32,indexed bytes32,indexed address,address,address,indexed address,uint128,uint128,uint64)
+        handler: handleLogTake
+      - event: LogKill(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
+        handler: handleLogKill
+      - event: OfferDeleted(indexed bytes32)
+        handler: handleOfferDeleted 
+      # - event: LogMatch(uint256,uint256)
+      #   handler: handleLogMatch     
+  - kind: ethereum/contract
+    name: MarketAidFactory
+    network: {{ network }}
+    source: 
+      address: '{{ MarketAidFactory-address }}'
+      abi: MarketAidFactory
+      startBlock: {{ startBlock }}
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/MarketAidFactory.ts
+      entities: 
+        - MarketAid
+      abis: 
+        - name: MarketAidFactory
+          file: ./abis/Rubicon/MarketAidFactory.json
+      eventHandlers: 
+        - event: NotifyMarketAidSpawn(address)
+          handler: handleNotifyMarketAidSpawn
+templates: 
+  - kind: ethereum/contract
+    name: MarketAid
+    network: {{ network }}
+    source:
+      abi: MarketAid
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/MarketAid.ts
+      entities: 
+        - MarketAid
+      abis:
+        - name: MarketAid
+          file: ./abis/Rubicon/MarketAid.json
+      eventHandlers:
+        - event: LogBatchRequoteOffers(address,uint256[])
+          handler: handleLogBatchRequoteOffers
