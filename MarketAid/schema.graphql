@@ -1,3 +1,128 @@
-type MarketAid @entity {
-
+type Aid @entity {
+    " the address of the market aid contract "
+    id: Bytes!
+    " time of creation "
+    created: BigInt!
+    " map to the token balance entities "
+    balances: [AidToken!]! @derivedFrom(field: "aid")
+    " map to the offer entities "
+    offers: [Offer!]! @derivedFrom(field: "maker")
 }
+
+type AidToken @entity {
+    " the address of the market aid contract and the asset address "
+    id: Bytes!
+    " the market aid entity that this token balance belongs to "
+    aid: Aid!
+    " map to the token entity of the asset "
+    token: Token!
+    " the amount of the asset that the market aid contract holds "
+    balance: BigInt!
+    " the history of the token balance "
+    history: [AidTokenHistory!]! @derivedFrom(field: "aid_token")
+}
+
+type AidTokenHistory @entity {
+    " the address of the market aid contract, asset address, transaction hash "
+    id: Bytes!
+    " the market aid token entity that this token balance history belongs to "
+    aid_token: AidToken!
+    " the amount of the asset that the market aid contract holds, after the change "
+    balance: BigInt!
+    " the net change in the amount of the asset that the market aid contract has "
+    balance_change: BigInt!
+    " the event that resulted in this change in token balance, can be either fill, deposit, or withdraw "
+    transaction: Transaction!
+}
+
+type Transaction @entity {
+    " the transaction hash "
+    id: Bytes!
+    " the block number "
+    block: BigInt!
+    " the timestamp of the transaction "
+    timestamp: BigInt!
+    " map to the transaction caller "
+    from: Bytes!
+    " mapp to the entities "
+    offers: [Offer!]! @derivedFrom(field: "transaction")
+    takes: [Take!]! @derivedFrom(field: "transaction")
+    bookUpdates: [BookUpdate!]! @derivedFrom(field: "transaction")
+}
+
+type Offer @entity {
+    " the id of the offer on the RubiconMarket contract "
+    id: ID!
+    " the transaction entity that this offer was created from "
+    transaction: Transaction!
+    " the market aid entity that created this offer "
+    maker: Aid!
+    " the token that the offer will pay with "
+    pay_gem: Token!
+    " the token that the maker offers to buy "
+    buy_gem: Token!
+    " the amount of the pay token that the offer will pay - in the integer format "
+    pay_amt: BigInt!
+    " the amount of the buy token that the offer will buy - in the integer format "
+    buy_amt: BigInt!
+    " the amount of the pay token that the offer has paid out - in the integer format "
+    paid_amt: BigInt!
+    " the amount of the buy token that the offer has bought - in the integer format "
+    bought_amt: BigInt!
+    " boolean indicating if the offer was filled or not "
+    filled: Boolean!
+    " boolean indicating if the offer was cancelled or not "
+    cancelled: Boolean!
+    " boolean indicating if the offer is live or not "
+    live: Boolean!
+    " the timestamp that offer was removed at"
+    removed_timestamp: BigInt
+    " the take events from this offer "
+    takes: [Take!]! @derivedFrom(field: "offer")
+}
+
+type Take @entity {
+    " the transaction hash and log index of the take event "
+    id: Bytes!
+    " the transaction entity that this offer was created from "
+    transaction: Transaction!
+    " the user entity that took the offer "
+    taker: Bytes!
+    " the token that the offer will pay with "
+    pay_gem: Token!
+    " the token that the offer offer to buy "
+    buy_gem: Token!
+    " the amount of the pay token that the offer will pay - in the integer format "
+    pay_amt: BigInt!
+    " the amount of the buy token that the offer will buy - in the integer format "
+    buy_amt: BigInt!
+    " the offer entity that was taken "
+    offer: Offer!
+}
+
+type BookUpdate @entity {
+    " the market aid address, asset address, and transaction hash "
+    id: Bytes!
+    " the market aid token entity that is tracking this asset "
+    aid_token: AidToken!
+    " the transaction entity that this book was updated from "
+    transaction: Transaction
+    " the amount of the asset that was debited / credited "
+    amount: BigInt!
+    " the user that sent or received funds from the contract "
+    user: Bytes
+}
+
+type Token @entity {
+    " the address of the token "
+    id: Bytes!
+    " the symbol of the token "
+    symbol: String!
+    " the decimals of the token "
+    decimals: BigInt!
+}
+
+
+
+
+

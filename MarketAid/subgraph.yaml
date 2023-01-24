@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: RubiconMarket
-    network: {{ network }}
+    network: optimism-goerli
     source: 
-      address: '{{ RubiconMarket-address }}'
+      address: '0x6cD8666aBB003073e45D69E5b3aa0b0Fe9CDBF91'
       abi: RubiconMarket
-      startBlock: {{ startBlock }}
+      startBlock: 4541220
     mapping: 
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -37,11 +37,11 @@ dataSources:
       #   handler: handleLogMatch     
   - kind: ethereum/contract
     name: MarketAidFactory
-    network: {{ network }}
+    network: optimism-goerli
     source: 
-      address: '{{ MarketAidFactory-address }}'
+      address: '0x91689683590f3C32c54E1918A8C607618629C958'
       abi: MarketAidFactory
-      startBlock: {{ startBlock }}
+      startBlock: 4541220
     mapping: 
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -60,7 +60,7 @@ dataSources:
 templates: 
   - kind: ethereum/contract
     name: MarketAid
-    network: {{ network }}
+    network: optimism-goerli
     source:
       abi: MarketAid
     mapping:
