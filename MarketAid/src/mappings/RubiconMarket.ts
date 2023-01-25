@@ -56,6 +56,27 @@ export function handleLogTake(event: LogTake): void {
         var transaction = fetchTransaction(event)
         var payGem = fetchToken(event.params.pay_gem)
         var buyGem = fetchToken(event.params.buy_gem)
+
+        // decode the offer ID
+        var offerID = event.params.id.toHexString()
+        let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
+        if (!decoded) {
+            offerID = event.params.id.toHexString()
+        } else {
+            offerID = decoded.toBigInt().toString()
+        }
+
+        // update the take entity
+        var take = new Take(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
+        take.transaction = transaction.id
+        take.taker = event.transaction.from
+        take.pay_gem = payGem.id
+        take.buy_gem = buyGem.id
+        take.pay_amt = event.params.take_amt
+        take.buy_amt = event.params.give_amt
+        take.offer_id = offerID
+        take.save()
+
     } else {
         return
     }
@@ -182,16 +203,6 @@ export function handleLogTake(event: LogTake): void {
 
         }
 
-
-        // decode the offer ID
-        let offerID = event.params.id.toHexString()
-        let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
-        if (!decoded) {
-            offerID = event.params.id.toHexString()
-        } else {
-            offerID = decoded.toBigInt().toString()
-        }
-
         // if the offer does not exist, it was not created by an aid contract, return
         let offer = Offer.load(offerID)
         if (!offer) {
@@ -210,14 +221,6 @@ export function handleLogTake(event: LogTake): void {
         }
         offer.save()
 
-        // update the take entity
-        let take = new Take(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
-        take.transaction = transaction.id
-        take.taker = event.transaction.from
-        take.pay_gem = payGem.id
-        take.buy_gem = buyGem.id
-        take.pay_amt = event.params.take_amt
-        take.buy_amt = event.params.give_amt
         take.offer = offer.id
         take.save()
     }

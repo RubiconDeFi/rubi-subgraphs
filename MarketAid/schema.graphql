@@ -98,8 +98,10 @@ type Take @entity {
     pay_amt: BigInt!
     " the amount of the buy token that the offer will buy - in the integer format "
     buy_amt: BigInt!
-    " the offer entity that was taken "
-    offer: Offer!
+    " the offer id that was taken "
+    offer_id: String!
+    " the offer entity that was taken, if it is a market aid offer "
+    offer: Offer
 }
 
 type BookUpdate @entity {
@@ -123,8 +125,3 @@ type Token @entity {
     " the decimals of the token "
     decimals: BigInt!
 }
-
-
-
-
-
