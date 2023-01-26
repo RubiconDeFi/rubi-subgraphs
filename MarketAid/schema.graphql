@@ -7,6 +7,8 @@ type Aid @entity {
     balances: [AidToken!]! @derivedFrom(field: "aid")
     " map to the offer entities "
     offers: [Offer!]! @derivedFrom(field: "maker")
+    " map to the transaction entities "
+    transactions: [Transaction!]! @derivedFrom(field: "aid")
 }
 
 type AidToken @entity {
@@ -46,6 +48,8 @@ type Transaction @entity {
     timestamp: BigInt!
     " map to the transaction caller "
     from: Bytes!
+    " if the transaction originated from a market aid contract, map to the market aid entity "
+    aid: Aid
     " mapp to the entities "
     offers: [Offer!]! @derivedFrom(field: "transaction")
     takes: [Take!]! @derivedFrom(field: "transaction")
@@ -110,7 +114,7 @@ type BookUpdate @entity {
     " the market aid token entity that is tracking this asset "
     aid_token: AidToken!
     " the transaction entity that this book was updated from "
-    transaction: Transaction
+    transaction: Transaction!
     " the amount of the asset that was debited / credited "
     amount: BigInt!
     " the user that sent or received funds from the contract "
@@ -125,3 +129,4 @@ type Token @entity {
     " the decimals of the token "
     decimals: BigInt!
 }
+

@@ -16,6 +16,8 @@ export function handleLogBookUpdate(event: LogBookUpdate): void {
 
     // load the transaction entity
     let transaction = fetchTransaction(event)
+    transaction.aid = aid.id
+    transaction.save()
 
     // get the aid token entity or create it if it doesn't exist
     let aidToken = AidToken.load(event.address.concat(event.params.token))

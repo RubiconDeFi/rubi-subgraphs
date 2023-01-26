@@ -24,6 +24,8 @@ export function handleLogMake(event: LogMake): void {
 
     // get the transaction entity
     let transaction = fetchTransaction(event)    
+    transaction.aid = aid.id
+    transaction.save()
 
     // get the token entities
     let payGem = fetchToken(event.params.pay_gem)
@@ -83,6 +85,10 @@ export function handleLogTake(event: LogTake): void {
 
     // deal with the scenario where the aid contract is the taker first
     if (takerAid) {
+        
+        // update the transaction entity
+        transaction.aid = takerAid.id
+        transaction.save()    
         
         // try to load the token the user is buying, if they don't have it, create it 
         // the pay_gem is what the maker is paying with, the buy_gem is what the maker is buying. so for the taker, the pay_gem is what they are buying in exchange for the buy_gem
@@ -234,6 +240,8 @@ export function handleFeeTake(event: FeeTake): void {
         return
     }  
     var transaction = fetchTransaction(event)
+    transaction.aid = aid.id
+    transaction.save()    
 
     // the fee is paid in the asset the taker is paying the maker, so in theory there should always be an aid token entity tracking this
     // if there is not, then we should query the chain state and populate a new entity
@@ -267,6 +275,16 @@ export function handleFeeTake(event: FeeTake): void {
 
 export function handleLogKill(event: LogKill): void {
 
+    // if the maker is an aid contract, save the offer
+    let aid = Aid.load(event.params.maker)
+    if (!aid) {
+        return
+    } else {
+        let transaction = fetchTransaction(event)
+        transaction.aid = aid.id
+        transaction.save()    
+    }
+
     // decode the offer ID
     let offerID = event.params.id.toHexString()
     let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
@@ -288,6 +306,7 @@ export function handleLogKill(event: LogKill): void {
 }
 
 export function handleOfferDeleted(event: OfferDeleted): void {
+    // this event is only emitted when an offer is filled, so the transaction will be tracked for an aid contract already
 
     // decode the offer ID
     let offerID = event.params.id.toHexString()

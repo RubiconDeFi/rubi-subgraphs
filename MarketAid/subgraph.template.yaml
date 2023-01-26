@@ -27,14 +27,19 @@ dataSources:
       eventHandlers: 
       - event: LogMake(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
         handler: handleLogMake
+        #receipt: true
       - event: LogTake(bytes32,indexed bytes32,indexed address,address,address,indexed address,uint128,uint128,uint64)
         handler: handleLogTake
+        #receipt: true
       - event: LogKill(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
         handler: handleLogKill
+        #receipt: true
       - event: OfferDeleted(indexed bytes32)
         handler: handleOfferDeleted 
+        #receipt: true
       - event: FeeTake(indexed bytes32,indexed bytes32,address,indexed address,address,uint256,uint64)
         handler: handleFeeTake
+        ##receipt: true
       # - event: LogMatch(uint256,uint256)
       #   handler: handleLogMatch     
   - kind: ethereum/contract
@@ -59,6 +64,7 @@ dataSources:
       eventHandlers: 
         - event: NotifyMarketAidSpawn(address)
           handler: handleNotifyMarketAidSpawn
+          ##receipt: true
 templates: 
   - kind: ethereum/contract
     name: MarketAid
@@ -80,3 +86,4 @@ templates:
       eventHandlers:
         - event: LogBookUpdate(address,address,int256,uint256)
           handler: handleLogBookUpdate
+          ##receipt: true
