@@ -2,5 +2,5 @@
     "network" : "optimism-goerli",
     "startBlock": 4541220,
     "RubiconMarket-address" : "0x6cD8666aBB003073e45D69E5b3aa0b0Fe9CDBF91", 
-    "MarketAidFactory-address" : "0x91689683590f3C32c54E1918A8C607618629C958"
+    "MarketAidFactory-address" : "0x528E6d1636bb8578074cc888BD85d561f7847066"
 }
