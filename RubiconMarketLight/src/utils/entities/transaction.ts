@@ -12,6 +12,7 @@ export function fetchTransaction(event: ethereum.Event): Transaction {
 
         transaction = new Transaction(event.transaction.hash.toHexString())
         transaction.block = event.block.number
+        transaction.index = event.transaction.index
         transaction.timestamp = event.block.timestamp
         transaction.user = user.id
         transaction.save()

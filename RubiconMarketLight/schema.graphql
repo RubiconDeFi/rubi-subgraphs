@@ -14,6 +14,8 @@ type Transaction @entity {
     id: ID!
     " the block number "
     block: BigInt!
+    " the index of the transaction in the block "
+    index: BigInt!
     " the timestamp of the transaction "
     timestamp: BigInt!
     " map to a user entity "
