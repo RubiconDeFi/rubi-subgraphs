@@ -1,6 +1,6 @@
 {
     "network" : "optimism",
-    "startBlock": 0,
+    "startBlock": 72644900,
     "RubiconMarket-address" : "0x7a512d3609211e719737E82c7bb7271eC05Da70d", 
     "MarketAidFactory-address" : "0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7"
 }

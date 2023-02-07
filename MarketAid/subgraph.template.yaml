@@ -1,5 +1,5 @@
 specVersion: 0.0.5
-description: a boiler plate subgraph for the Rubicon Protocol
+description: a subgraph to aid in tracking activity from MarketAid contracts
 repository: 
 schema: 
   file: ./schema.graphql
