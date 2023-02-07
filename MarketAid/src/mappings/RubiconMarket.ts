@@ -302,6 +302,7 @@ export function handleLogKill(event: LogKill): void {
     // update the offer entity
     offer.cancelled = true
     offer.live = false
+    offer.removed_timestamp = event.block.timestamp
     offer.save()
 }
 
@@ -324,5 +325,6 @@ export function handleOfferDeleted(event: OfferDeleted): void {
 
     // update the offer entity
     offer.live = false
+    offer.removed_timestamp = event.block.timestamp
     offer.save()
 }
