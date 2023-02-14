@@ -110,6 +110,7 @@ export function handleLogTake(event: LogTake): void {
         if (!buyTokenHistory) {
             buyTokenHistory = new AidTokenHistory(takerAid.id.concat(event.params.pay_gem).concat(transaction.id))
             buyTokenHistory.timestamp = event.block.timestamp
+            buyTokenHistory.aid = takerAid.id
             buyTokenHistory.aid_token = buyToken.id
             buyTokenHistory.balance = buyToken.balance
             buyTokenHistory.balance_change = event.params.take_amt
@@ -136,6 +137,7 @@ export function handleLogTake(event: LogTake): void {
             if (!payTokenHistory) {
                 payTokenHistory = new AidTokenHistory(takerAid.id.concat(event.params.buy_gem).concat(transaction.id))
                 payTokenHistory.timestamp = event.block.timestamp
+                payTokenHistory.aid = takerAid.id
                 payTokenHistory.aid_token = payToken.id
                 payTokenHistory.balance = payToken.balance
                 payTokenHistory.balance_change = ZERO_BI.minus(event.params.give_amt)
@@ -161,6 +163,9 @@ export function handleLogTake(event: LogTake): void {
             buyToken.token = buyGem.id
             buyToken.balance = event.params.give_amt
             buyToken.save()
+        } else {
+            buyToken.balance = buyToken.balance.plus(event.params.give_amt)
+            buyToken.save()
         }
 
         // load in the token history entities or create them if they don't exist
@@ -168,6 +173,7 @@ export function handleLogTake(event: LogTake): void {
         if (!buyTokenHistory) {
             buyTokenHistory = new AidTokenHistory(makerAid.id.concat(event.params.buy_gem).concat(transaction.id))
             buyTokenHistory.timestamp = event.block.timestamp
+            buyTokenHistory.aid = makerAid.id
             buyTokenHistory.aid_token = buyToken.id
             buyTokenHistory.balance = buyToken.balance
             buyTokenHistory.balance_change = event.params.give_amt
@@ -195,6 +201,7 @@ export function handleLogTake(event: LogTake): void {
             if (!payTokenHistory) {
                 payTokenHistory = new AidTokenHistory(makerAid.id.concat(event.params.pay_gem).concat(transaction.id))
                 payTokenHistory.timestamp = event.block.timestamp
+                payTokenHistory.aid = makerAid.id
                 payTokenHistory.aid_token = payToken.id
                 payTokenHistory.balance = payToken.balance
                 payTokenHistory.balance_change = ZERO_BI.minus(event.params.take_amt)
@@ -206,7 +213,6 @@ export function handleLogTake(event: LogTake): void {
                 payTokenHistory.balance_change = payTokenHistory.balance_change.minus(event.params.take_amt)
                 payTokenHistory.save()
             }
-
         }
 
         // if the offer does not exist, it was not created by an aid contract, return
@@ -259,6 +265,7 @@ export function handleFeeTake(event: FeeTake): void {
         if (!feeTokenHistory) {
             feeTokenHistory = new AidTokenHistory(aid.id.concat(event.params.asset).concat(transaction.id))
             feeTokenHistory.timestamp = event.block.timestamp
+            feeTokenHistory.aid = aid.id
             feeTokenHistory.aid_token = feeToken.id
             feeTokenHistory.balance = feeToken.balance
             feeTokenHistory.balance_change = ZERO_BI.minus(event.params.feeAmt)

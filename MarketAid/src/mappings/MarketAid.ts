@@ -37,6 +37,7 @@ export function handleLogBookUpdate(event: LogBookUpdate): void {
     if (!aidHistory) {
         aidHistory = new AidTokenHistory(event.address.concat(event.params.token).concat(event.transaction.hash))
         aidHistory.timestamp = event.block.timestamp
+        aidHistory.aid = aid.id
         aidHistory.aid_token = aidToken.id
         aidHistory.balance = aidToken.balance
         aidHistory.balance_change = event.params.amountChanged

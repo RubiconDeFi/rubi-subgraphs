@@ -29,6 +29,8 @@ type AidTokenHistory @entity {
     id: Bytes!
     " the timestamp of the event that resulted in this change in token balance "
     timestamp: BigInt!
+    " the market aid entity that this token balance history belongs to "
+    aid: Aid!
     " the market aid token entity that this token balance history belongs to "
     aid_token: AidToken!
     " the amount of the asset that the market aid contract holds, after the change "
@@ -122,11 +124,10 @@ type BookUpdate @entity {
 }
 
 type Token @entity {
-    " the address of the token "
+    " address of the token "
     id: Bytes!
-    " the symbol of the token "
+    " symbol of the token "
     symbol: String!
-    " the decimals of the token "
+    " decimals of the token "
     decimals: BigInt!
 }
-
