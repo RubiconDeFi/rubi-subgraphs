@@ -96,18 +96,37 @@ type Take @entity {
     transaction: Transaction!
     " the user entity that took the offer "
     taker: Bytes!
-    " the token that the offer will pay with "
+    " the token that the offer will pay with - what the taker receives "
     pay_gem: Token!
-    " the token that the offer offer to buy "
+    " the token that the offer offer to buy - what the taker pays"
     buy_gem: Token!
-    " the amount of the pay token that the offer will pay - in the integer format "
+    " the amount of the pay token that the offer will pay - in the integer format - the amount the taker receives "
     pay_amt: BigInt!
-    " the amount of the buy token that the offer will buy - in the integer format "
+    " the amount of the buy token that the offer will buy - in the integer format - the amount the taker pays"
     buy_amt: BigInt!
     " the offer id that was taken "
     offer_id: String!
     " the offer entity that was taken, if it is a market aid offer "
     offer: Offer
+}
+
+type Arb @entity {
+    " the transaction hash and log index of the arb event "
+    id: Bytes!
+    " the transaction entity that this offer was created from "
+    transaction: Transaction!
+    " the timestamp of the arb event "
+    timestamp: BigInt!
+    " the market aid instance that the function was called on " 
+    aid: Aid!
+    " the asset of the trade, this is the asset that profits are calculated in "
+    asset: Token!
+    " the other asset of the trade, this is the asset that is being traded against "
+    quote: Token!
+    " the amount of the asset that was traded "
+    amount: BigInt!
+    " the profit that was a result of the trade, denominated in the asset token "
+    profit: BigInt! 
 }
 
 type BookUpdate @entity {

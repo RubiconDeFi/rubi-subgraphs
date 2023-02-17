@@ -86,4 +86,6 @@ templates:
       eventHandlers:
         - event: LogBookUpdate(address,address,int256,uint256)
           handler: handleLogBookUpdate
+        - event: LogAtomicArbitrage(indexed address,indexed address,indexed address,uint256,uint256,uint24,bool,uint256)
+          handler: handleLogArb
           ##receipt: true

@@ -50,6 +50,61 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "assetSold",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "assetReceived",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amountSold",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "profit",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint24",
+        "name": "uniPoolFee",
+        "type": "uint24"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isBuyRubiconFirst",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "LogAtomicArbitrage",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": false,
         "internalType": "address",
         "name": "strategist",
@@ -598,6 +653,39 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "assetToSell",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amountToSell",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "assetToTarget",
+        "type": "address"
+      },
+      {
+        "internalType": "uint24",
+        "name": "poolFee",
+        "type": "uint24"
+      },
+      {
+        "internalType": "bool",
+        "name": "isBuyRubiconFirst",
+        "type": "bool"
+      }
+    ],
+    "name": "captureAtomicArbOrPass",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "flipKillSwitchOff",
     "outputs": [],
@@ -658,6 +746,62 @@
         "internalType": "uint256[]",
         "name": "",
         "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "asset",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "quote",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "strategist",
+        "type": "address"
+      }
+    ],
+    "name": "getStrategistBookWithPriceData",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "relevantStratTradeId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "bidPay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "bidBuy",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "askPay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "askBuy",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct MarketAid.MarketOffer[]",
+        "name": "ordersOnBook",
+        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",
