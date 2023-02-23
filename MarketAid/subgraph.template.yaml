@@ -88,4 +88,5 @@ templates:
           handler: handleLogBookUpdate
         - event: LogAtomicArbitrage(indexed address,indexed address,indexed address,uint256,uint256,uint24,bool,uint256)
           handler: handleLogArb
-          ##receipt: true
+        - event: LogExternalSwap(indexed address,indexed address,indexed address,uint256,uint256,address)
+          handler: handleLogExternalSwap
