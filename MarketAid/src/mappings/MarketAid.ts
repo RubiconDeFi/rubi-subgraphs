@@ -1,4 +1,4 @@
-import { Aid, AidToken, AidTokenHistory, BookUpdate, Arb, Take, Offer } from "../../generated/schema"
+import { Aid, AidToken, AidTokenHistory, BookUpdate, Arb, Take, Offer, ExternalSwap } from "../../generated/schema"
 import { LogBookUpdate, LogAtomicArbitrage, LogExternalSwap } from "../../generated/templates/MarketAid/MarketAid"
 import { fetchTransaction } from "../utils/entities/transaction"
 import { fetchToken } from "../utils/entities/token"
@@ -48,6 +48,8 @@ export function handleLogBookUpdate(event: LogBookUpdate): void {
 
     // create the book update entity
     let bookUpdate = new BookUpdate(event.address.concat(event.params.token).concat(event.transaction.hash))
+    bookUpdate.timestamp = event.block.timestamp
+    bookUpdate.aid = aid.id
     bookUpdate.aid_token = aidToken.id
     bookUpdate.transaction = transaction.id
     bookUpdate.amount = event.params.amountChanged
@@ -97,6 +99,22 @@ export function handleLogExternalSwap(event: LogExternalSwap): void {
     transaction.aid = aid.id
     transaction.save()
 
+    // load the token entities being traded
+    let tokenSold = fetchToken(event.params.assetSold)
+    let tokenReceived = fetchToken(event.params.assetReceived)
+
+    // create the external swap entity
+    let externalSwap = new ExternalSwap(event.address.concat(event.transaction.hash).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex))))
+    externalSwap.timestamp = event.block.timestamp
+    externalSwap.aid = aid.id
+    externalSwap.asset_sold = tokenSold.id
+    externalSwap.asset_received = tokenReceived.id
+    externalSwap.amount_sold = event.params.amountSold
+    externalSwap.amount_received = event.params.amountReceived
+    externalSwap.transaction = transaction.id
+    externalSwap.venue = event.params.venue
+    externalSwap.save()
+
     // load in the token account for the aid entity - if the token does not already have an account and it is attempting to sell it we have a problem
     let assetSold = AidToken.load(event.address.concat(event.params.assetSold))
     if (!assetSold) {
@@ -105,20 +123,20 @@ export function handleLogExternalSwap(event: LogExternalSwap): void {
         assetSold.balance = assetSold.balance.minus(event.params.amountSold)
         assetSold.save()
 
-        let assetReceivedHistory = AidTokenHistory.load(event.address.concat(event.params.assetReceived).concat(event.transaction.hash))
-        if (!assetReceivedHistory) {
-            assetReceivedHistory = new AidTokenHistory(event.address.concat(event.params.assetReceived).concat(event.transaction.hash))
-            assetReceivedHistory.timestamp = event.block.timestamp
-            assetReceivedHistory.aid = aid.id
-            assetReceivedHistory.aid_token = assetSold.id
-            assetReceivedHistory.balance = assetSold.balance
-            assetReceivedHistory.balance_change = event.params.amountSold
-            assetReceivedHistory.transaction = transaction.id
-            assetReceivedHistory.save()
+        let assetSoldHistory = AidTokenHistory.load(event.address.concat(event.params.assetSold).concat(transaction.id))
+        if (!assetSoldHistory) {
+            assetSoldHistory = new AidTokenHistory(event.address.concat(event.params.assetSold).concat(transaction.id))
+            assetSoldHistory.timestamp = event.block.timestamp
+            assetSoldHistory.aid = aid.id
+            assetSoldHistory.aid_token = assetSold.id
+            assetSoldHistory.balance = assetSold.balance
+            assetSoldHistory.balance_change = event.params.amountSold
+            assetSoldHistory.transaction = transaction.id
+            assetSoldHistory.save()
         } else {
-            assetReceivedHistory.balance = assetReceivedHistory.balance.plus(assetSold.balance)
-            assetReceivedHistory.balance_change = assetReceivedHistory.balance_change.minus(event.params.amountSold)
-            assetReceivedHistory.save()
+            assetSoldHistory.balance = assetSoldHistory.balance
+            assetSoldHistory.balance_change = assetSoldHistory.balance_change.minus(event.params.amountSold)
+            assetSoldHistory.save()
         }
     }
 
@@ -133,20 +151,20 @@ export function handleLogExternalSwap(event: LogExternalSwap): void {
         assetReceived.balance = assetReceived.balance.plus(event.params.amountReceived)
         assetReceived.save()
 
-        let assetSoldHistory = AidTokenHistory.load(event.address.concat(event.params.assetSold).concat(event.transaction.hash))
-        if (!assetSoldHistory) {
-            assetSoldHistory = new AidTokenHistory(event.address.concat(event.params.assetSold).concat(event.transaction.hash))
-            assetSoldHistory.timestamp = event.block.timestamp
-            assetSoldHistory.aid = aid.id
-            assetSoldHistory.aid_token = assetSold.id
-            assetSoldHistory.balance = assetSold.balance
-            assetSoldHistory.balance_change = event.params.amountSold
-            assetSoldHistory.transaction = transaction.id
-            assetSoldHistory.save()
+        let assetReceivedHistory = AidTokenHistory.load(event.address.concat(event.params.assetReceived).concat(transaction.id))
+        if (!assetReceivedHistory) {
+            assetReceivedHistory = new AidTokenHistory(event.address.concat(event.params.assetReceived).concat(transaction.id))
+            assetReceivedHistory.timestamp = event.block.timestamp
+            assetReceivedHistory.aid = aid.id
+            assetReceivedHistory.aid_token = assetReceived.id
+            assetReceivedHistory.balance = assetReceived.balance
+            assetReceivedHistory.balance_change = event.params.amountReceived
+            assetReceivedHistory.transaction = transaction.id
+            assetReceivedHistory.save()
         } else {
-            assetSoldHistory.balance = assetSoldHistory.balance.minus(event.params.amountSold)
-            assetSoldHistory.balance_change = assetSoldHistory.balance_change.plus(event.params.amountSold)
-            assetSoldHistory.save()
+            assetReceivedHistory.balance = assetReceivedHistory.balance
+            assetReceivedHistory.balance_change = assetReceivedHistory.balance_change.plus(event.params.amountReceived)
+            assetReceivedHistory.save()
         }
     }
 }

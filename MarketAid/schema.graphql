@@ -132,6 +132,10 @@ type Arb @entity {
 type BookUpdate @entity {
     " the market aid address, asset address, and transaction hash "
     id: Bytes!
+    " the timestamp of the book update event "
+    timestamp: BigInt!
+    " the aid entity that this book update belongs to "
+    aid: Aid!
     " the market aid token entity that is tracking this asset "
     aid_token: AidToken!
     " the transaction entity that this book was updated from "
@@ -142,6 +146,42 @@ type BookUpdate @entity {
     user: Bytes
 }
 
+type ExternalSwap @entity {
+    " the market aid address, venue address, transaction hash, and log index "
+    id: Bytes!
+    " the timestamp of the external swap event "
+    timestamp: BigInt!
+    " the aid entity that this external swap belongs to "
+    aid: Aid!
+    " the asset that is being sold "
+    asset_sold: Token!
+    " the asset that is received in exchange "
+    asset_received: Token!
+    " the amount of the asset that was sold "
+    amount_sold: BigInt!
+    " the amount of the asset that was received "
+    amount_received: BigInt!
+    " the transaction entity that this external swap was created from "
+    transaction: Transaction!
+    " the address of the venue that the swap was made on "
+    venue: Bytes!
+}
+
+type FeeTakeEntity @entity {
+    " the market aid address, asset address, transaction hash, and log index "
+    id: Bytes!
+    " the timestamp of the fee take event "
+    timestamp: BigInt!
+    " the aid entity that this fee take belongs to "
+    aid: Aid!
+    " the asset the fee was taken in "
+    asset: Token!
+    " the amount of the asset that was taken as a fee "
+    amount: BigInt!
+    " the transaction entity that this fee take was created from "
+    transaction: Transaction!
+}
+
 type Token @entity {
     " address of the token "
     id: Bytes!
@@ -150,3 +190,7 @@ type Token @entity {
     " decimals of the token "
     decimals: BigInt!
 }
+
+
+
+
