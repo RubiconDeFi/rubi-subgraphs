@@ -25,7 +25,7 @@ type AidToken @entity {
 }
 
 type AidTokenHistory @entity {
-    " the address of the market aid contract, asset address, transaction hash "
+    " the address of the market aid contract, asset address, transaction hash, and log index "
     id: Bytes!
     " the timestamp of the event that resulted in this change in token balance "
     timestamp: BigInt!
@@ -39,6 +39,8 @@ type AidTokenHistory @entity {
     balance_change: BigInt!
     " the event that resulted in this change in token balance, can be either fill, deposit, or withdraw "
     transaction: Transaction!
+    " the log index of the event that resulted in this change in token balance "
+    index: BigInt!
 }
 
 type Transaction @entity {
@@ -190,7 +192,3 @@ type Token @entity {
     " decimals of the token "
     decimals: BigInt!
 }
-
-
-
-

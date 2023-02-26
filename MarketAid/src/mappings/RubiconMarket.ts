@@ -109,8 +109,8 @@ export function handleLogTake(event: LogTake): void {
         let assetSold = AidToken.load(takerAid.id.concat(event.params.buy_gem))
         let assetReceived = AidToken.load(takerAid.id.concat(event.params.pay_gem))
 
-        let assetSoldHistory = AidTokenHistory.load(takerAid.id.concat(event.params.buy_gem).concat(transaction.id))
-        let assetReceivedHistory = AidTokenHistory.load(takerAid.id.concat(event.params.pay_gem).concat(transaction.id))
+        let assetSoldHistory = AidTokenHistory.load(takerAid.id.concat(event.params.buy_gem).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
+        let assetReceivedHistory = AidTokenHistory.load(takerAid.id.concat(event.params.pay_gem).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
 
         let amountSold = event.params.give_amt
         let amountReceived = event.params.take_amt
@@ -132,7 +132,7 @@ export function handleLogTake(event: LogTake): void {
             assetSoldHistory.balance_change = assetSoldHistory.balance_change.minus(amountSold)
             assetSoldHistory.save()
         } else {
-            assetSoldHistory = new AidTokenHistory(takerAid.id.concat(event.params.buy_gem).concat(transaction.id))
+            assetSoldHistory = new AidTokenHistory(takerAid.id.concat(event.params.buy_gem).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
             assetSoldHistory.timestamp = event.block.timestamp
             assetSoldHistory.aid = takerAid.id
             assetSoldHistory.aid_token = assetSold.id
@@ -140,6 +140,7 @@ export function handleLogTake(event: LogTake): void {
             assetSoldHistory.balance = assetSold.balance
             assetSoldHistory.balance_change = NEG_ONE_BI.times(amountSold)
             assetSoldHistory.transaction = transaction.id
+            assetSoldHistory.index = event.transaction.index
             assetSoldHistory.save()
         }
 
@@ -159,7 +160,7 @@ export function handleLogTake(event: LogTake): void {
             assetReceivedHistory.balance_change = assetReceivedHistory.balance_change.plus(amountReceived)
             assetReceivedHistory.save()
         } else {
-            assetReceivedHistory = new AidTokenHistory(takerAid.id.concat(event.params.pay_gem).concat(transaction.id))
+            assetReceivedHistory = new AidTokenHistory(takerAid.id.concat(event.params.pay_gem).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
             assetReceivedHistory.timestamp = event.block.timestamp
             assetReceivedHistory.aid = takerAid.id
             assetReceivedHistory.aid_token = assetReceived.id
@@ -167,6 +168,7 @@ export function handleLogTake(event: LogTake): void {
             assetReceivedHistory.balance = assetReceived.balance
             assetReceivedHistory.balance_change = amountReceived
             assetReceivedHistory.transaction = transaction.id
+            assetReceivedHistory.index = event.transaction.index
             assetReceivedHistory.save()
         }
     }
@@ -178,8 +180,8 @@ export function handleLogTake(event: LogTake): void {
         let assetSold = AidToken.load(makerAid.id.concat(event.params.pay_gem))
         let assetReceived = AidToken.load(makerAid.id.concat(event.params.buy_gem))
 
-        let assetSoldHistory = AidTokenHistory.load(makerAid.id.concat(event.params.pay_gem).concat(transaction.id))
-        let assetReceivedHistory = AidTokenHistory.load(makerAid.id.concat(event.params.buy_gem).concat(transaction.id))
+        let assetSoldHistory = AidTokenHistory.load(makerAid.id.concat(event.params.pay_gem).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
+        let assetReceivedHistory = AidTokenHistory.load(makerAid.id.concat(event.params.buy_gem).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
 
         let amountSold = event.params.take_amt
         let amountReceived = event.params.give_amt
@@ -201,7 +203,7 @@ export function handleLogTake(event: LogTake): void {
             assetSoldHistory.balance_change = assetSoldHistory.balance_change.minus(amountSold)
             assetSoldHistory.save()
         } else {
-            assetSoldHistory = new AidTokenHistory(makerAid.id.concat(event.params.pay_gem).concat(transaction.id))
+            assetSoldHistory = new AidTokenHistory(makerAid.id.concat(event.params.pay_gem).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
             assetSoldHistory.timestamp = event.block.timestamp
             assetSoldHistory.aid = makerAid.id
             assetSoldHistory.aid_token = assetSold.id
@@ -209,6 +211,7 @@ export function handleLogTake(event: LogTake): void {
             assetSoldHistory.balance = assetSold.balance
             assetSoldHistory.balance_change = NEG_ONE_BI.times(amountSold)
             assetSoldHistory.transaction = transaction.id
+            assetSoldHistory.index = event.transaction.index
             assetSoldHistory.save()
         }
 
@@ -228,7 +231,7 @@ export function handleLogTake(event: LogTake): void {
             assetReceivedHistory.balance_change = assetReceivedHistory.balance_change.plus(amountReceived)
             assetReceivedHistory.save()
         } else {
-            assetReceivedHistory = new AidTokenHistory(makerAid.id.concat(event.params.buy_gem).concat(transaction.id))
+            assetReceivedHistory = new AidTokenHistory(makerAid.id.concat(event.params.buy_gem).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
             assetReceivedHistory.timestamp = event.block.timestamp
             assetReceivedHistory.aid = makerAid.id
             assetReceivedHistory.aid_token = assetReceived.id
@@ -236,6 +239,7 @@ export function handleLogTake(event: LogTake): void {
             assetReceivedHistory.balance = assetReceived.balance
             assetReceivedHistory.balance_change = amountReceived
             assetReceivedHistory.transaction = transaction.id
+            assetReceivedHistory.index = event.transaction.index
             assetReceivedHistory.save()
         }
 
@@ -295,15 +299,16 @@ export function handleFeeTake(event: FeeTake): void {
         feeToken.save()
 
         // get the transaction entity and update the token history entity to include the fee
-        let feeTokenHistory = AidTokenHistory.load(aid.id.concat(event.params.asset).concat(transaction.id))
+        let feeTokenHistory = AidTokenHistory.load(aid.id.concat(event.params.asset).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
         if (!feeTokenHistory) {
-            feeTokenHistory = new AidTokenHistory(aid.id.concat(event.params.asset).concat(transaction.id))
+            feeTokenHistory = new AidTokenHistory(aid.id.concat(event.params.asset).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
             feeTokenHistory.timestamp = event.block.timestamp
             feeTokenHistory.aid = aid.id
             feeTokenHistory.aid_token = feeToken.id
             feeTokenHistory.balance = feeToken.balance
             feeTokenHistory.balance_change = ZERO_BI.minus(event.params.feeAmt)
             feeTokenHistory.transaction = transaction.id
+            feeTokenHistory.index = event.transaction.index
             feeTokenHistory.save()
         } else {
             feeTokenHistory.timestamp = event.block.timestamp
