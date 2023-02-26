@@ -34,16 +34,16 @@ export function handleLogBookUpdate(event: LogBookUpdate): void {
     }
 
     // create the aid token history entity
-    let aidHistory = AidTokenHistory.load(event.address.concat(event.params.token).concat(event.transaction.hash).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
+    let aidHistory = AidTokenHistory.load(event.address.concat(event.params.token).concat(event.transaction.hash).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex))))
     if (!aidHistory) {
-        aidHistory = new AidTokenHistory(event.address.concat(event.params.token).concat(event.transaction.hash).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
+        aidHistory = new AidTokenHistory(event.address.concat(event.params.token).concat(event.transaction.hash).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex))))
         aidHistory.timestamp = event.block.timestamp
         aidHistory.aid = aid.id
         aidHistory.aid_token = aidToken.id
         aidHistory.balance = aidToken.balance
         aidHistory.balance_change = event.params.amountChanged
         aidHistory.transaction = transaction.id
-        aidHistory.index = event.transaction.index
+        aidHistory.index = event.logIndex
         aidHistory.save()
     }
 
@@ -124,16 +124,16 @@ export function handleLogExternalSwap(event: LogExternalSwap): void {
         assetSold.balance = assetSold.balance.minus(event.params.amountSold)
         assetSold.save()
 
-        let assetSoldHistory = AidTokenHistory.load(event.address.concat(event.params.assetSold).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
+        let assetSoldHistory = AidTokenHistory.load(event.address.concat(event.params.assetSold).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex))))
         if (!assetSoldHistory) {
-            assetSoldHistory = new AidTokenHistory(event.address.concat(event.params.assetSold).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
+            assetSoldHistory = new AidTokenHistory(event.address.concat(event.params.assetSold).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex))))
             assetSoldHistory.timestamp = event.block.timestamp
             assetSoldHistory.aid = aid.id
             assetSoldHistory.aid_token = assetSold.id
             assetSoldHistory.balance = assetSold.balance
             assetSoldHistory.balance_change = event.params.amountSold
             assetSoldHistory.transaction = transaction.id
-            assetSoldHistory.index = event.transaction.index
+            assetSoldHistory.index = event.logIndex
             assetSoldHistory.save()
         } else {
             assetSoldHistory.balance = assetSoldHistory.balance
@@ -153,16 +153,16 @@ export function handleLogExternalSwap(event: LogExternalSwap): void {
         assetReceived.balance = assetReceived.balance.plus(event.params.amountReceived)
         assetReceived.save()
 
-        let assetReceivedHistory = AidTokenHistory.load(event.address.concat(event.params.assetReceived).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
+        let assetReceivedHistory = AidTokenHistory.load(event.address.concat(event.params.assetReceived).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex))))
         if (!assetReceivedHistory) {
-            assetReceivedHistory = new AidTokenHistory(event.address.concat(event.params.assetReceived).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
+            assetReceivedHistory = new AidTokenHistory(event.address.concat(event.params.assetReceived).concat(transaction.id).concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex))))
             assetReceivedHistory.timestamp = event.block.timestamp
             assetReceivedHistory.aid = aid.id
             assetReceivedHistory.aid_token = assetReceived.id
             assetReceivedHistory.balance = assetReceived.balance
             assetReceivedHistory.balance_change = event.params.amountReceived
             assetReceivedHistory.transaction = transaction.id
-            assetReceivedHistory.index = event.transaction.index
+            assetReceivedHistory.index = event.logIndex
             assetReceivedHistory.save()
         } else {
             assetReceivedHistory.balance = assetReceivedHistory.balance

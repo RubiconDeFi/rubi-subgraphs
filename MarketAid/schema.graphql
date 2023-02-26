@@ -48,6 +48,8 @@ type Transaction @entity {
     id: Bytes!
     " the block number "
     block: BigInt!
+    " the index of the transaction in the block "
+    index: BigInt!
     " the timestamp of the transaction "
     timestamp: BigInt!
     " map to the transaction caller "
@@ -192,3 +194,8 @@ type Token @entity {
     " decimals of the token "
     decimals: BigInt!
 }
+
+
+
+
+
