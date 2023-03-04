@@ -41,6 +41,8 @@ type AidTokenHistory @entity {
     transaction: Transaction!
     " the log index of the event that resulted in this change in token balance "
     index: BigInt!
+    " a boolean indicating if the event was a deposit / withdraw "
+    book_update: Boolean!
 }
 
 type Transaction @entity {
@@ -144,6 +146,8 @@ type BookUpdate @entity {
     aid_token: AidToken!
     " the transaction entity that this book was updated from "
     transaction: Transaction!
+    " the index of the log that this book update was created from "
+    index: BigInt!
     " the amount of the asset that was debited / credited "
     amount: BigInt!
     " the user that sent or received funds from the contract "
@@ -194,8 +198,3 @@ type Token @entity {
     " decimals of the token "
     decimals: BigInt!
 }
-
-
-
-
-

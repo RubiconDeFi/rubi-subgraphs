@@ -68,7 +68,7 @@ export function handleLogTake(event: LogTake): void {
             offerID = decoded.toBigInt().toString()
         }
         // update the take entity
-        var take = new Take(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.transaction.index))))
+        var take = new Take(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex))))
         take.transaction = transaction.id
         take.taker = event.transaction.from
         take.pay_gem = payGem.id
@@ -141,6 +141,7 @@ export function handleLogTake(event: LogTake): void {
             assetSoldHistory.balance_change = NEG_ONE_BI.times(amountSold)
             assetSoldHistory.transaction = transaction.id
             assetSoldHistory.index = event.logIndex
+            assetSoldHistory.book_update = false
             assetSoldHistory.save()
         }
 
@@ -169,6 +170,7 @@ export function handleLogTake(event: LogTake): void {
             assetReceivedHistory.balance_change = amountReceived
             assetReceivedHistory.transaction = transaction.id
             assetReceivedHistory.index = event.logIndex
+            assetReceivedHistory.book_update = false
             assetReceivedHistory.save()
         }
     }
@@ -212,6 +214,7 @@ export function handleLogTake(event: LogTake): void {
             assetSoldHistory.balance_change = NEG_ONE_BI.times(amountSold)
             assetSoldHistory.transaction = transaction.id
             assetSoldHistory.index = event.logIndex
+            assetSoldHistory.book_update = false
             assetSoldHistory.save()
         }
 
@@ -240,6 +243,7 @@ export function handleLogTake(event: LogTake): void {
             assetReceivedHistory.balance_change = amountReceived
             assetReceivedHistory.transaction = transaction.id
             assetReceivedHistory.index = event.logIndex
+            assetReceivedHistory.book_update = false
             assetReceivedHistory.save()
         }
 
@@ -309,6 +313,7 @@ export function handleFeeTake(event: FeeTake): void {
             feeTokenHistory.balance_change = ZERO_BI.minus(event.params.feeAmt)
             feeTokenHistory.transaction = transaction.id
             feeTokenHistory.index = event.logIndex
+            feeTokenHistory.book_update = false
             feeTokenHistory.save()
         } else {
             feeTokenHistory.balance = feeToken.balance

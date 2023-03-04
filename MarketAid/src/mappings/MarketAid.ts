@@ -3,6 +3,7 @@ import { LogBookUpdate, LogAtomicArbitrage, LogExternalSwap } from "../../genera
 import { fetchTransaction } from "../utils/entities/transaction"
 import { fetchToken } from "../utils/entities/token"
 import { BigInt, Bytes } from "@graphprotocol/graph-ts"
+import { ZERO_BI } from "../utils/constants"
 
 export function handleLogBookUpdate(event: LogBookUpdate): void {
 
@@ -44,6 +45,7 @@ export function handleLogBookUpdate(event: LogBookUpdate): void {
         aidHistory.balance_change = event.params.amountChanged
         aidHistory.transaction = transaction.id
         aidHistory.index = event.logIndex
+        aidHistory.book_update = true
         aidHistory.save()
     }
 
@@ -53,6 +55,7 @@ export function handleLogBookUpdate(event: LogBookUpdate): void {
     bookUpdate.aid = aid.id
     bookUpdate.aid_token = aidToken.id
     bookUpdate.transaction = transaction.id
+    bookUpdate.index = event.logIndex
     bookUpdate.amount = event.params.amountChanged
     bookUpdate.user = event.transaction.from
     bookUpdate.save()
@@ -131,9 +134,10 @@ export function handleLogExternalSwap(event: LogExternalSwap): void {
             assetSoldHistory.aid = aid.id
             assetSoldHistory.aid_token = assetSold.id
             assetSoldHistory.balance = assetSold.balance
-            assetSoldHistory.balance_change = event.params.amountSold
+            assetSoldHistory.balance_change = ZERO_BI.minus(event.params.amountSold)
             assetSoldHistory.transaction = transaction.id
             assetSoldHistory.index = event.logIndex
+            assetSoldHistory.book_update = false
             assetSoldHistory.save()
         } else {
             assetSoldHistory.balance = assetSoldHistory.balance
@@ -163,6 +167,7 @@ export function handleLogExternalSwap(event: LogExternalSwap): void {
             assetReceivedHistory.balance_change = event.params.amountReceived
             assetReceivedHistory.transaction = transaction.id
             assetReceivedHistory.index = event.logIndex
+            assetReceivedHistory.book_update = false
             assetReceivedHistory.save()
         } else {
             assetReceivedHistory.balance = assetReceivedHistory.balance
