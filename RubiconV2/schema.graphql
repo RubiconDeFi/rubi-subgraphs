@@ -1,0 +1,252 @@
+type Transaction @entity {
+    " the transaction hash "
+    id: Bytes!
+    " the transaction timestamp "
+    timestamp: BigInt!
+    " the transaction block number "
+    block_number: BigInt!
+    " the transaction block index "
+    block_index: BigInt!
+    " map to all offers created in the transaction "
+    offers: [Offer!]! @derivedFrom(field: "transaction")
+    " map to all takes created in the transaction "
+    takes: [Take!]! @derivedFrom(field: "transaction")
+    " map to all swaps created in the transaction "
+    swaps: [Swap!]! @derivedFrom(field: "transaction")
+}
+
+type User @entity {
+    " the user address "
+    id: Bytes!
+    " map to all offers the user has created "
+    offers: [Offer!]! @derivedFrom(field: "maker")
+    " map to all takes the user has created "
+    takes: [Take!]! @derivedFrom(field: "taker")
+    " map to all swaps the user has created "
+    swaps: [Swap!]! @derivedFrom(field: "swapper")
+    " map to all fees the user has paid "
+    fees_paid: [Fee!]! @derivedFrom(field: "user")
+    " map to all fees the user has received "
+    fees_received: [Fee!]! @derivedFrom(field: "recipient")
+}
+
+type Offer @entity {
+    " the offer id "
+    id: ID!
+    " the transaction that the offer was created in "
+    transaction: Transaction!
+    " the timestamp of the transaction that the offer was created in "
+    timestamp: BigInt!
+    " the event log index of the offer "
+    index: BigInt!
+    " the maker of the offer "
+    maker: User!
+    " the pay token of the offer (the asset the maker is selling) "
+    pay_gem: Bytes!
+    " the buy token of the offer (the asset the maker is buying) "
+    buy_gem: Bytes!
+    " the amount of pay token the maker is selling "
+    pay_amt: BigInt!
+    " the amount of buy token the maker is buying "
+    buy_amt: BigInt!
+    " the amount of the pay token that the maker has already sold "
+    paid_amt: BigInt!
+    " the amount of the buy token that the maker has already bought "
+    bought_amt: BigInt!
+    " the status of the offer, is it live or not "
+    active: Boolean!
+    " the timestamp the offer was removed on "
+    removed_timestamp: BigInt
+    " the block the offer was removed in "
+    removed_block: BigInt
+}
+
+type Take @entity {
+    " the transaction hash and log index of the take "
+    id: Bytes!
+    " the transaction that the take was a part of "
+    transaction: Transaction!
+    " the timestamp of the transaction that the take was a part of "
+    timestamp: BigInt!
+    " the event log index of the take "
+    index: BigInt!
+    " the user that took the offer "
+    taker: User!
+    " the offer that was taken "
+    offer: Offer!
+    " the pay token of the offer (the asset the maker is selling & the asset the taker is buying) "
+    take_gem: Bytes!
+    " the buy token of the offer (the asset the maker is buying & the asset the taker is paying in) "
+    give_gem: Bytes!
+    " the amount of pay token the taker is buying "
+    take_amt: BigInt!
+    " the amount of buy token the taker is paying in "
+    give_amt: BigInt!
+}
+
+type Swap @entity {
+    " the transaction hash and log index of the swap "
+    id: Bytes!
+    " the transaction that the swap was a part of "
+    transaction: Transaction!
+    " the timestamp of the transaction that the swap was a part of "
+    timestamp: BigInt!
+    " the event log index of the swap "
+    index: BigInt!
+    " the user that initiated the swap "
+    swapper: User!
+    " the input token of the swap "
+    input_gem: Bytes!
+    " the output token of the swap "
+    output_gem: Bytes!
+    " the amount of input token the swapper is swapping "
+    input_amt: BigInt!
+    " the amount of output token the swapper is receiving "
+    output_amt: BigInt!
+}
+
+type Fee @entity {
+    " the transaction hash and log index of the fee "
+    id: Bytes!
+    " the transaction that the fee was a part of "
+    transaction: Transaction!
+    " the timestamp of the transaction that the fee was a part of "
+    timestamp: BigInt!
+    " the event log index of the fee "
+    index: BigInt!
+    " the user that paid the fee "
+    user: User!
+    " map to the recipient of the fee "
+    recipient: User!
+    " the offer that the fee was paid for "
+    offer: Offer!
+    " the token that the fee was paid in "
+    fee_gem: Bytes!
+    " the amount of fee token that was paid "
+    fee_amt: BigInt!
+}
+
+type CandleOneMinute @entity {
+    " token0 + token1 + timestamp / 60 "
+    id: ID!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleFiveMinute @entity {
+    " token0 + token1 + timestamp / 300 "
+    id: ID!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleFifteenMinute @entity {
+    " token0 + token1 + timestamp / 900 "
+    id: ID!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleOneHour @entity {
+    " token0 + token1 + timestamp / 3600 "
+    id: ID!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleOneDay @entity {
+    " token0 + token1 + timestamp / 86400 "
+    id: ID!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}

@@ -1,0 +1,20 @@
+{
+    "name": "rubicon-v2",
+    "version": "0.0.1",
+    "author": "denver",
+    "scripts": {
+        "prepare:arbitrum:goerli": "mustache config/arbitrum_goerli.json subgraph.template.yaml > subgraph.yaml",
+        "codegen": "graph codegen",
+        "build": "graph build",
+        "deploy:arbitrum": "",
+        "deploy:arbitrum:goerli": "",
+        "create-local": "graph create --node http://localhost:8020/ RubiconV2",
+        "remove-local": "graph remove --node http://localhost:8020/ RubiconV2",
+        "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 RubiconV2"
+    },
+    "devDependencies": {
+        "@graphprotocol/graph-cli": "^0.31.0",
+        "@graphprotocol/graph-ts": "^0.28.1",
+        "mustache": "^3.1.0"
+    }
+}

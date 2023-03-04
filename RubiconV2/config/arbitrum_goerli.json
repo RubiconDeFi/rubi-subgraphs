@@ -1,0 +1,6 @@
+{
+    "network" : "arbitrum-goerli",
+    "startBlock": 0,
+    "RubiconMarket-address" : "0x0000000000000000000000000000000000000000", 
+    "RubiconRouter-address" : "0x0000000000000000000000000000000000000000"
+}

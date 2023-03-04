@@ -1,0 +1,64 @@
+specVersion: 0.0.5
+description: a subgraph to support the Rubicon dAPP utlizing the v2 protocol
+repository: https://github.com/RubiconDeFi/rubi-subgraphs
+schema: 
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: RubiconMarket
+    network: arbitrum-goerli
+    source: 
+      address: '0x0000000000000000000000000000000000000000'
+      abi: RubiconMarket
+      startBlock: 0
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/RubiconMarket.ts
+      entities: 
+        - Rubicon
+        - Transaction 
+        - User
+        - Offer
+        - Take
+        - Fee
+        - CandleOneMinute
+        - CandleFiveMinute
+        - CandleFifteenMinute
+        - CandleOneHour
+        - CandleOneDay
+      abis:
+        - name: RubiconMarket
+          file: ./abis/RubiconMarket.json
+      eventHandlers: 
+        - event: emitOffer(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128)
+          handler: handleOffer
+        - event: emitTake(indexed bytes32,indexed bytes32,indexed address,address,address,address,uint128,uint128)
+          handler: handleTake
+        - event: emitCancel(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128)
+          handler: handleCancel
+        - event: emitFee(indexed bytes32,indexed address,indexed address,bytes32,address,uint256)
+          handler: handleFee
+        - event: emitDelete(indexed bytes32,indexed bytes32,indexed address)
+          handler: handleDelete
+  - kind: ethereum/contract
+    name: RubiconRouter
+    network: arbitrum-goerli
+    source: 
+      address: '0x0000000000000000000000000000000000000000'
+      abi: RubiconRouter
+      startBlock: 0
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/RubiconRouter.ts
+      entities: 
+        - Swap
+      abis:
+        - name: RubiconRouter
+          file: ./abis/RubiconRouter.json
+      eventHandlers: 
+        - event: emitSwap(indexed address,indexed address,indexed address,bytes32,uint256,uint256,uint256)
+          handler: handleSwap
