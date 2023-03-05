@@ -7,7 +7,7 @@
         "codegen": "graph codegen",
         "build": "graph build",
         "deploy:arbitrum": "",
-        "deploy:arbitrum:goerli": "",
+        "deploy:arbitrum:goerli": "graph deploy --product hosted-service denverbaumgartner/rubiconv2-arbitrum-goerli",
         "create-local": "graph create --node http://localhost:8020/ RubiconV2",
         "remove-local": "graph remove --node http://localhost:8020/ RubiconV2",
         "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 RubiconV2"
