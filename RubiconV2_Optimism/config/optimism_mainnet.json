@@ -1,0 +1,6 @@
+{
+    "network" : "optimism",
+    "startBlock": 0,
+    "RubiconMarket-address" : "0x7a512d3609211e719737E82c7bb7271eC05Da70d", 
+    "RubiconRouter-address" : "0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf"
+}

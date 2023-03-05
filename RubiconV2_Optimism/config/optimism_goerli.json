@@ -1,0 +1,6 @@
+{
+    "network" : "optimism-goerli",
+    "startBlock": 0,
+    "RubiconMarket-address" : "0x6cD8666aBB003073e45D69E5b3aa0b0Fe9CDBF91", 
+    "RubiconRouter-address" : "0x6aaEd1985a0e011ca82BB5Df8ebd92063134fd7c"
+}
