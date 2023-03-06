@@ -35,7 +35,7 @@ export function handleOffer(event: emitOffer): void {
     offer.buy_amt = event.params.buy_amt
     offer.paid_amt = ZERO_BI
     offer.bought_amt = ZERO_BI
-    offer.active = true
+    offer.open = true
     offer.save()
 }
 
@@ -68,7 +68,7 @@ export function handleTake(event: emitTake): void {
 
     // if the offer is filled, mark it as inactive and update the entity 
     if (offer.paid_amt.equals(offer.pay_amt)) {
-        offer.active = false
+        offer.open = false
         offer.removed_timestamp = event.block.timestamp
         offer.removed_block = event.block.number
     }
@@ -109,7 +109,7 @@ export function handleCancel(event: emitCancel): void {
     }
 
     // update the offer entity
-    offer.active = false
+    offer.open = false
     offer.removed_timestamp = event.block.timestamp
     offer.removed_block = event.block.number
     offer.save()
@@ -172,7 +172,7 @@ export function handleDelete(event: emitDelete): void {
     }
 
     // update the offer entity
-    offer.active = false
+    offer.open = false
     offer.removed_timestamp = event.block.timestamp
     offer.removed_block = event.block.number
     offer.save()
@@ -208,7 +208,7 @@ export function handleLogMake(event: LogMake): void {
     offer.buy_amt = event.params.buy_amt
     offer.paid_amt = ZERO_BI
     offer.bought_amt = ZERO_BI
-    offer.active = true
+    offer.open = true
     offer.save()
 }
 
@@ -241,7 +241,7 @@ export function handleLogTake(event: LogTake): void {
 
     // if the offer is filled, mark it as inactive and update the entity 
     if (offer.paid_amt.equals(offer.pay_amt)) {
-        offer.active = false
+        offer.open = false
         offer.removed_timestamp = event.block.timestamp
         offer.removed_block = event.block.number
     }
@@ -282,7 +282,7 @@ export function handleLogKill(event: LogKill): void {
     }
 
     // update the offer entity
-    offer.active = false
+    offer.open = false
     offer.removed_timestamp = event.block.timestamp
     offer.removed_block = event.block.number
     offer.save()
@@ -345,7 +345,7 @@ export function handleOfferDeleted(event: OfferDeleted): void {
     }
 
     // update the offer entity
-    offer.active = false
+    offer.open = false
     offer.removed_timestamp = event.block.timestamp
     offer.removed_block = event.block.number
     offer.save()

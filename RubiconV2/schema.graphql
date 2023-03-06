@@ -54,7 +54,7 @@ type Offer @entity {
     " the amount of the buy token that the maker has already bought "
     bought_amt: BigInt!
     " the status of the offer, is it live or not "
-    active: Boolean!
+    open: Boolean!
     " the timestamp the offer was removed on "
     removed_timestamp: BigInt
     " the block the offer was removed in "
