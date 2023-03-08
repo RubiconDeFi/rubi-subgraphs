@@ -5,11 +5,10 @@
     "scripts": {
         "prepare:optimism": "mustache config/optimism_mainnet.json subgraph.template.yaml > subgraph.yaml",
         "prepare:optimism:goerli": "mustache config/optimism_goerli.json subgraph.template.yaml > subgraph.yaml",
-        "prepare:arbitrum:goerli": "mustache config/arbitrum_goerli.json subgraph.template.yaml > subgraph.yaml",
         "codegen": "graph codegen",
         "build": "graph build",
-        "deploy:arbitrum": "",
-        "deploy:arbitrum:goerli": "",
+        "deploy:optimism": "graph deploy --product hosted-service denverbaumgartner/rubiconv2-optimism-mainnet",
+        "deploy:optimism:goerli": "graph deploy --product hosted-service denverbaumgartner/rubiconv2-optimism-goerli",
         "create-local": "graph create --node http://localhost:8020/ RubiconV2",
         "remove-local": "graph remove --node http://localhost:8020/ RubiconV2",
         "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 RubiconV2"
