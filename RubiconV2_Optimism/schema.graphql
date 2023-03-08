@@ -250,3 +250,5 @@ type CandleOneDay @entity {
     " the ratio of token0 to token 1 at the low "
     low_ratio: BigDecimal!
 }
+
+

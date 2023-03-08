@@ -6,9 +6,9 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: RubiconMarket
-    network: optimism
+    network: optimism-goerli
     source: 
-      address: '0x7a512d3609211e719737E82c7bb7271eC05Da70d'
+      address: '0x6cD8666aBB003073e45D69E5b3aa0b0Fe9CDBF91'
       abi: RubiconMarket
       startBlock: 0
     mapping: 
@@ -57,9 +57,9 @@ dataSources:
 
   - kind: ethereum/contract
     name: RubiconRouter
-    network: optimism
+    network: optimism-goerli
     source: 
-      address: '0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf'
+      address: '0x6aaEd1985a0e011ca82BB5Df8ebd92063134fd7c'
       abi: RubiconRouter
       startBlock: 0
     mapping: 
