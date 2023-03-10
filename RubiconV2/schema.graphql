@@ -128,7 +128,7 @@ type Fee @entity {
 
 type CandleOneMinute @entity {
     " token0 + token1 + timestamp / 60 "
-    id: ID!
+    id: Bytes!
     " token0 - determined by the alphabetical order of the token addresses "
     token0: Bytes!
     " token1 - determined by the alphabetical order of the token addresses "
@@ -153,7 +153,7 @@ type CandleOneMinute @entity {
 
 type CandleFiveMinute @entity {
     " token0 + token1 + timestamp / 300 "
-    id: ID!
+    id: Bytes!
     " token0 - determined by the alphabetical order of the token addresses "
     token0: Bytes!
     " token1 - determined by the alphabetical order of the token addresses "
@@ -178,7 +178,7 @@ type CandleFiveMinute @entity {
 
 type CandleFifteenMinute @entity {
     " token0 + token1 + timestamp / 900 "
-    id: ID!
+    id: Bytes!
     " token0 - determined by the alphabetical order of the token addresses "
     token0: Bytes!
     " token1 - determined by the alphabetical order of the token addresses "
@@ -203,7 +203,7 @@ type CandleFifteenMinute @entity {
 
 type CandleOneHour @entity {
     " token0 + token1 + timestamp / 3600 "
-    id: ID!
+    id: Bytes!
     " token0 - determined by the alphabetical order of the token addresses "
     token0: Bytes!
     " token1 - determined by the alphabetical order of the token addresses "
@@ -228,7 +228,7 @@ type CandleOneHour @entity {
 
 type CandleOneDay @entity {
     " token0 + token1 + timestamp / 86400 "
-    id: ID!
+    id: Bytes!
     " token0 - determined by the alphabetical order of the token addresses "
     token0: Bytes!
     " token1 - determined by the alphabetical order of the token addresses "
