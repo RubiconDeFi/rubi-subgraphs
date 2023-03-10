@@ -348,18 +348,18 @@ describe("mock RubiconMarket events 🦖", () => {
             DAI, // pay_gem
             WETH, // buy_gem
             BigInt.fromI64(100), // pay_amt
-            BigInt.fromI64(1000) // buy_amt
+            BigInt.fromI64(200) // buy_amt
         )
         
         // create an offer event to buy weth at a higher price
         let offerTwo = createEmitOffer(
-            Bytes.fromI32(1), // offer id
+            Bytes.fromI32(2), // offer id
             Bytes.fromI32(420), // filler pair value
             USER_ONE, // maker
             DAI, // pay_gem
             WETH, // buy_gem
             BigInt.fromI64(1000), // pay_amt
-            BigInt.fromI64(1000) // buy_amt
+            BigInt.fromI64(8000) // buy_amt
         )
 
         // create a take event for the offer
@@ -370,8 +370,8 @@ describe("mock RubiconMarket events 🦖", () => {
             USER_ONE, // maker
             DAI, // pay_gem
             WETH, // buy_gem
-            BigInt.fromI64(10), // pay_amt
-            BigInt.fromI64(100) // buy_amt
+            BigInt.fromI64(100), // pay_amt
+            BigInt.fromI64(200) // buy_amt
         )
 
         // create a take event for the offer
@@ -382,8 +382,8 @@ describe("mock RubiconMarket events 🦖", () => {
             USER_ONE, // maker
             DAI, // pay_gem
             WETH, // buy_gem
-            BigInt.fromI64(20), // pay_amt
-            BigInt.fromI64(20) // buy_amt
+            BigInt.fromI64(1000), // pay_amt
+            BigInt.fromI64(8000) // buy_amt
         )
 
         // update the event metadata to be in the correct block, tx, and log order
@@ -410,10 +410,9 @@ describe("mock RubiconMarket events 🦖", () => {
         handleTake(takeOne)
         handleTake(takeTwo)
 
-        // logStore()
-
         // check that the candle entities were properly updated
-        // assert.fieldEquals("CandleOneMinute", "0x01000000", "id", "0x01000000")
-
+        assert.fieldEquals("CandleOneHour", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c", "id", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c")
+        assert.fieldEquals("CandleOneHour", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c", "token1", "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1")
+        assert.fieldEquals("CandleOneHour", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c", "token0", "0x4200000000000000000000000000000000000006")
     })
 })
