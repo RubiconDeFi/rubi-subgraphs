@@ -32,7 +32,7 @@ type User @entity {
 
 type Offer @entity {
     " the offer id "
-    id: ID!
+    id: Bytes!
     " the transaction that the offer was created in "
     transaction: Transaction!
     " the timestamp of the transaction that the offer was created in "

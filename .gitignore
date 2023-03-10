@@ -6,3 +6,5 @@ build/
 generated/
 yarn.lock
 .wasm
+rubicon.wasm
+.bin

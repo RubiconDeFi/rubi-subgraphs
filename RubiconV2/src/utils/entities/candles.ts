@@ -19,11 +19,6 @@ export function updateCandles(entity: Take): void {
     let ratio = token0_amount.toBigDecimal().div(token1_amount.toBigDecimal())
     
     // get the relevant time periods for each candle 
-    // let one_minute = entity.timestamp.toI32() / 60
-    // let five_minute = entity.timestamp.toI32() / 300
-    // let fifteen_minute = entity.timestamp.toI32() / 900
-    // let one_hour = entity.timestamp.toI32() / 3600
-    // let one_day = entity.timestamp.toI32() / 86400
     let one_minute = entity.timestamp.toI64() / 60
     let five_minute = entity.timestamp.toI64() / 300
     let fifteen_minute = entity.timestamp.toI64() / 900
@@ -31,17 +26,6 @@ export function updateCandles(entity: Take): void {
     let one_day = entity.timestamp.toI64() / 86400
 
     // get the candle ids
-    // let candle_one_minute_id = token0.toHexString().concat("-").concat(token1.toHexString()).concat("-").concat(BigInt.fromI32(one_minute).toString())
-    // let candle_five_minute_id = token0.toHexString().concat("-").concat(token1.toHexString()).concat("-").concat(BigInt.fromI32(five_minute).toString())
-    // let candle_fifteen_minute_id = token0.toHexString().concat("-").concat(token1.toHexString()).concat("-").concat(BigInt.fromI32(fifteen_minute).toString())
-    // let candle_one_hour_id = token0.toHexString().concat("-").concat(token1.toHexString()).concat("-").concat(BigInt.fromI32(one_hour).toString())
-    // let candle_one_day_id = token0.toHexString().concat("-").concat(token1.toHexString()).concat("-").concat(BigInt.fromI32(one_day).toString())
-    // let candle_one_minute_id = token0.toHexString().concat("-").concat(token1.toHexString()).concat("-").concat(BigInt.fromI64(one_minute).toString())
-    // let candle_five_minute_id = token0.toHexString().concat("-").concat(token1.toHexString()).concat("-").concat(BigInt.fromI64(five_minute).toString())
-    // let candle_fifteen_minute_id = token0.toHexString().concat("-").concat(token1.toHexString()).concat("-").concat(BigInt.fromI64(fifteen_minute).toString())
-    // let candle_one_hour_id = token0.toHexString().concat("-").concat(token1.toHexString()).concat("-").concat(BigInt.fromI64(one_hour).toString())
-    // let candle_one_day_id = token0.toHexString().concat("-").concat(token1.toHexString()).concat("-").concat(BigInt.fromI64(one_day).toString())
-
     let candle_one_minute_id = token0.concat(token1).concat(Bytes.fromByteArray(Bytes.fromBigInt(BigInt.fromString(one_minute.toString()))))
     let candle_five_minute_id = token0.concat(token1).concat(Bytes.fromByteArray(Bytes.fromBigInt(BigInt.fromString(five_minute.toString()))))
     let candle_fifteen_minute_id = token0.concat(token1).concat(Bytes.fromByteArray(Bytes.fromBigInt(BigInt.fromString(fifteen_minute.toString()))))

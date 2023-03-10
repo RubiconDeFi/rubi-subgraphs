@@ -8,15 +8,6 @@ import { emitOffer, emitTake, emitCancel, emitFee, emitDelete, LogMake, LogTake,
 
 export function handleOffer(event: emitOffer): void {
     
-    // decode the offer ID
-    let offerID = event.params.id.toHexString()
-    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
-    if (!decoded) {
-        offerID = event.params.id.toHexString()
-    } else {
-        offerID = decoded.toBigInt().toString()
-    }
-
     // get the transaction entity
     let transaction = getTransaction(event)
 
@@ -24,7 +15,7 @@ export function handleOffer(event: emitOffer): void {
     let maker = getUser(event.params.maker)
 
     // make the offer entity
-    let offer = new Offer(offerID)
+    let offer = new Offer(event.params.id)
     offer.transaction = transaction.id
     offer.timestamp = event.block.timestamp
     offer.index = event.logIndex
@@ -47,17 +38,8 @@ export function handleTake(event: emitTake): void {
     // get the taker entity (user)
     let taker = getUser(event.params.taker)
 
-    // decode the offer ID
-    let offerID = event.params.id.toHexString()
-    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
-    if (!decoded) {
-        offerID = event.params.id.toHexString()
-    } else {
-        offerID = decoded.toBigInt().toString()
-    }
-
     // load the offer entity
-    let offer = Offer.load(offerID)
+    let offer = Offer.load(event.params.id)
     if (!offer) {
         return
     }
@@ -93,17 +75,8 @@ export function handleTake(event: emitTake): void {
 
 export function handleCancel(event: emitCancel): void {
     
-    // decode the offer ID
-    let offerID = event.params.id.toHexString()
-    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
-    if (!decoded) {
-        offerID = event.params.id.toHexString()
-    } else {
-        offerID = decoded.toBigInt().toString()
-    }
-
     // load the offer entity
-    let offer = Offer.load(offerID)
+    let offer = Offer.load(event.params.id)
     if (!offer) {
         return
     }
@@ -125,18 +98,9 @@ export function handleFee(event: emitFee): void {
 
     // load the fee recipient entity
     let recipient = getUser(event.params.feeTo)
-    
-    // decode the offer ID
-    let offerID = event.params.id.toHexString()
-    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
-    if (!decoded) {
-        offerID = event.params.id.toHexString()
-    } else {
-        offerID = decoded.toBigInt().toString()
-    }
 
     // load the offer entity
-    let offer = Offer.load(offerID)
+    let offer = Offer.load(event.params.id)
     if (!offer) {
         return
     }
@@ -156,17 +120,8 @@ export function handleFee(event: emitFee): void {
 
 export function handleDelete(event: emitDelete): void {
     
-    // decode the offer ID
-    let offerID = event.params.id.toHexString()
-    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
-    if (!decoded) {
-        offerID = event.params.id.toHexString()
-    } else {
-        offerID = decoded.toBigInt().toString()
-    }
-
     // load the offer entity
-    let offer = Offer.load(offerID)
+    let offer = Offer.load(event.params.id)
     if (!offer) {
         return
     }
@@ -180,15 +135,6 @@ export function handleDelete(event: emitDelete): void {
 
 // this handles the v1 contract to ensure data continuity
 export function handleLogMake(event: LogMake): void {
-    
-    // decode the offer ID
-    let offerID = event.params.id.toHexString()
-    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
-    if (!decoded) {
-        offerID = event.params.id.toHexString()
-    } else {
-        offerID = decoded.toBigInt().toString()
-    }
 
     // get the transaction entity
     let transaction = getTransaction(event)
@@ -197,7 +143,7 @@ export function handleLogMake(event: LogMake): void {
     let maker = getUser(event.params.maker)
 
     // make the offer entity
-    let offer = new Offer(offerID)
+    let offer = new Offer(event.params.id)
     offer.transaction = transaction.id
     offer.timestamp = event.block.timestamp
     offer.index = event.logIndex
@@ -220,17 +166,8 @@ export function handleLogTake(event: LogTake): void {
     // get the taker entity (user)
     let taker = getUser(event.params.taker)
 
-    // decode the offer ID
-    let offerID = event.params.id.toHexString()
-    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
-    if (!decoded) {
-        offerID = event.params.id.toHexString()
-    } else {
-        offerID = decoded.toBigInt().toString()
-    }
-
     // load the offer entity
-    let offer = Offer.load(offerID)
+    let offer = Offer.load(event.params.id)
     if (!offer) {
         return
     }
@@ -266,17 +203,8 @@ export function handleLogTake(event: LogTake): void {
 
 export function handleLogKill(event: LogKill): void {
     
-    // decode the offer ID
-    let offerID = event.params.id.toHexString()
-    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
-    if (!decoded) {
-        offerID = event.params.id.toHexString()
-    } else {
-        offerID = decoded.toBigInt().toString()
-    }
-
     // load the offer entity
-    let offer = Offer.load(offerID)
+    let offer = Offer.load(event.params.id)
     if (!offer) {
         return
     }
@@ -298,18 +226,9 @@ export function handleFeeTake(event: FeeTake): void {
 
     // load the fee recipient entity
     let recipient = getUser(event.params.feeTo)
-    
-    // decode the offer ID
-    let offerID = event.params.id.toHexString()
-    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
-    if (!decoded) {
-        offerID = event.params.id.toHexString()
-    } else {
-        offerID = decoded.toBigInt().toString()
-    }
 
     // load the offer entity
-    let offer = Offer.load(offerID)
+    let offer = Offer.load(event.params.id)
     if (!offer) {
         return
     }
@@ -328,18 +247,9 @@ export function handleFeeTake(event: FeeTake): void {
 }
 
 export function handleOfferDeleted(event: OfferDeleted): void {
-    
-    // decode the offer ID
-    let offerID = event.params.id.toHexString()
-    let decoded = ethereum.decode(ethereum.ValueKind.BYTES.toString(), event.params.id)
-    if (!decoded) {
-        offerID = event.params.id.toHexString()
-    } else {
-        offerID = decoded.toBigInt().toString()
-    }
 
     // load the offer entity
-    let offer = Offer.load(offerID)
+    let offer = Offer.load(event.params.id)
     if (!offer) {
         return
     }
