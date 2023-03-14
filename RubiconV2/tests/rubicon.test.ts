@@ -6,6 +6,9 @@ import { store, BigInt, Bytes, Address } from "@graphprotocol/graph-ts"
 import { WETH, DAI, USER_ONE, USER_TWO, TXN_ONE, TXN_TWO, TXN_THREE, TXN_FOUR, TXN_FIVE } from "./constants"
 import { createEmitOffer, createEmitTake, createEmitCancel, createEmitFee, createEmitDelete, createEmitSwap } from "./utils"
 
+// export to allow for test coverage
+export { handleOffer, handleTake, handleCancel, handleFee, handleDelete, handleSwap }
+
 describe("hello defi cowboy 🦖", () => {
     
     afterEach(() => {

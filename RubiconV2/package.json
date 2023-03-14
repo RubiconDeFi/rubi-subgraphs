@@ -4,6 +4,7 @@
     "author": "denver",
     "scripts": {
         "test": "graph test",
+        "coverage": "graph test -- -c",
         "prepare:arbitrum:goerli": "mustache config/arbitrum_goerli.json subgraph.template.yaml > subgraph.yaml",
         "codegen": "graph codegen",
         "build": "graph build",
