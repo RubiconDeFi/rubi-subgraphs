@@ -1,10 +1,10 @@
-import { Bytes, ethereum } from "@graphprotocol/graph-ts"
-import { getUser } from "../utils/entities/user"
-import { updateCandles } from "../utils/entities/candles"
-import { getTransaction } from "../utils/entities/transaction"
-import { Offer, Take, Fee } from "../../generated/schema"
-import { ZERO_BI } from "../utils/constants"
-import { emitOffer, emitTake, emitCancel, emitFee, emitDelete } from '../../generated/RubiconMarket/RubiconMarket'
+import { ZERO_BI } from "../utils/constants";
+import { Bytes } from "@graphprotocol/graph-ts";
+import { getUser } from "../utils/entities/user";
+import { updateCandles } from "../utils/entities/candles";
+import { getTransaction } from "../utils/entities/transaction";
+import { Offer, Take, Fee } from "../../generated/schema";
+import { emitOffer, emitTake, emitCancel, emitFee, emitDelete } from '../../generated/RubiconMarket/RubiconMarket';
 
 export function handleOffer(event: emitOffer): void {
     

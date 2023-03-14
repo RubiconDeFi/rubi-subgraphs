@@ -1,5 +1,5 @@
 import { User } from "../../../generated/schema";
-import { Address } from '@graphprotocol/graph-ts'
+import { Address } from '@graphprotocol/graph-ts';
 
 export function getUser(address: Address): User {
 

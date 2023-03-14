@@ -6,7 +6,7 @@ import { store, BigInt, Bytes, Address } from "@graphprotocol/graph-ts"
 import { WETH, DAI, USER_ONE, USER_TWO, TXN_ONE, TXN_TWO, TXN_THREE, TXN_FOUR, TXN_FIVE } from "./constants"
 import { createEmitOffer, createEmitTake, createEmitCancel, createEmitFee, createEmitDelete, createEmitSwap } from "./utils"
 
-describe("mock RubiconMarket events 🦖", () => {
+describe("hello defi cowboy 🦖", () => {
     
     afterEach(() => {
         clearStore()
@@ -411,8 +411,92 @@ describe("mock RubiconMarket events 🦖", () => {
         handleTake(takeTwo)
 
         // check that the candle entities were properly updated
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da116d41d0e", "id", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da116d41d0e")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da116d41d0e", "token0", "0x4200000000000000000000000000000000000006")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da116d41d0e", "token1", "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da116d41d0e", "open", "0x491e59c255c790d4e3a53cec2632524088f1aaa401")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da116d41d0e", "high", "0x491e59c255c790d4e3a53cec2632524088f1aaa401")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da116d41d0e", "low", "0x491e59c255c790d4e3a53cec2632524088f1aaa401")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da116d41d0e", "close", "0x491e59c255c790d4e3a53cec2632524088f1aaa401")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da116d41d0e", "high_ratio", "2")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da116d41d0e", "low_ratio", "2")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da116d41d0e", "open_timestamp", "14210151720")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da116d41d0e", "close_timestamp", "14210151720")
+
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da117d41d0e", "id", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da117d41d0e")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da117d41d0e", "token0", "0x4200000000000000000000000000000000000006")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da117d41d0e", "token1", "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da117d41d0e", "open", "0x6887246668a3b87f54deb3b94ba47a6f63f3298501")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da117d41d0e", "high", "0x6887246668a3b87f54deb3b94ba47a6f63f3298501")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da117d41d0e", "low", "0x6887246668a3b87f54deb3b94ba47a6f63f3298501")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da117d41d0e", "close", "0x6887246668a3b87f54deb3b94ba47a6f63f3298501")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da117d41d0e", "high_ratio", "8")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da117d41d0e", "low_ratio", "8")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da117d41d0e", "open_timestamp", "14210151780")
+        assert.fieldEquals("CandleOneMinute", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da117d41d0e", "close_timestamp", "14210151780")
+
         assert.fieldEquals("CandleOneHour", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c", "id", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c")
-        assert.fieldEquals("CandleOneHour", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c", "token1", "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1")
         assert.fieldEquals("CandleOneHour", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c", "token0", "0x4200000000000000000000000000000000000006")
+        assert.fieldEquals("CandleOneHour", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c", "token1", "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1")
+        assert.fieldEquals("CandleOneHour", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c", "open", "0x491e59c255c790d4e3a53cec2632524088f1aaa401")
+        assert.fieldEquals("CandleOneHour", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c", "high", "0x6887246668a3b87f54deb3b94ba47a6f63f3298501")
+        assert.fieldEquals("CandleOneHour", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c", "low", "0x491e59c255c790d4e3a53cec2632524088f1aaa401")
+        assert.fieldEquals("CandleOneHour", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c", "close", "0x6887246668a3b87f54deb3b94ba47a6f63f3298501")
+        assert.fieldEquals("CandleOneHour", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c", "high_ratio", "8")
+        assert.fieldEquals("CandleOneHour", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1003b3c", "low_ratio", "2")
+    })
+
+    test('check that we are properly creating transaction and user entities', () => {
+
+        // create an offer event
+        let offerOne = createEmitOffer(
+            Bytes.fromI32(1), // offer id
+            Bytes.fromI32(420), // filler pair value
+            USER_ONE, // maker
+            DAI, // pay_gem
+            WETH, // buy_gem
+            BigInt.fromI64(100), // pay_amt
+            BigInt.fromI64(200) // buy_amt
+        )
+        
+        // create an offer event to buy weth at a higher price
+        let offerTwo = createEmitOffer(
+            Bytes.fromI32(2), // offer id
+            Bytes.fromI32(420), // filler pair value
+            USER_TWO, // maker
+            DAI, // pay_gem
+            WETH, // buy_gem
+            BigInt.fromI64(1000), // pay_amt
+            BigInt.fromI64(8000) // buy_amt
+        )
+
+        // update the event metadata to be in the correct block, tx, and log order
+        offerOne.block.number = BigInt.fromString("1")
+        offerOne.block.timestamp = BigInt.fromString("14210151600")
+        offerOne.transaction.hash = Address.fromString(TXN_ONE)
+        offerOne.logIndex = BigInt.fromString("1")
+        offerTwo.block.number = BigInt.fromString("2")
+        offerTwo.transaction.hash = Address.fromString(TXN_TWO)
+        offerTwo.block.timestamp = BigInt.fromString("14210151660")
+        offerTwo.logIndex = BigInt.fromString("1")
+
+        // process the offer events
+        handleOffer(offerOne)
+        handleOffer(offerTwo)
+
+        // check that the user entities were created
+        assert.fieldEquals("User", "0xb0be5d911e3bd4ee2a8706cf1fac8d767a550497", "id", "0xb0be5d911e3bd4ee2a8706cf1fac8d767a550497")
+        assert.fieldEquals("User", "0x9cbd5d07dd0cecc66161fc93d7c9000da1da1000", "id", "0x9cbd5d07dd0cecc66161fc93d7c9000da1da1000")
+
+        // check that the transaction entities were created
+        assert.fieldEquals("Transaction", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e", "id", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e")
+        assert.fieldEquals("Transaction", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e", "block_index", "1")
+        assert.fieldEquals("Transaction", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e", "block_number", "1")
+        assert.fieldEquals("Transaction", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e", "timestamp", "14210151600")
+
+        assert.fieldEquals("Transaction", "0x510e8308fe82836fd793336910ab01ff0242b240", "id", "0x510e8308fe82836fd793336910ab01ff0242b240")
+        assert.fieldEquals("Transaction", "0x510e8308fe82836fd793336910ab01ff0242b240", "block_index", "1")
+        assert.fieldEquals("Transaction", "0x510e8308fe82836fd793336910ab01ff0242b240", "block_number", "2")
+        assert.fieldEquals("Transaction", "0x510e8308fe82836fd793336910ab01ff0242b240", "timestamp", "14210151660")
     })
 })

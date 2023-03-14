@@ -1,5 +1,5 @@
 import { BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { CandleOneMinute, CandleFiveMinute, CandleFifteenMinute, CandleOneHour, CandleOneDay, Take } from "../../../generated/schema"
+import { CandleOneMinute, CandleFiveMinute, CandleFifteenMinute, CandleOneHour, CandleOneDay, Take } from "../../../generated/schema";
 
 export function updateCandles(entity: Take): void {
 

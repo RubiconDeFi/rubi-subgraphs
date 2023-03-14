@@ -1,5 +1,5 @@
+import { ethereum } from '@graphprotocol/graph-ts';
 import { Transaction } from "../../../generated/schema";
-import { ethereum } from '@graphprotocol/graph-ts'
 
 export function getTransaction(event: ethereum.Event): Transaction {
 
