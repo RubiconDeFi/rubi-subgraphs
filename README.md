@@ -3,8 +3,11 @@ Subgraphs for the Rubicon Protocol 🌏📖
 
 ## Development Status
 🔨 = In Progress.
+
 🛠️ = Complete. Additional testing required. 
+
 🦖 = Complete, with tests. 
+
 💀 = Soon to be deprecated.
 
 | Subgraph            | Status | Description                                                                                             |
@@ -15,7 +18,7 @@ Subgraphs for the Rubicon Protocol 🌏📖
 | Metrics             |   🔨   | a subgraph to track usage metrics of the Rubicon protocol                                               |
 | RubiconMarketLight  |   💀   | a subgraph that was used within the rubi-py sdk, soon to be replaced by RubiconV2                       |
 
-## Deployment Status
+## Deployments
 | Subgraph            | Network           | Endpoint                                                                                            |
 |---------------------|-------------------|-----------------------------------------------------------------------------------------------------|
 | RubiconV2           | `Arbitrum Goerli`   | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-goerli               |
