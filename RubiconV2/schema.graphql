@@ -53,6 +53,8 @@ type Offer @entity {
     paid_amt: BigInt!
     " the amount of the buy token that the maker has already bought "
     bought_amt: BigInt!
+    " the price of the offer as a ratio of pay_gem / buy_gem "
+    price: BigDecimal!
     " the status of the offer, is it live or not "
     open: Boolean!
     " the timestamp the offer was removed on "

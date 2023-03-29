@@ -1,6 +1,6 @@
 {
     "network" : "arbitrum-goerli",
-    "startBlock": 10000000,
-    "RubiconMarket-address" : "0xD07A15483EedF002eE1F16D0CA62b6488CF1fd0D", 
-    "RubiconRouter-address" : "0x237e9c663B7b61bceAD9503DD5770E8E07465471"
+    "startBlock": 12000000,
+    "RubiconMarket-address" : "0x506407f25B746C39807c03A96DD595a6BE223211", 
+    "RubiconRouter-address" : "0x3AbA34a8C9616eA927225C045EEa5d5b51a7a6FC"
 }

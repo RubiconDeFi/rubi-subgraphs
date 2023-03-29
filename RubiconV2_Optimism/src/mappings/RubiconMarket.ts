@@ -14,6 +14,9 @@ export function handleOffer(event: emitOffer): void {
     // load the maker entity (user)
     let maker = getUser(event.params.maker)
 
+    // calculate the price of the offer (pay_amt / buy_amt)
+    let price = event.params.pay_amt.toBigDecimal().div(event.params.buy_amt.toBigDecimal())
+
     // make the offer entity
     let offer = new Offer(event.params.id)
     offer.transaction = transaction.id
@@ -26,6 +29,7 @@ export function handleOffer(event: emitOffer): void {
     offer.buy_amt = event.params.buy_amt
     offer.paid_amt = ZERO_BI
     offer.bought_amt = ZERO_BI
+    offer.price = price
     offer.open = true
     offer.save()
 }
@@ -142,6 +146,9 @@ export function handleLogMake(event: LogMake): void {
     // load the maker entity (user)
     let maker = getUser(event.params.maker)
 
+    // calculate the price of the offer (pay_amt / buy_amt)
+    let price = event.params.pay_amt.toBigDecimal().div(event.params.buy_amt.toBigDecimal())
+
     // make the offer entity
     let offer = new Offer(event.params.id)
     offer.transaction = transaction.id
@@ -154,6 +161,7 @@ export function handleLogMake(event: LogMake): void {
     offer.buy_amt = event.params.buy_amt
     offer.paid_amt = ZERO_BI
     offer.bought_amt = ZERO_BI
+    offer.price = price
     offer.open = true
     offer.save()
 }

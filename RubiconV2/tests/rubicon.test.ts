@@ -30,7 +30,7 @@ describe("hello defi cowboy 🦖", () => {
         
         // handle the event
         handleOffer(offerOne)
-        
+
         // check that an offer entity was created
         assert.entityCount("Offer", 1)
 
@@ -43,6 +43,7 @@ describe("hello defi cowboy 🦖", () => {
         assert.fieldEquals("Offer", "0x01000000", "paid_amt", "0")
         assert.fieldEquals("Offer", "0x01000000", "bought_amt", "0")
         assert.fieldEquals("Offer", "0x01000000", "maker", "0xb0be5d911e3bd4ee2a8706cf1fac8d767a550497")
+        assert.fieldEquals("Offer", "0x01000000", "price", "0.1")
         // TODO: determine how to check the boolean value
         // assert.booleanEquals()
     })
