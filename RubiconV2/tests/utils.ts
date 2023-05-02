@@ -26,7 +26,7 @@ export function createEmitOffer(id: Bytes, pair: Bytes, maker: string, pay_gem: 
     return emitOfferEvent
 }
 
-export function createEmitTake(id: Bytes, pair: Bytes, taker: string, maker: string, pay_gem: string, buy_gem: string, take_amt: BigInt, give_amt: BigInt): emitTake {
+export function createEmitTake(id: Bytes, pair: Bytes, maker: string, taker: string, pay_gem: string, buy_gem: string, take_amt: BigInt, give_amt: BigInt): emitTake {
 
     let emitTakeEvent = changetype<emitTake>(newMockEvent())
     emitTakeEvent.parameters = new Array()
