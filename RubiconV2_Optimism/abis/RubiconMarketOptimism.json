@@ -380,13 +380,13 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "taker",
+        "name": "maker",
         "type": "address"
       },
       {
         "indexed": false,
         "internalType": "address",
-        "name": "maker",
+        "name": "taker",
         "type": "address"
       },
       {

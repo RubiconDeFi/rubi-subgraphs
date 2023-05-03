@@ -13,7 +13,7 @@ Subgraphs for the Rubicon Protocol 🌏📖
 | Subgraph            | Status | Description                                                                                             |
 |---------------------|--------|---------------------------------------------------------------------------------------------------------|
 | RubiconV2           |   🦖   | a subgraph to support the Rubicon application                                                           |
-| RubiconV2_Optimism  |   🛠️   | a subgraph to support the Rubicon application, with legacy events for the v1 protocol data on Optimism  |
+| RubiconV2_Optimism  |   🦖   | a subgraph to support the Rubicon application, with legacy events for the v1 protocol data on Optimism  |
 | MarketAid           |   🛠️   | a subgraph to support the tracking of asset balances on a market aid instance                           |
 | Metrics             |   🔨   | a subgraph to track usage metrics of the Rubicon protocol                                               |
 | RubiconMarketLight  |   💀   | a subgraph that was used within the rubi-py sdk, soon to be replaced by RubiconV2                       |
