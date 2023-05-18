@@ -1,11 +1,9 @@
 .DS_STORE
 node_modules/
 package-lock.json
-.wasm
+**/*.wasm
 build/
 generated/
 yarn.lock
-.wasm
-rubicon.wasm
-.bin
-.env
+**/.bin
+**/.env
