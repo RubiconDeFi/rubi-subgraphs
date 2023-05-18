@@ -17,9 +17,9 @@
         "create-local": "graph create --node http://localhost:8020/ RubiconV2",
         "remove-local": "graph remove --node http://localhost:8020/ RubiconV2",
         "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 RubiconV2",
-        "create:cloud:arbitrum:goerli": "dotenv -e .env -- graph create --node ${GRAPH_NODE_URL} RubiconV2_Arbitrum_Goerli",
-        "remove:cloud:arbitrum:goerli": "dotenv -e .env -- graph remove --node ${GRAPH_NODE_URL} RubiconV2_Arbitrum_Goerli",
-        "deploy:cloud:arbitrum:goerli": "dotenv -e .env -- graph deploy --node ${GRAPH_NODE_URL} --ipfs ${IPFS_URL} RubiconV2_Arbitrum_Goerli"
+        "create:cloud:arbitrum:goerli": "GRAPH_NODE_URL=$(grep GRAPH_NODE_URL .env | cut -d '=' -f2) && graph create --node ${GRAPH_NODE_URL} RubiconV2_Arbitrum_Goerli",
+        "remove:cloud:arbitrum:goerli": "GRAPH_NODE_URL=$(grep GRAPH_NODE_URL .env | cut -d '=' -f2) && graph remove --node ${GRAPH_NODE_URL} RubiconV2_Arbitrum_Goerli",
+        "deploy:cloud:arbitrum:goerli": "GRAPH_NODE_URL=$(grep GRAPH_NODE_URL .env | cut -d '=' -f2) && IPFS_URL=$(grep IPFS_URL .env | cut -d '=' -f2) && graph deploy --node ${GRAPH_NODE_URL} --ipfs ${IPFS_URL} RubiconV2_Arbitrum_Goerli"
     },
     "devDependencies": {
         "@graphprotocol/graph-cli": "^0.48.0",

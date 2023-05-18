@@ -14,9 +14,9 @@
         "create-local": "graph create --node http://localhost:8020/ RubiconV2_Optimism",
         "remove-local": "graph remove --node http://localhost:8020/ RubiconV2_Optimism",
         "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 RubiconV2_Optimism",
-        "create:cloud:optimism": "dotenv -e .env -- graph create --node ${GRAPH_NODE_URL} RubiconV2_Optimism_Mainnet",
-        "remove:cloud:optimism": "dotenv -e .env -- graph remove --node ${GRAPH_NODE_URL} RubiconV2_Optimism_Mainnet",
-        "deploy:cloud:optimism": "dotenv -e .env -- graph deploy --node ${GRAPH_NODE_URL} --ipfs ${IPFS_URL} RubiconV2_Optimism_Mainnet"
+        "create:cloud:optimism": "GRAPH_NODE_URL=$(grep GRAPH_NODE_URL .env | cut -d '=' -f2) && graph create --node ${GRAPH_NODE_URL} RubiconV2_Optimism_Mainnet",
+        "remove:cloud:optimism": "GRAPH_NODE_URL=$(grep GRAPH_NODE_URL .env | cut -d '=' -f2) && graph remove --node ${GRAPH_NODE_URL} RubiconV2_Optimism_Mainnet",
+        "deploy:cloud:optimism": "GRAPH_NODE_URL=$(grep GRAPH_NODE_URL .env | cut -d '=' -f2) && IPFS_URL=$(grep IPFS_URL .env | cut -d '=' -f2) && graph deploy --node ${GRAPH_NODE_URL} --ipfs ${IPFS_URL} RubiconV2_Optimism_Mainnet"
     },
     "devDependencies": {
         "@graphprotocol/graph-cli": "^0.48.0",
