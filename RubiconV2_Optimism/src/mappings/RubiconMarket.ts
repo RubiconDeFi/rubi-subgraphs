@@ -41,6 +41,7 @@ export function handleTake(event: emitTake): void {
 
     // get the taker entity (user)
     let taker = getUser(event.params.taker)
+    let from = getUser(event.transaction.from)
 
     // load the offer entity
     let offer = Offer.load(event.params.id)
@@ -66,6 +67,7 @@ export function handleTake(event: emitTake): void {
     take.timestamp = event.block.timestamp
     take.index = event.logIndex
     take.taker = taker.id
+    take.from = from.id
     take.offer = offer.id
     take.take_gem = offer.pay_gem
     take.give_gem = offer.buy_gem
@@ -173,6 +175,7 @@ export function handleLogTake(event: LogTake): void {
 
     // get the taker entity (user)
     let taker = getUser(event.params.taker)
+    let from = getUser(event.transaction.from)
 
     // load the offer entity
     let offer = Offer.load(event.params.id)
@@ -198,6 +201,7 @@ export function handleLogTake(event: LogTake): void {
     take.timestamp = event.block.timestamp
     take.index = event.logIndex
     take.taker = taker.id
+    take.from = from.id
     take.offer = offer.id
     take.take_gem = offer.pay_gem
     take.give_gem = offer.buy_gem

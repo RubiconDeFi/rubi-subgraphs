@@ -126,11 +126,13 @@ describe("hello defi cowboy 🦖", () => {
         // update take one event to use txn one, block one, and log one
         takeOne.block.number = BigInt.fromString("1")
         takeOne.transaction.hash = Address.fromString(TXN_ONE)
+        takeOne.transaction.from = Address.fromString(USER_TWO)
         takeOne.logIndex = BigInt.fromString("1")
 
         // update take two event to use txn two, block two, and log one
         logTakeOne.block.number = BigInt.fromString("2")
         logTakeOne.transaction.hash = Address.fromString(TXN_TWO)
+        logTakeOne.transaction.from = Address.fromString(USER_TWO)
         logTakeOne.logIndex = BigInt.fromString("2")
 
         // handle the events
@@ -146,6 +148,8 @@ describe("hello defi cowboy 🦖", () => {
         assert.fieldEquals("Take", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e01", "give_gem", "0x4200000000000000000000000000000000000006")
         assert.fieldEquals("Take", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e01", "take_amt", "10")
         assert.fieldEquals("Take", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e01", "give_amt", "100")
+        assert.fieldEquals("Take", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e01", "taker", USER_TWO.toLowerCase())
+        assert.fieldEquals("Take", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e01", "from", USER_TWO.toLowerCase())
 
         assert.fieldEquals("Take", "0x510e8308fe82836fd793336910ab01ff0242b24002", "id", "0x510e8308fe82836fd793336910ab01ff0242b24002")
         assert.fieldEquals("Take", "0x510e8308fe82836fd793336910ab01ff0242b24002", "offer", "0x02000000")
@@ -153,6 +157,8 @@ describe("hello defi cowboy 🦖", () => {
         assert.fieldEquals("Take", "0x510e8308fe82836fd793336910ab01ff0242b24002", "give_gem", "0x4200000000000000000000000000000000000006")
         assert.fieldEquals("Take", "0x510e8308fe82836fd793336910ab01ff0242b24002", "take_amt", "10")
         assert.fieldEquals("Take", "0x510e8308fe82836fd793336910ab01ff0242b24002", "give_amt", "100")
+        assert.fieldEquals("Take", "0x510e8308fe82836fd793336910ab01ff0242b24002", "taker", USER_TWO.toLowerCase())
+        assert.fieldEquals("Take", "0x510e8308fe82836fd793336910ab01ff0242b24002", "from", USER_TWO.toLowerCase())
 
         // check that the offer entity was updated
         assert.fieldEquals("Offer", "0x01000000", "paid_amt", "10")

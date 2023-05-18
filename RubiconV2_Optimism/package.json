@@ -1,5 +1,5 @@
 {
-    "name": "rubicon-v2",
+    "name": "rubicon-v2-optimism",
     "version": "0.1.0",
     "author": "denver",
     "scripts": {
@@ -11,13 +11,17 @@
         "build": "graph build",
         "deploy:optimism": "graph deploy --product hosted-service denverbaumgartner/rubiconv2-optimism-mainnet",
         "deploy:optimism:goerli": "graph deploy --product hosted-service denverbaumgartner/rubiconv2-optimism-goerli",
-        "create-local": "graph create --node http://localhost:8020/ RubiconV2",
-        "remove-local": "graph remove --node http://localhost:8020/ RubiconV2",
-        "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 RubiconV2"
+        "create-local": "graph create --node http://localhost:8020/ RubiconV2_Optimism",
+        "remove-local": "graph remove --node http://localhost:8020/ RubiconV2_Optimism",
+        "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 RubiconV2_Optimism",
+        "create:cloud:optimism": "dotenv -e .env -- graph create --node ${GRAPH_NODE_URL} RubiconV2_Optimism_Mainnet",
+        "remove:cloud:optimism": "dotenv -e .env -- graph remove --node ${GRAPH_NODE_URL} RubiconV2_Optimism_Mainnet",
+        "deploy:cloud:optimism": "dotenv -e .env -- graph deploy --node ${GRAPH_NODE_URL} --ipfs ${IPFS_URL} RubiconV2_Optimism_Mainnet"
     },
     "devDependencies": {
         "@graphprotocol/graph-cli": "^0.48.0",
         "@graphprotocol/graph-ts": "^0.29.3",
+        "dotenv": "^16.0.3",
         "matchstick-as": "^0.5.2",
         "mustache": "^3.1.0"
     }

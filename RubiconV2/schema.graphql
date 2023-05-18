@@ -74,6 +74,8 @@ type Take @entity {
     index: BigInt!
     " the user that took the offer "
     taker: User!
+    " the user that originated the transaction that the take was a part of "
+    from: User!
     " the offer that was taken "
     offer: Offer!
     " the pay token of the offer (the asset the maker is selling & the asset the taker is buying) "
@@ -252,3 +254,7 @@ type CandleOneDay @entity {
     " the ratio of token0 to token 1 at the low "
     low_ratio: BigDecimal!
 }
+
+
+
+

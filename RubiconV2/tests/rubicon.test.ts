@@ -76,6 +76,9 @@ describe("hello defi cowboy 🦖", () => {
             BigInt.fromI64(100) // give_amt (buy_amt)
         )
 
+        // update the take one event transaction from metadata
+        takeOne.transaction.from = Address.fromString(USER_TWO)
+
         // handle the event
         handleTake(takeOne)
 
@@ -86,6 +89,8 @@ describe("hello defi cowboy 🦖", () => {
         assert.fieldEquals("Take", "0xa16081f360e3847006db660bae1c6d1b2e17ec2a01000000", "give_gem", "0x4200000000000000000000000000000000000006")
         assert.fieldEquals("Take", "0xa16081f360e3847006db660bae1c6d1b2e17ec2a01000000", "take_amt", "10")
         assert.fieldEquals("Take", "0xa16081f360e3847006db660bae1c6d1b2e17ec2a01000000", "give_amt", "100")
+        assert.fieldEquals("Take", "0xa16081f360e3847006db660bae1c6d1b2e17ec2a01000000", "taker", USER_TWO.toLowerCase())
+        assert.fieldEquals("Take", "0xa16081f360e3847006db660bae1c6d1b2e17ec2a01000000", "from", USER_TWO.toLowerCase())
 
         // check that the offer entity was updated
         assert.fieldEquals("Offer", "0x01000000", "paid_amt", "10")

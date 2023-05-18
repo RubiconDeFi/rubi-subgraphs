@@ -8,3 +8,4 @@ yarn.lock
 .wasm
 rubicon.wasm
 .bin
+.env
