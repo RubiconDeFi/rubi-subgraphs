@@ -1,0 +1,210 @@
+specVersion: 0.0.5
+description: a subgraph to aid in tracking activity from MarketAid contracts
+repository: 
+schema: 
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: RubiconMarket
+    network: optimism
+    source: 
+      address: '0x7a512d3609211e719737E82c7bb7271eC05Da70d'
+      abi: RubiconMarket
+      startBlock: 76333420
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/RubiconMarket.ts
+      entities: 
+        - Offer
+        - Take
+      abis: 
+        - name: RubiconMarket
+          file: ./abis/Rubicon/RubiconMarket.json
+        - name: ERC20
+          file: ./abis/Ethereum/ERC20.json
+
+        ###########################################
+        ################ Gas Oracle ###############
+        ###########################################
+        - name: OVMOracle
+          file: ./abis/Optimism/OVMOracle.json
+
+        ###########################################
+        ############## Price Oracle ###############
+        ###########################################
+        # ERC20
+        - name: _ERC20
+          file: ./abis/Prices/ERC20.json
+        # Curve Contracts
+        - name: CurvePool
+          file: ./abis/Prices/Curve/Pool.json
+        - name: CurveRegistry
+          file: ./abis/Prices/Curve/Registry.json
+        - name: CalculationsCurve
+          file: ./abis/Prices/Calculations/Curve.json
+        # YearnLens Contracts
+        - name: YearnLensContract
+          file: ./abis/Prices/YearnLens.json
+        # Aave Oracle Contract
+        - name: AaveOracleContract
+          file: ./abis/Prices/AaveOracle.json
+        # SushiSwap Contracts
+        - name: CalculationsSushiSwap
+          file: ./abis/Prices/Calculations/SushiSwap.json
+        # ChainLink Contracts
+        - name: ChainLinkContract
+          file: ./abis/Prices/ChainLink.json
+        # Uniswap Contracts
+        - name: UniswapRouter
+          file: ./abis/Prices/Uniswap/Router.json
+        - name: UniswapFactory
+          file: ./abis/Prices/Uniswap/Factory.json
+        - name: UniswapPair
+          file: ./abis/Prices/Uniswap/Pair.json
+      eventHandlers: 
+      - event: LogMake(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
+        handler: handleLogMake
+        #receipt: true
+      - event: LogTake(bytes32,indexed bytes32,indexed address,address,address,indexed address,uint128,uint128,uint64)
+        handler: handleLogTake
+        #receipt: true
+      - event: LogKill(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
+        handler: handleLogKill
+        #receipt: true
+      - event: OfferDeleted(indexed bytes32)
+        handler: handleOfferDeleted 
+        #receipt: true
+      - event: FeeTake(indexed bytes32,indexed bytes32,address,indexed address,address,uint256,uint64)
+        handler: handleFeeTake
+        ##receipt: true
+
+  - kind: ethereum/contract
+    name: MarketAidFactory
+    network: optimism
+    source: 
+      address: '0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7'
+      abi: MarketAidFactory
+      startBlock: 76333420
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/MarketAidFactory.ts
+      entities: 
+        - MarketAid
+      abis: 
+        - name: MarketAidFactory
+          file: ./abis/Rubicon/MarketAidFactory.json
+        - name: ERC20
+          file: ./abis/Ethereum/ERC20.json
+
+        ###########################################
+        ################ Gas Oracle ###############
+        ###########################################
+        - name: OVMOracle
+          file: ./abis/Optimism/OVMOracle.json
+
+        ###########################################
+        ############## Price Oracle ###############
+        ###########################################
+        # ERC20
+        - name: _ERC20
+          file: ./abis/Prices/ERC20.json
+        # Curve Contracts
+        - name: CurvePool
+          file: ./abis/Prices/Curve/Pool.json
+        - name: CurveRegistry
+          file: ./abis/Prices/Curve/Registry.json
+        - name: CalculationsCurve
+          file: ./abis/Prices/Calculations/Curve.json
+        # YearnLens Contracts
+        - name: YearnLensContract
+          file: ./abis/Prices/YearnLens.json
+        # Aave Oracle Contract
+        - name: AaveOracleContract
+          file: ./abis/Prices/AaveOracle.json
+        # SushiSwap Contracts
+        - name: CalculationsSushiSwap
+          file: ./abis/Prices/Calculations/SushiSwap.json
+        # ChainLink Contracts
+        - name: ChainLinkContract
+          file: ./abis/Prices/ChainLink.json
+        # Uniswap Contracts
+        - name: UniswapRouter
+          file: ./abis/Prices/Uniswap/Router.json
+        - name: UniswapFactory
+          file: ./abis/Prices/Uniswap/Factory.json
+        - name: UniswapPair
+          file: ./abis/Prices/Uniswap/Pair.json
+
+      eventHandlers: 
+        - event: NotifyMarketAidSpawn(address)
+          handler: handleNotifyMarketAidSpawn
+          ##receipt: true
+templates: 
+  - kind: ethereum/contract
+    name: MarketAid
+    network: optimism
+    source:
+      abi: MarketAid
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/MarketAid.ts
+      entities: 
+        - MarketAid
+      abis:
+        - name: MarketAid
+          file: ./abis/Rubicon/MarketAid.json
+        - name: ERC20
+          file: ./abis/Ethereum/ERC20.json
+
+        ###########################################
+        ################ Gas Oracle ###############
+        ###########################################
+        - name: OVMOracle
+          file: ./abis/Optimism/OVMOracle.json
+
+        ###########################################
+        ############## Price Oracle ###############
+        ###########################################
+        # ERC20
+        - name: _ERC20
+          file: ./abis/Prices/ERC20.json
+        # Curve Contracts
+        - name: CurvePool
+          file: ./abis/Prices/Curve/Pool.json
+        - name: CurveRegistry
+          file: ./abis/Prices/Curve/Registry.json
+        - name: CalculationsCurve
+          file: ./abis/Prices/Calculations/Curve.json
+        # YearnLens Contracts
+        - name: YearnLensContract
+          file: ./abis/Prices/YearnLens.json
+        # Aave Oracle Contract
+        - name: AaveOracleContract
+          file: ./abis/Prices/AaveOracle.json
+        # SushiSwap Contracts
+        - name: CalculationsSushiSwap
+          file: ./abis/Prices/Calculations/SushiSwap.json
+        # ChainLink Contracts
+        - name: ChainLinkContract
+          file: ./abis/Prices/ChainLink.json
+        # Uniswap Contracts
+        - name: UniswapRouter
+          file: ./abis/Prices/Uniswap/Router.json
+        - name: UniswapFactory
+          file: ./abis/Prices/Uniswap/Factory.json
+        - name: UniswapPair
+          file: ./abis/Prices/Uniswap/Pair.json
+
+      eventHandlers:
+        - event: LogBookUpdate(address,address,int256,uint256)
+          handler: handleLogBookUpdate
+        - event: LogAtomicArbitrage(indexed address,indexed address,indexed address,uint256,uint256,uint24,bool,uint256)
+          handler: handleLogArb
+        - event: LogExternalSwap(indexed address,indexed address,indexed address,uint256,uint256,address)
+          handler: handleLogExternalSwap

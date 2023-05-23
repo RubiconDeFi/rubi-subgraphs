@@ -52,12 +52,18 @@ type Transaction @entity {
     block: BigInt!
     " the index of the transaction in the block "
     index: BigInt!
+    " transaction hash as a hex string "
+    txn: String!
     " the timestamp of the transaction "
     timestamp: BigInt!
     " map to the transaction caller "
     from: Bytes!
     " if the transaction originated from a market aid contract, map to the market aid entity "
     aid: Aid
+    " the price of eth at the time of the transaction :check:"
+    eth_price: BigDecimal!
+    " the source of the price data "
+    price_source: String!
     " mapp to the entities "
     offers: [Offer!]! @derivedFrom(field: "transaction")
     takes: [Take!]! @derivedFrom(field: "transaction")
@@ -198,3 +204,7 @@ type Token @entity {
     " decimals of the token "
     decimals: BigInt!
 }
+
+
+
+
