@@ -21,7 +21,7 @@ dataSources:
         - Take
       abis: 
         - name: RubiconMarket
-          file: ./abis/Rubicon/RubiconMarket.json
+          file: ./abis/Rubicon/RubiconMarketOptimism.json
         - name: ERC20
           file: ./abis/Ethereum/ERC20.json
 
@@ -64,21 +64,38 @@ dataSources:
         - name: UniswapPair
           file: ./abis/Prices/Uniswap/Pair.json
       eventHandlers: 
-      - event: LogMake(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
-        handler: handleLogMake
-        receipt: true
-      - event: LogTake(bytes32,indexed bytes32,indexed address,address,address,indexed address,uint128,uint128,uint64)
-        handler: handleLogTake
-        receipt: true
-      - event: LogKill(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
-        handler: handleLogKill
-        receipt: true
-      - event: OfferDeleted(indexed bytes32)
-        handler: handleOfferDeleted 
-        receipt: true
-      - event: FeeTake(indexed bytes32,indexed bytes32,address,indexed address,address,uint256,uint64)
-        handler: handleFeeTake
-        receipt: true
+        - event: emitOffer(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128)
+          handler: handleOffer
+          receipt: true
+        - event: emitTake(indexed bytes32,indexed bytes32,indexed address,address,address,address,uint128,uint128)
+          handler: handleTake
+          receipt: true
+        - event: emitCancel(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128)
+          handler: handleCancel
+          receipt: true
+        - event: emitFee(indexed bytes32,indexed address,indexed address,bytes32,address,uint256)
+          handler: handleFee
+          receipt: true
+        - event: emitDelete(indexed bytes32,indexed bytes32,indexed address)
+          handler: handleDelete
+          receipt: true
+
+        # these are events from the v1 protocol stack, and are included to ensure data congruity 
+        - event: LogMake(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
+          handler: handleLogMake
+          receipt: true
+        - event: LogTake(bytes32,indexed bytes32,indexed address,address,address,indexed address,uint128,uint128,uint64)
+          handler: handleLogTake
+          receipt: true
+        - event: LogKill(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128,uint64)
+          handler: handleLogKill
+          receipt: true
+        - event: OfferDeleted(indexed bytes32)
+          handler: handleOfferDeleted 
+          receipt: true
+        - event: FeeTake(indexed bytes32,indexed bytes32,address,indexed address,address,uint256,uint64)
+          handler: handleFeeTake
+          receipt: true
 
   - kind: ethereum/contract
     name: MarketAidFactory

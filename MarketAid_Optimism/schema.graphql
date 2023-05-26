@@ -33,6 +33,8 @@ type AidTokenHistory @entity {
     aid: Aid!
     " the market aid token entity that this token balance history belongs to "
     aid_token: AidToken!
+    " the token entity of the asset "
+    token: Token!
     " the amount of the asset that the market aid contract holds, after the change "
     balance: BigInt!
     " the net change in the amount of the asset that the market aid contract has "

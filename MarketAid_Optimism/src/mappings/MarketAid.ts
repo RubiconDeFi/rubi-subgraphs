@@ -41,6 +41,7 @@ export function handleLogBookUpdate(event: LogBookUpdate): void {
         aidHistory.timestamp = event.block.timestamp
         aidHistory.aid = aid.id
         aidHistory.aid_token = aidToken.id
+        aidHistory.token = token.id
         aidHistory.balance = aidToken.balance
         aidHistory.balance_change = event.params.amountChanged
         aidHistory.transaction = transaction.id
@@ -133,6 +134,7 @@ export function handleLogExternalSwap(event: LogExternalSwap): void {
             assetSoldHistory.timestamp = event.block.timestamp
             assetSoldHistory.aid = aid.id
             assetSoldHistory.aid_token = assetSold.id
+            assetSoldHistory.token = tokenSold.id
             assetSoldHistory.balance = assetSold.balance
             assetSoldHistory.balance_change = ZERO_BI.minus(event.params.amountSold)
             assetSoldHistory.transaction = transaction.id
@@ -163,6 +165,7 @@ export function handleLogExternalSwap(event: LogExternalSwap): void {
             assetReceivedHistory.timestamp = event.block.timestamp
             assetReceivedHistory.aid = aid.id
             assetReceivedHistory.aid_token = assetReceived.id
+            assetReceivedHistory.token = tokenReceived.id
             assetReceivedHistory.balance = assetReceived.balance
             assetReceivedHistory.balance_change = event.params.amountReceived
             assetReceivedHistory.transaction = transaction.id
