@@ -10,7 +10,7 @@ dataSources:
     source: 
       address: '0xD07A15483EedF002eE1F16D0CA62b6488CF1fd0D'
       abi: RubiconMarket
-      startBlock: 10069350
+      startBlock: 19241461
     mapping: 
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -54,7 +54,7 @@ dataSources:
     source: 
       address: '0x237e9c663B7b61bceAD9503DD5770E8E07465471'
       abi: RubiconRouter
-      startBlock: 10069350
+      startBlock: 19241461
     mapping: 
       kind: ethereum/events
       apiVersion: 0.0.7
