@@ -63,6 +63,7 @@ export function getToken(tokenAddress: Address): Token {
 
     if (!token) {
         token = new Token(tokenAddress)
+        token.address = tokenAddress.toHexString()
         token.symbol = fetchTokenSymbol(tokenAddress)
         token.name = fetchTokenName(tokenAddress)
         token.decimals = fetchTokenDecimal(tokenAddress)
