@@ -1,4 +1,4 @@
-type Transaction @entity {
+type Transaction @entity(immutable: true) {
     " the transaction hash "
     id: Bytes!
     " the transaction timestamp "
@@ -15,7 +15,7 @@ type Transaction @entity {
     swaps: [Swap!]! @derivedFrom(field: "transaction")
 }
 
-type User @entity {
+type User @entity(immutable: true) {
     " the user address "
     id: Bytes!
     " map to all offers the user has created "
@@ -30,6 +30,19 @@ type User @entity {
     fees_received: [Fee!]! @derivedFrom(field: "recipient")
 }
 
+type Token @entity(immutable: true) {
+    " token address "
+    id: Bytes!
+    " token address "
+    address: String!
+    " token decimals (possibly null to account for edge cases) "
+    decimals: BigInt
+    " token symbol (possibly null to account for edge cases) "
+    symbol: String
+    " token name (possibly null to account for edge cases) "
+    name: String
+}
+
 type Offer @entity {
     " the offer id "
     id: Bytes!
@@ -42,9 +55,9 @@ type Offer @entity {
     " the maker of the offer "
     maker: User!
     " the pay token of the offer (the asset the maker is selling) "
-    pay_gem: Bytes!
+    pay_gem: Token!
     " the buy token of the offer (the asset the maker is buying) "
-    buy_gem: Bytes!
+    buy_gem: Token!
     " the amount of pay token the maker is selling "
     pay_amt: BigInt!
     " the amount of buy token the maker is buying "
@@ -63,7 +76,7 @@ type Offer @entity {
     removed_block: BigInt
 }
 
-type Take @entity {
+type Take @entity(immutable: true) {
     " the transaction hash and log index of the take "
     id: Bytes!
     " the transaction that the take was a part of "
@@ -88,7 +101,7 @@ type Take @entity {
     give_amt: BigInt!
 }
 
-type Swap @entity {
+type Swap @entity(immutable: true) {
     " the transaction hash and log index of the swap "
     id: Bytes!
     " the transaction that the swap was a part of "
@@ -109,7 +122,7 @@ type Swap @entity {
     output_amt: BigInt!
 }
 
-type Fee @entity {
+type Fee @entity(immutable: true) {
     " the transaction hash and log index of the fee "
     id: Bytes!
     " the transaction that the fee was a part of "
@@ -254,6 +267,9 @@ type CandleOneDay @entity {
     " the ratio of token0 to token 1 at the low "
     low_ratio: BigDecimal!
 }
+
+
+
 
 
 

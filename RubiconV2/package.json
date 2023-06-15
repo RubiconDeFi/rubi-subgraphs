@@ -23,7 +23,12 @@
         "deploy:cloud:arbitrum:goerli": "GRAPH_NODE_URL=$(grep GRAPH_NODE_URL .env | cut -d '=' -f2) && IPFS_URL=$(grep IPFS_URL .env | cut -d '=' -f2) && graph deploy --node ${GRAPH_NODE_URL} --ipfs ${IPFS_URL} RubiconV2_Arbitrum_Goerli",
         "create:cloud:arbitrum": "source ../.env && graph create --node $GRAPH_NODE_URL RubiconV2_Arbitrum_One",
         "remove:cloud:arbitrum": "source ../.env && graph remove --node $GRAPH_NODE_URL RubiconV2_Arbitrum_One",
-        "deploy:cloud:arbitrum": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL RubiconV2_Arbitrum_One"
+        "deploy:cloud:arbitrum": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL RubiconV2_Arbitrum_One",
+
+        "create:cloud:arbitrum:goerli:test": "GRAPH_NODE_URL=$(grep GRAPH_NODE_URL .env | cut -d '=' -f2) && graph create --node ${GRAPH_NODE_URL} RubiconV2_Arbitrum_Goerli_Test",
+        "remove:cloud:arbitrum:goerli:test": "GRAPH_NODE_URL=$(grep GRAPH_NODE_URL .env | cut -d '=' -f2) && graph remove --node ${GRAPH_NODE_URL} RubiconV2_Arbitrum_Goerli_Test",
+        "deploy:cloud:arbitrum:goerli:test": "GRAPH_NODE_URL=$(grep GRAPH_NODE_URL .env | cut -d '=' -f2) && IPFS_URL=$(grep IPFS_URL .env | cut -d '=' -f2) && graph deploy --node ${GRAPH_NODE_URL} --ipfs ${IPFS_URL} RubiconV2_Arbitrum_Goerli_Test",
+        "deploy:arbitrum:goerli:hosted:test": "graph deploy --product hosted-service denverbaumgartner/arb-goerli-test"
     },
     "devDependencies": {
         "@graphprotocol/graph-cli": "^0.48.0",

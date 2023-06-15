@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: RubiconMarket
-    network: arbitrum
+    network: arbitrum-goerli
     source: 
-      address: '0xC715a30FDe987637A082Cf5F19C74648b67f2db8'
+      address: '0xD07A15483EedF002eE1F16D0CA62b6488CF1fd0D'
       abi: RubiconMarket
-      startBlock: 99504000
+      startBlock: 10069350
     mapping: 
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -31,6 +31,12 @@ dataSources:
       abis:
         - name: RubiconMarket
           file: ./abis/RubiconMarket.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
       eventHandlers: 
         - event: emitOffer(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128)
           handler: handleOffer
@@ -44,11 +50,11 @@ dataSources:
           handler: handleDelete
   - kind: ethereum/contract
     name: RubiconRouter
-    network: arbitrum
+    network: arbitrum-goerli
     source: 
-      address: '0x7B24e6F4Dd84674696c2a5809c24154EC6AC7F03'
+      address: '0x237e9c663B7b61bceAD9503DD5770E8E07465471'
       abi: RubiconRouter
-      startBlock: 99504000
+      startBlock: 10069350
     mapping: 
       kind: ethereum/events
       apiVersion: 0.0.7

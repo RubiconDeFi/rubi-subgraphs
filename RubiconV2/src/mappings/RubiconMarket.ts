@@ -3,6 +3,7 @@ import { Bytes } from "@graphprotocol/graph-ts";
 import { getUser } from "../utils/entities/user";
 import { updateCandles } from "../utils/entities/candles";
 import { getTransaction } from "../utils/entities/transaction";
+import { getToken } from "../utils/entities/token";
 import { Offer, Take, Fee } from "../../generated/schema";
 import { emitOffer, emitTake, emitCancel, emitFee, emitDelete } from '../../generated/RubiconMarket/RubiconMarket';
 
@@ -14,6 +15,10 @@ export function handleOffer(event: emitOffer): void {
     // load the maker entity (user)
     let maker = getUser(event.params.maker)
 
+    // get the token entities 
+    let pay_gem = getToken(event.params.pay_gem)
+    let buy_gem = getToken(event.params.buy_gem)
+
     // calculate the price of the offer (pay_amt / buy_amt)
     let price = event.params.pay_amt.toBigDecimal().div(event.params.buy_amt.toBigDecimal())
 
@@ -23,8 +28,8 @@ export function handleOffer(event: emitOffer): void {
     offer.timestamp = event.block.timestamp
     offer.index = event.logIndex
     offer.maker = maker.id
-    offer.pay_gem = event.params.pay_gem
-    offer.buy_gem = event.params.buy_gem
+    offer.pay_gem = pay_gem.id
+    offer.buy_gem = buy_gem.id
     offer.pay_amt = event.params.pay_amt
     offer.buy_amt = event.params.buy_amt
     offer.paid_amt = ZERO_BI
