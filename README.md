@@ -19,8 +19,8 @@ Subgraphs for the Rubicon Protocol 🌏📖
 | RubiconMarketLight  |   💀   | a subgraph that was used within the rubi-py sdk, soon to be replaced by RubiconV2                       |
 
 ## Deployments
-| Subgraph            | Network           | Endpoint                                                                                            |
-|---------------------|-------------------|-----------------------------------------------------------------------------------------------------|
+| Subgraph            | Network             | Endpoint                                                                                            |
+|---------------------|---------------------|-----------------------------------------------------------------------------------------------------|
 | RubiconV2_Optimism  | `Optimism Mainnet`  | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-mainnet              |
 | RubiconV2_Optimism  | `Optimism Goerli`   | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-goerli               |
 | RubiconV2           | `Arbitrum One`      | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-one                  |
