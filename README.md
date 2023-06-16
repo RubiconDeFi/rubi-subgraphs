@@ -21,9 +21,11 @@ Subgraphs for the Rubicon Protocol 🌏📖
 ## Deployments
 | Subgraph            | Network           | Endpoint                                                                                            |
 |---------------------|-------------------|-----------------------------------------------------------------------------------------------------|
-| RubiconV2           | `Arbitrum Goerli`   | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-goerli               |
 | RubiconV2_Optimism  | `Optimism Mainnet`  | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-mainnet              |
 | RubiconV2_Optimism  | `Optimism Goerli`   | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-goerli               |
+| RubiconV2           | `Arbitrum One`      | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-one                  |
+| RubiconV2           | `Arbitrum Goerli`   | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-goerli               |
+| RubiconV2           | `Polygon Mumbai`    | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-polygon-mumbai                |
 | MarketAid           | `Optimism Mainnet`  | https://api.thegraph.com/subgraphs/name/denverbaumgartner/optimismmarketaid                       |
 | MarketAid           | `Optimism Goerli`   | https://api.thegraph.com/subgraphs/name/denverbaumgartner/optimismgoerlimarketaid                 |
 | Metrics             | `Optimism Mainnet`  | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconmetricsoptimism                  |
