@@ -1,0 +1,25 @@
+type Comptroller @entity {
+    " ID is set to 1 "
+    id: Bytes!
+    " address of the price oracle being used "
+    oracle: Bytes!
+    " the factor used to determine the repayAmount for liquidating "
+    closeFactor: BigInt!
+    " the percent bonus liquidators receive on a liquidation "
+    liquidationIncentive: BigInt!
+}
+
+type CToken @entity {
+    " the borrow rate of the cToken "
+    " borrowRate: BigDecimal!  // TODO: determine if this is needed - it appears like it will require a full archival node to calculate given the possibility of different interest rate models. although we could probably build modules to solve for this given a set interest rate model "
+    " the contract balance of the underlying ERC20 "
+    cash: BigInt! " if we are using an archive node we can set this to a BigDecimal instead "
+    " the total amount of the underlying that is currently borrowed "
+    totalBorrows: BigInt! " if we are using an archive node we can set this to a BigDecimal instead "
+    " the total amount of the reserves that have been accumulated "
+    totalReserves: BigInt! " if we are using an archive node we can set this to a BigDecimal instead "
+    " the total supply of the cToken itself "
+    totalSupply: BigInt! " if we are using an archive node we can set this to a BigDecimal instead "
+    " the current exchange rate from the underlying to the cToken "
+    exchangeRate: BigDecimal! " note that this is a BigDecimal because it is a ratio of two Bigints and will need to be divided by the difference in decimals between the underlying and the cToken "
+}

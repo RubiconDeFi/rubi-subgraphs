@@ -1,0 +1,1 @@
+import { newMockEvent } from "matchstick-as/assembly/index"

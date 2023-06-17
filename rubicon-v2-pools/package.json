@@ -1,0 +1,27 @@
+{
+    "name": "rubicon-v2-pools",
+    "version": "0.1.0",
+    "author": "denver",
+    "scripts": {
+        "test": "graph test",
+        "coverage": "graph test -- -c",
+        "prepare:arbitrum": "mustache config/arbitrum.json subgraph.template.yaml > subgraph.yaml",
+        "prepare:arbitrum:goerli": "mustache config/arbitrum_goerli.json subgraph.template.yaml > subgraph.yaml",
+        "prepare:polygon:mumbai": "mustache config/polygon_mumbai.json subgraph.template.yaml > subgraph.yaml",
+        "prepare:base:goerli": "mustache config/base_goerli.json subgraph.template.yaml > subgraph.yaml",
+
+        "codegen": "graph codegen",
+        "build": "graph build",
+
+        "create-local": "graph create --node http://localhost:8020/ rubicon-v2-pools",
+        "remove-local": "graph remove --node http://localhost:8020/ rubicon-v2-pools",
+        "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 rubicon-v2-pools"
+    },
+    "devDependencies": {
+        "@graphprotocol/graph-cli": "^0.48.0",
+        "@graphprotocol/graph-ts": "^0.29.3",
+        "dotenv": "^16.0.3",
+        "matchstick-as": "^0.5.2",
+        "mustache": "^3.1.0"
+    }
+}

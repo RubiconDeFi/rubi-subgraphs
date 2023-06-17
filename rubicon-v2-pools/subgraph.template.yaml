@@ -1,0 +1,29 @@
+// events to be used 
+
+Entity: Comptorller
+event NewPriceOracle
+event NewCloseFactor
+event NewLiquidationIncentive
+
+Entity: CToken
+event Mint(address minter, uint mintAmount, uint mintTokens); - mintAmount is the amount of the underlying being deposited & mintTokens is the amount of the cToken being minted
+event Transfer(address indexed from, address indexed to, uint amount); - this should be used to track all cToken transfers, however we may just handle this at the mint/redeem level because we are having to utilize that to track the underlying balances
+
+event AccrueInterest(uint cashPrior, uint interestAccumulated, uint borrowIndex, uint totalBorrows); - totalBorrows is incremented here with the updated interest that has been accrued 
+    - totalReservesNew = interestAccumulated * reserveFactor + totalReserves
+    // one thing i am unclear about here is why the events ReservesAdded & ReservesReduced are not utilized here?
+event NewReserveFactor(uint oldReserveFactorMantissa, uint newReserveFactorMantissa);
+
+event ReservesAdded(address benefactor, uint addAmount, uint newTotalReserves);
+event ReservesReduced(address admin, uint reduceAmount, uint newTotalReserves);
+
+
+
+
+
+
+// when does totalReserves get updated?
+- any time accrueInterest() is called 
+- any time seizeInternal() is called
+- any time _addReservesFresh() is called
+- any time _reduceReservesFresh() is called
