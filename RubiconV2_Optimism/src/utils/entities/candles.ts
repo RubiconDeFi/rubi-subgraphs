@@ -1,7 +1,12 @@
-import { BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { getToken } from "./token";
+import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { CandleOneMinute, CandleFiveMinute, CandleFifteenMinute, CandleOneHour, CandleOneDay, Take } from "../../../generated/schema"
 
 export function updateCandles(entity: Take): void {
+
+    // load the token entities 
+    let token_zero = entity.take_gem.toHexString() < entity.give_gem.toHexString() ? getToken(Address.fromBytes(entity.take_gem)) : getToken(Address.fromBytes(entity.give_gem))
+    let token_one = entity.take_gem.toHexString() > entity.give_gem.toHexString() ? getToken(Address.fromBytes(entity.take_gem)) : getToken(Address.fromBytes(entity.give_gem))
 
     // token0 = lower alphabetically token
     let token0 = entity.take_gem.toHexString() < entity.give_gem.toHexString() ? entity.take_gem : entity.give_gem
@@ -41,8 +46,8 @@ export function updateCandles(entity: Take): void {
 
     if (candle_one_minute == null) {
         candle_one_minute = new CandleOneMinute(candle_one_minute_id)
-        candle_one_minute.token0 = token0
-        candle_one_minute.token1 = token1
+        candle_one_minute.token0 = token_zero.id
+        candle_one_minute.token1 = token_one.id
         candle_one_minute.open_timestamp = entity.timestamp
         candle_one_minute.close_timestamp = entity.timestamp
         candle_one_minute.open = entity.id
@@ -68,8 +73,8 @@ export function updateCandles(entity: Take): void {
 
     if (candle_five_minute == null) {
         candle_five_minute = new CandleFiveMinute(candle_five_minute_id)
-        candle_five_minute.token0 = token0
-        candle_five_minute.token1 = token1
+        candle_five_minute.token0 = token_zero.id
+        candle_five_minute.token1 = token_one.id
         candle_five_minute.open_timestamp = entity.timestamp
         candle_five_minute.close_timestamp = entity.timestamp
         candle_five_minute.open = entity.id
@@ -95,8 +100,8 @@ export function updateCandles(entity: Take): void {
 
     if (candle_fifteen_minute == null) {
         candle_fifteen_minute = new CandleFifteenMinute(candle_fifteen_minute_id)
-        candle_fifteen_minute.token0 = token0
-        candle_fifteen_minute.token1 = token1
+        candle_fifteen_minute.token0 = token_zero.id
+        candle_fifteen_minute.token1 = token_one.id
         candle_fifteen_minute.open_timestamp = entity.timestamp
         candle_fifteen_minute.close_timestamp = entity.timestamp
         candle_fifteen_minute.open = entity.id
@@ -122,8 +127,8 @@ export function updateCandles(entity: Take): void {
 
     if (candle_one_hour == null) {
         candle_one_hour = new CandleOneHour(candle_one_hour_id)
-        candle_one_hour.token0 = token0
-        candle_one_hour.token1 = token1
+        candle_one_hour.token0 = token_zero.id
+        candle_one_hour.token1 = token_one.id
         candle_one_hour.open_timestamp = entity.timestamp
         candle_one_hour.close_timestamp = entity.timestamp
         candle_one_hour.open = entity.id
@@ -149,8 +154,8 @@ export function updateCandles(entity: Take): void {
 
     if (candle_one_day == null) {
         candle_one_day = new CandleOneDay(candle_one_day_id)
-        candle_one_day.token0 = token0
-        candle_one_day.token1 = token1
+        candle_one_day.token0 = token_zero.id
+        candle_one_day.token1 = token_one.id
         candle_one_day.open_timestamp = entity.timestamp
         candle_one_day.close_timestamp = entity.timestamp
         candle_one_day.open = entity.id

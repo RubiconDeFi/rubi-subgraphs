@@ -1,5 +1,5 @@
 {
-    "name": "rubicon-v2-optimism",
+    "name": "rubicon-v2-detailed-optimism",
     "version": "0.1.0",
     "author": "denver",
     "scripts": {
@@ -11,6 +11,7 @@
         "build": "graph build",
         "deploy:optimism": "graph deploy --product hosted-service denverbaumgartner/rubiconv2-optimism-mainnet",
         "deploy:optimism:goerli": "graph deploy --product hosted-service denverbaumgartner/rubiconv2-optimism-goerli",
+        "deploy:detailed:optimism": "graph deploy --product hosted-service denverbaumgartner/rubiconv2-detailed-optimism",
         "create-local": "graph create --node http://localhost:8020/ RubiconV2_Optimism",
         "remove-local": "graph remove --node http://localhost:8020/ RubiconV2_Optimism",
         "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 RubiconV2_Optimism",

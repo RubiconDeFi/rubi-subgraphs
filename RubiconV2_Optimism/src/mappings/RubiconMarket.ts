@@ -1,5 +1,6 @@
 import { Bytes, ethereum } from "@graphprotocol/graph-ts"
 import { getUser } from "../utils/entities/user"
+import { getToken } from "../utils/entities/token";
 import { updateCandles } from "../utils/entities/candles"
 import { getTransaction } from "../utils/entities/transaction"
 import { Offer, Take, Fee } from "../../generated/schema"
@@ -14,6 +15,10 @@ export function handleOffer(event: emitOffer): void {
     // load the maker entity (user)
     let maker = getUser(event.params.maker)
 
+    // get the token entities 
+    let pay_gem = getToken(event.params.pay_gem)
+    let buy_gem = getToken(event.params.buy_gem)
+
     // calculate the price of the offer (pay_amt / buy_amt)
     let price = event.params.pay_amt.toBigDecimal().div(event.params.buy_amt.toBigDecimal())
 
@@ -23,8 +28,8 @@ export function handleOffer(event: emitOffer): void {
     offer.timestamp = event.block.timestamp
     offer.index = event.logIndex
     offer.maker = maker.id
-    offer.pay_gem = event.params.pay_gem
-    offer.buy_gem = event.params.buy_gem
+    offer.pay_gem = pay_gem.id
+    offer.buy_gem = buy_gem.id
     offer.pay_amt = event.params.pay_amt
     offer.buy_amt = event.params.buy_amt
     offer.paid_amt = ZERO_BI
@@ -42,6 +47,10 @@ export function handleTake(event: emitTake): void {
     // get the taker entity (user)
     let taker = getUser(event.params.taker)
     let from = getUser(event.transaction.from)
+
+    // get the token entities 
+    let take_gem = getToken(event.params.pay_gem)
+    let give_gem = getToken(event.params.buy_gem)
 
     // load the offer entity
     let offer = Offer.load(event.params.id)
@@ -69,8 +78,8 @@ export function handleTake(event: emitTake): void {
     take.taker = taker.id
     take.from = from.id
     take.offer = offer.id
-    take.take_gem = offer.pay_gem
-    take.give_gem = offer.buy_gem
+    take.take_gem = take_gem.id
+    take.give_gem = give_gem.id
     take.take_amt = event.params.take_amt
     take.give_amt = event.params.give_amt
     take.save()
@@ -105,6 +114,9 @@ export function handleFee(event: emitFee): void {
     // load the fee recipient entity
     let recipient = getUser(event.params.feeTo)
 
+    // load the token entities
+    let fee_gem = getToken(event.params.asset)
+
     // load the offer entity
     let offer = Offer.load(event.params.id)
     if (!offer) {
@@ -119,7 +131,7 @@ export function handleFee(event: emitFee): void {
     fee.user = user.id
     fee.recipient = recipient.id
     fee.offer = offer.id
-    fee.fee_gem = event.params.asset
+    fee.fee_gem = fee_gem.id
     fee.fee_amt = event.params.feeAmt
     fee.save()
 }
@@ -148,6 +160,10 @@ export function handleLogMake(event: LogMake): void {
     // load the maker entity (user)
     let maker = getUser(event.params.maker)
 
+    // get the token entities 
+    let pay_gem = getToken(event.params.pay_gem)
+    let buy_gem = getToken(event.params.buy_gem)
+
     // calculate the price of the offer (pay_amt / buy_amt)
     let price = event.params.pay_amt.toBigDecimal().div(event.params.buy_amt.toBigDecimal())
 
@@ -157,8 +173,8 @@ export function handleLogMake(event: LogMake): void {
     offer.timestamp = event.block.timestamp
     offer.index = event.logIndex
     offer.maker = maker.id
-    offer.pay_gem = event.params.pay_gem
-    offer.buy_gem = event.params.buy_gem
+    offer.pay_gem = pay_gem.id
+    offer.buy_gem = buy_gem.id
     offer.pay_amt = event.params.pay_amt
     offer.buy_amt = event.params.buy_amt
     offer.paid_amt = ZERO_BI
@@ -239,6 +255,9 @@ export function handleFeeTake(event: FeeTake): void {
     // load the fee recipient entity
     let recipient = getUser(event.params.feeTo)
 
+    // load the token entities
+    let fee_gem = getToken(event.params.asset)
+
     // load the offer entity
     let offer = Offer.load(event.params.id)
     if (!offer) {
@@ -253,7 +272,7 @@ export function handleFeeTake(event: FeeTake): void {
     fee.user = user.id
     fee.recipient = recipient.id
     fee.offer = offer.id
-    fee.fee_gem = event.params.asset
+    fee.fee_gem = fee_gem.id
     fee.fee_amt = event.params.feeAmt
     fee.save()
 }

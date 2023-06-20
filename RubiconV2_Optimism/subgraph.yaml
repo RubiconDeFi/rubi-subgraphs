@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: RubiconMarket
-    network: optimism-goerli
+    network: optimism
     source: 
-      address: '0x9d0D6c259566d8161a1b2c513af0463992db38bc'
+      address: '0x7a512d3609211e719737E82c7bb7271eC05Da70d'
       abi: RubiconMarket
-      startBlock: 7242000
+      startBlock: 0
     mapping: 
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -31,6 +31,12 @@ dataSources:
       abis:
         - name: RubiconMarket
           file: ./abis/RubiconMarketOptimism.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
       eventHandlers: 
         - event: emitOffer(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128)
           handler: handleOffer
@@ -57,11 +63,11 @@ dataSources:
 
   - kind: ethereum/contract
     name: RubiconRouter
-    network: optimism-goerli
+    network: optimism
     source: 
-      address: '0x0a0795d7015aB52BcDd987975474bD73062B5494'
+      address: '0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf'
       abi: RubiconRouter
-      startBlock: 7242000
+      startBlock: 0
     mapping: 
       kind: ethereum/events
       apiVersion: 0.0.7

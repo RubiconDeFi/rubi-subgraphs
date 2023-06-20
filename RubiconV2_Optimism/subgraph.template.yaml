@@ -31,6 +31,12 @@ dataSources:
       abis:
         - name: RubiconMarket
           file: ./abis/RubiconMarketOptimism.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
       eventHandlers: 
         - event: emitOffer(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128)
           handler: handleOffer
