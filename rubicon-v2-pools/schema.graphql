@@ -10,8 +10,18 @@ type Comptroller @entity {
 }
 
 type CToken @entity {
+    " the cToken address "
+    id: Bytes!
+    " the underlying ERC20 address "
+    underlyingAddress: Bytes!
+    " the collateral factor of the cToken "
+    collateralFactor: BigInt!
+    " the reserve factor of the cToken "
+    reserveFactor: BigInt!
     " the borrow rate of the cToken "
-    " borrowRate: BigDecimal!  // TODO: determine if this is needed - it appears like it will require a full archival node to calculate given the possibility of different interest rate models. although we could probably build modules to solve for this given a set interest rate model "
+    borrowRate: BigDecimal!  " if we are using an archive node we will probably want to pull these as a function call rather than derive them from events "
+    " the supply rate of the cToken "
+    supplyRate: BigDecimal! " if we are using an archive node we will probably want to pull these as a function call rather than derive them from events "
     " the contract balance of the underlying ERC20 "
     cash: BigInt! " if we are using an archive node we can set this to a BigDecimal instead "
     " the total amount of the underlying that is currently borrowed "
@@ -22,4 +32,17 @@ type CToken @entity {
     totalSupply: BigInt! " if we are using an archive node we can set this to a BigDecimal instead "
     " the current exchange rate from the underlying to the cToken "
     exchangeRate: BigDecimal! " note that this is a BigDecimal because it is a ratio of two Bigints and will need to be divided by the difference in decimals between the underlying and the cToken "
+    " the address of the interest rate model "
+    interestRateModelAddress: Bytes!
+    " the number of the borrowers active in the market "
+    numberOfBorrowers: Int!
+    " the number of the suppliers active in the market "
+    numberOfSuppliers: Int!
+    " the block number that was last updated at "
+    accrualBlockNumber: Int!
+    " the timestamp that the market was last updated at "
+    blockTimestamp: Int!
+    " the most recent borrowIndex value for this market "
+    borrowIndex: BigDecimal!
 }
+

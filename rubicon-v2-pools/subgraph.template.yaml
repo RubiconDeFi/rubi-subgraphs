@@ -27,3 +27,19 @@ event ReservesReduced(address admin, uint reduceAmount, uint newTotalReserves);
 - any time seizeInternal() is called
 - any time _addReservesFresh() is called
 - any time _reduceReservesFresh() is called
+
+// when does totalCash get updated?
+- any time Mint() is called - increment up by the mintAmount
+- any time Redeem() is called - decrement down by the redeemAmount
+- any time Borrow() is called - decrement down by the borrowAmount
+
+
+// when does totalBorrows get updated?
+- any time Borrow() is called - set equal to totalBorrows
+
+
+// exchange rate = (totalCash + totalBorrows - totalReserves) / totalSupply
+
+
+// open questions 
+- how do we handle the interest that has accrued - on an individual basis or on a pool basis?
