@@ -18,10 +18,12 @@ type CToken @entity {
     collateralFactor: BigInt!
     " the reserve factor of the cToken "
     reserveFactor: BigInt!
+
     " the borrow rate of the cToken "
     borrowRate: BigDecimal!  " if we are using an archive node we will probably want to pull these as a function call rather than derive them from events "
     " the supply rate of the cToken "
     supplyRate: BigDecimal! " if we are using an archive node we will probably want to pull these as a function call rather than derive them from events "
+    
     " the contract balance of the underlying ERC20 "
     cash: BigInt! " if we are using an archive node we can set this to a BigDecimal instead "
     " the total amount of the underlying that is currently borrowed "
@@ -32,17 +34,118 @@ type CToken @entity {
     totalSupply: BigInt! " if we are using an archive node we can set this to a BigDecimal instead "
     " the current exchange rate from the underlying to the cToken "
     exchangeRate: BigDecimal! " note that this is a BigDecimal because it is a ratio of two Bigints and will need to be divided by the difference in decimals between the underlying and the cToken "
+    
     " the address of the interest rate model "
     interestRateModelAddress: Bytes!
     " the number of the borrowers active in the market "
-    numberOfBorrowers: Int!
+    numberOfBorrowers: BigInt!
     " the number of the suppliers active in the market "
-    numberOfSuppliers: Int!
+    numberOfSuppliers: BigInt!
     " the block number that was last updated at "
-    accrualBlockNumber: Int!
+    accrualBlockNumber: BigInt!
     " the timestamp that the market was last updated at "
-    blockTimestamp: Int!
+    blockTimestamp: BigInt!
     " the most recent borrowIndex value for this market "
     borrowIndex: BigDecimal!
+
+    " the current open positions on a cToken "
+    accountCTokens: [AccountCToken!]! @derivedFrom(field: "cToken")
 }
 
+type Account @entity {
+    " the address of the account "
+    id: Bytes!
+    " the cTokens that the account currently has positions in (lending & borrowing) "
+    cTokens: [AccountCToken!]! @derivedFrom(field: "account")
+
+    # TODO: add formulas for calculating if an account is under water given their current positions
+}
+
+type AccountCToken @entity {
+    " concatenation of cToken address and account address "
+    id: Bytes!
+    " map to the relevant cToken "
+    cToken: CToken!
+    " map to the relevant account "
+    account: Account!
+    " the block number that was last updated at "
+    accrualBlockNumber: BigInt!
+    " the value of the borrow index at the time of the last interaction "
+    accountBorrowIndex: BigInt!
+    
+    " the current cToken balance of the account "
+    cTokenBalance: BigInt!
+    " the current borrow balance of the account (exclusive of interest since accrualBlockNumber) "
+    storedBorrowBalance: BigInt!
+
+    " the total amount of underlying that has been supplied "
+    totalUnderlyingSupplied: BigInt!
+    " the total amount of underlying that has been redeemed "
+    totalUnderlyingRedeemed: BigInt!
+    " the total amount of the underlying that has been borrowed (exclusive of interest) "
+    totalUnderlyingBorrowed: BigInt!
+    " the total amount of the underlying that has been repaid "
+    totalUnderlyingRepaid: BigInt!
+
+    # the following values must be calculated using the most up to date values based on the delta market.exchangeRate and market.borrowIndex
+
+    # supplyBalanceUnderlying: BigDecimal!
+    # FORMULA: supplyBalanceUnderlying = cTokenBalance * market.exchangeRate
+
+    # lifetimeSupplyInterestAccrued: BigDecimal!
+    # FORMULA: lifetimeSupplyInterestAccrued = supplyBalanceUnderlying - totalUnderlyingSupplied + totalUnderlyingRedeemed
+
+    # borrowBalanceUnderlying: BigDecimal!
+    # FORMULA: borrowBalanceUnderlying = storedBorrowBalance * market.borrowIndex / accountBorrowIndex
+
+    # lifetimeBorrowInterestAccrued: BigDecimal!
+    # FORMULA: lifetimeBorrowInterestAccrued = borrowBalanceUnderlying - totalUnderlyingBorrowed + totalUnderlyingRepaid
+}
+
+type Deposit @entity {
+    " concatenation of the cToken address, account address, transaction hash, and log index "
+    id: Bytes!
+    " the cToken that the deposit was made to "
+    cToken: CToken!
+    " the account that made the deposit "
+    account: Account!
+    " the amount of the underlying that was deposited "
+    underlyingAmount: BigInt!
+    " the amount of the cToken that was minted "
+    mintAmount: BigInt!
+}
+
+type Redeem @entity { 
+    " concatenation of the cToken address, account address, transaction hash, and log index "
+    id: Bytes!
+    " the cToken that the redeem was made to "
+    cToken: CToken!
+    " the account that made the redeem "
+    account: Account!
+    " the amount of the underlying that was received "
+    underlyingAmount: BigInt!
+    " the amount of the cToken that was redeemed "
+    burnAmount: BigInt!
+}
+
+type Borrow {
+    " concatenation of the cToken address, account address, transaction hash, and log index "
+    id: Bytes!
+    " the cToken that the borrow was made from "
+    cToken: CToken!
+    " the account that made the borrow "
+    account: Account!
+    " the amount of the underlying that was borrowed "
+    underlyingAmount: BigInt!
+}
+
+type Repay {
+    " concatenation of the cToken address, account address, transaction hash, and log index "
+    id: Bytes!
+    " the cToken that the repay was made to "
+    cToken: CToken!
+    " the account that made the repay "
+    account: Account!
+    " the amount of the underlying that was repaid "
+    underlyingAmount: BigInt!
+}
