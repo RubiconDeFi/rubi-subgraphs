@@ -1,4 +1,4 @@
-type Transaction @entity {
+type Transaction @entity(immutable: true) {
     " the transaction hash "
     id: Bytes!
     " the transaction timestamp "
@@ -15,7 +15,7 @@ type Transaction @entity {
     swaps: [Swap!]! @derivedFrom(field: "transaction")
 }
 
-type User @entity {
+type User @entity(immutable: true) {
     " the user address "
     id: Bytes!
     " map to all offers the user has created "
@@ -41,6 +41,8 @@ type Offer @entity {
     index: BigInt!
     " the maker of the offer "
     maker: User!
+    " the user that originated the transaction that the offer was a part of "
+    from: User!
     " the pay token of the offer (the asset the maker is selling) "
     pay_gem: Bytes!
     " the buy token of the offer (the asset the maker is buying) "
@@ -63,7 +65,7 @@ type Offer @entity {
     removed_block: BigInt
 }
 
-type Take @entity {
+type Take @entity(immutable: true) {
     " the transaction hash and log index of the take "
     id: Bytes!
     " the transaction that the take was a part of "
@@ -88,7 +90,7 @@ type Take @entity {
     give_amt: BigInt!
 }
 
-type Swap @entity {
+type Swap @entity(immutable: true) {
     " the transaction hash and log index of the swap "
     id: Bytes!
     " the transaction that the swap was a part of "
@@ -109,7 +111,7 @@ type Swap @entity {
     output_amt: BigInt!
 }
 
-type Fee @entity {
+type Fee @entity(immutable: true) {
     " the transaction hash and log index of the fee "
     id: Bytes!
     " the transaction that the fee was a part of "

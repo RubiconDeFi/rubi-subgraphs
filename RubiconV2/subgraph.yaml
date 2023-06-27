@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: RubiconMarket
-    network: arbitrum
+    network: base-testnet
     source: 
-      address: '0xC715a30FDe987637A082Cf5F19C74648b67f2db8'
+      address: '0x6490483D77866e81743Ce86E5DbD2C16391a4b85'
       abi: RubiconMarket
-      startBlock: 99504000
+      startBlock: 0
     mapping: 
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -44,11 +44,11 @@ dataSources:
           handler: handleDelete
   - kind: ethereum/contract
     name: RubiconRouter
-    network: arbitrum
+    network: base-testnet
     source: 
-      address: '0x7B24e6F4Dd84674696c2a5809c24154EC6AC7F03'
+      address: '0x6CB24A263732579EfD56f3E071851e989d78cE75'
       abi: RubiconRouter
-      startBlock: 99504000
+      startBlock: 0
     mapping: 
       kind: ethereum/events
       apiVersion: 0.0.7
