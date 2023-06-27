@@ -41,6 +41,8 @@ type Offer @entity {
     index: BigInt!
     " the maker of the offer "
     maker: User!
+    " the user that originated the transaction that the offer was a part of "
+    from: User!
     " the pay token of the offer (the asset the maker is selling) "
     pay_gem: Bytes!
     " the buy token of the offer (the asset the maker is buying) "

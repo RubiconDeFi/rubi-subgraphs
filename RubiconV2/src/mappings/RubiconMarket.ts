@@ -11,8 +11,9 @@ export function handleOffer(event: emitOffer): void {
     // get the transaction entity
     let transaction = getTransaction(event)
 
-    // load the maker entity (user)
+    // load the maker and from entities (users)
     let maker = getUser(event.params.maker)
+    let from = event.transaction.from == event.params.maker ? maker : getUser(event.transaction.from)
 
     // calculate the price of the offer (pay_amt / buy_amt)
     let price = event.params.pay_amt.toBigDecimal().div(event.params.buy_amt.toBigDecimal())
@@ -23,6 +24,7 @@ export function handleOffer(event: emitOffer): void {
     offer.timestamp = event.block.timestamp
     offer.index = event.logIndex
     offer.maker = maker.id
+    offer.from = from.id
     offer.pay_gem = event.params.pay_gem
     offer.buy_gem = event.params.buy_gem
     offer.pay_amt = event.params.pay_amt
@@ -39,9 +41,9 @@ export function handleTake(event: emitTake): void {
     // get the transaction entity 
     let transaction = getTransaction(event)
 
-    // get the taker entity (user)
+    // get the taker and from entities (users)
     let taker = getUser(event.params.taker)
-    let from = getUser(event.transaction.from)
+    let from = event.transaction.from == event.params.taker ? taker : getUser(event.transaction.from)
 
     // load the offer entity
     let offer = Offer.load(event.params.id)
