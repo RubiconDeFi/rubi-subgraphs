@@ -16,7 +16,10 @@
         "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 RubiconV2_Optimism",
         "create:cloud:optimism": "source ../.env && graph create --node $GRAPH_NODE_URL RubiconV2_Optimism_Mainnet",
         "remove:cloud:optimism": "source ../.env && graph remove --node $GRAPH_NODE_URL RubiconV2_Optimism_Mainnet",
-        "deploy:cloud:optimism": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL RubiconV2_Optimism_Mainnet"
+        "deploy:cloud:optimism": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL RubiconV2_Optimism_Mainnet",
+        "create:cloud:optimism:goerli": "source ../.env && graph create --node $GRAPH_NODE_URL RubiconV2_Optimism_Goerli",
+        "remove:cloud:optimism:goerli": "source ../.env && graph remove --node $GRAPH_NODE_URL RubiconV2_Optimism_Goerli",
+        "deploy:cloud:optimism:goerli": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL RubiconV2_Optimism_Goerli"
     },
     "devDependencies": {
         "@graphprotocol/graph-cli": "^0.48.0",

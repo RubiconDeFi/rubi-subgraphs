@@ -42,7 +42,7 @@ type Offer @entity {
     " the maker of the offer "
     maker: User!
     " the user that originated the transaction that the offer was a part of "
-    from: User!
+    from_address: User!
     " the pay token of the offer (the asset the maker is selling) "
     pay_gem: Bytes!
     " the buy token of the offer (the asset the maker is buying) "
@@ -77,7 +77,7 @@ type Take @entity(immutable: true) {
     " the user that took the offer "
     taker: User!
     " the user that originated the transaction that the take was a part of "
-    from: User!
+    from_address: User!
     " the offer that was taken "
     offer: Offer!
     " the pay token of the offer (the asset the maker is selling & the asset the taker is buying) "

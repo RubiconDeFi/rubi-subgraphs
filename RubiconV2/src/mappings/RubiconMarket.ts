@@ -24,7 +24,7 @@ export function handleOffer(event: emitOffer): void {
     offer.timestamp = event.block.timestamp
     offer.index = event.logIndex
     offer.maker = maker.id
-    offer.from = from.id
+    offer.from_address = from.id
     offer.pay_gem = event.params.pay_gem
     offer.buy_gem = event.params.buy_gem
     offer.pay_amt = event.params.pay_amt
@@ -69,7 +69,7 @@ export function handleTake(event: emitTake): void {
     take.timestamp = event.block.timestamp
     take.index = event.logIndex
     take.taker = taker.id
-    take.from = from.id
+    take.from_address = from.id
     take.offer = offer.id
     take.take_gem = offer.pay_gem
     take.give_gem = offer.buy_gem
