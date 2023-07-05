@@ -1,5 +1,5 @@
 import { ZERO_BD, ZERO_BI } from "../utils/constants"
-import { Bytes, ethereum, BigDecimal, Value, ValueKind } from "@graphprotocol/graph-ts"
+import { Bytes, ethereum, BigDecimal } from "@graphprotocol/graph-ts"
 import { Offer, Take } from "../../generated/schema"
 import { fetchRubicon } from '../utils/entities/rubicon'
 import { fetchUser } from "../utils/entities/user"
