@@ -7,7 +7,38 @@ import { fetchTransaction } from "../utils/entities/transaction"
 import { fetchToken, toBigDecimal } from "../utils/entities/token"
 import { getUsdPricePerToken } from "../prices"
 import { fetchHourVolume, fetchDayVolume, fetchTokenHourData, fetchTokenDayData } from "../utils/aggregates/volume"
-import { LogMake, LogTake, LogKill, OfferDeleted } from "../../generated/RubiconMarket/RubiconMarket"
+import { emitTake, emitOffer, emitCancel, emitDelete, LogMake, LogTake, LogKill, OfferDeleted } from "../../generated/RubiconMarket/RubiconMarket"
+
+export function handleOffer(event: emitOffer): void {
+    // emitOffer has the same fields as LogMake so it can be handled the same as LogMake
+    // It just has to be re-structured
+
+    // turning emitOffer params into LogMake's shape
+    const newLogMakeParams: ethereum.EventParam[] = [
+        event.parameters[0], // id
+        event.parameters[1], // paid
+        event.parameters[2], // maker
+        event.parameters[3], // pay_gem
+        event.parameters[4], // buy_gem
+        event.parameters[5], // pay_amy
+        event.parameters[6], // buy_amt
+    ]
+
+    // create new LogMake event
+    const newLogMake = new LogMake(
+        event.address,
+        event.logIndex,
+        event.transactionLogIndex,
+        event.logType,
+        event.block,
+        event.transaction,
+        newLogMakeParams,
+        event.receipt
+    )
+
+    // handle our new LogMake event
+    handleLogMake(newLogMake);
+}
 
 export function handleLogMake(event: LogMake): void {
 
@@ -76,6 +107,38 @@ export function handleLogMake(event: LogMake): void {
     offer.cancelled = false
     offer.live = true
     offer.save()
+}
+
+export function handleTake(event: emitTake): void {
+    // emitTake has the same fields as LogTake so it can be handled the same as LogTake
+    // It just has to be re-structured
+
+    // turning emitTake params into LogTake's shape
+    const newLogTakeParams: ethereum.EventParam[] = [
+        event.parameters[0], // id
+        event.parameters[1], // pair
+        event.parameters[3], // maker
+        event.parameters[4], // pay_gem
+        event.parameters[5], // buy_gem
+        event.parameters[2], // taker
+        event.parameters[6], // take_amt
+        event.parameters[7], // give_amt
+    ]
+
+    // create new LogTake event
+    const newLogTake = new LogTake(
+        event.address,
+        event.logIndex,
+        event.transactionLogIndex,
+        event.logType,
+        event.block,
+        event.transaction,
+        newLogTakeParams,
+        event.receipt
+    );
+
+    // handle our new LotTake event
+    handleLogTake(newLogTake);
 }
 
 export function handleLogTake(event: LogTake): void {
@@ -194,6 +257,37 @@ export function handleLogTake(event: LogTake): void {
     take.save()
 }
 
+export function handleCancel(event: emitCancel): void {
+    // emitCancel has the same fields as LogKill so it can be handled the same as LogKill
+    // It just has to be re-structured
+
+    // turning emitCancel params into LogKill's shape
+    const newLogKillParams: ethereum.EventParam[] = [
+        event.parameters[0], // id
+        event.parameters[1], // paid
+        event.parameters[2], // maker
+        event.parameters[3], // pay_gem
+        event.parameters[4], // buy_gem
+        event.parameters[5], // pay_amy
+        event.parameters[6], // buy_amt
+    ]
+
+    // create new LogKill event
+    const newLogKill = new LogKill(
+        event.address,
+        event.logIndex,
+        event.transactionLogIndex,
+        event.logType,
+        event.block,
+        event.transaction,
+        newLogKillParams,
+        event.receipt
+    )
+
+    // handle our new LogKill event
+    handleLogKill(newLogKill);
+}
+
 export function handleLogKill(event: LogKill): void {
 
     // decode the offer ID
@@ -214,6 +308,31 @@ export function handleLogKill(event: LogKill): void {
     offer.cancelled = true
     offer.live = false
     offer.save()
+}
+
+export function handleDelete(event: emitDelete): void {
+    // emitDelete has the same fields as OfferDeleted so it can be handled the same as OfferDeleted
+    // It just has to be re-structured
+
+    // turning emitDelete params into OfferDeleted's shape
+    const newOfferDeletedParams: ethereum.EventParam[] = [
+        event.parameters[0], // id
+    ]
+
+    // create new OfferDeleted event
+    const newOfferDeleted = new OfferDeleted(
+        event.address,
+        event.logIndex,
+        event.transactionLogIndex,
+        event.logType,
+        event.block,
+        event.transaction,
+        newOfferDeletedParams,
+        event.receipt
+    )
+
+    // handle our new OfferDeleted event
+    handleOfferDeleted(newOfferDeleted);
 }
 
 export function handleOfferDeleted(event: OfferDeleted): void {
