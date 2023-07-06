@@ -70,8 +70,14 @@ dataSources:
         handler: handleLogKill
       - event: OfferDeleted(indexed bytes32)
         handler: handleOfferDeleted 
-      # - event: LogMatch(uint256,uint256)
-      #   handler: handleLogMatch     
+      - event: emitTake(indexed bytes32,indexed bytes32,indexed address,address,address,address,uint128,uint128)
+        handler: handleTake
+      - event: emitOffer(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128)
+        handler: handleOffer
+      - event: emitCancel(indexed bytes32,indexed bytes32,indexed address,address,address,uint128,uint128)
+        handler: handleCancel
+      - event: emitDelete(indexed bytes32,indexed bytes32,indexed address)
+        handler: handleDelete
   - kind: ethereum/contract
     name: BathHouse
     network: {{ network }}
