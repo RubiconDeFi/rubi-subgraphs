@@ -7,6 +7,8 @@ type Rubicon @entity {
     total_transactions: BigInt!
     " the total volume of the market in USD "
     total_volume_usd: BigDecimal!
+    " the total amount of fees paid to makers in USD "
+    total_maker_rebate_volume_usd: BigDecimal!
 }
 
 type User @entity {
@@ -30,6 +32,24 @@ type DayVolume @entity {
     dayStartUnix: BigInt!
     " the volume in USD "
     volume_usd: BigDecimal!
+}
+
+type HourMakerRebateVolume @entity {
+    " the unix timestamp divided by 3600 "
+    id: ID!
+    " the unix timestamp "
+    hourStartUnix: BigInt!
+    " the fees paid to makers in USD "
+    rebate_volume_usd: BigDecimal!
+}
+
+type DayMakerRebateVolume @entity {
+    " the unix timestamp divided by 86400 "
+    id: ID!
+    " the unix timestamp "
+    dayStartUnix: BigInt!
+    " the fees paid to makers in USD "
+    rebate_volume_usd: BigDecimal!
 }
 
 type Transaction @entity {

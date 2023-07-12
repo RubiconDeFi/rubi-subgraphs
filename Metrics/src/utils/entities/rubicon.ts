@@ -11,6 +11,7 @@ export function fetchRubicon(): Rubicon {
         rubicon.total_users = ZERO_BI
         rubicon.total_transactions = ZERO_BI
         rubicon.total_volume_usd = ZERO_BD
+        rubicon.total_maker_rebate_volume_usd = ZERO_BD
         rubicon.save()
     }
     return rubicon as Rubicon

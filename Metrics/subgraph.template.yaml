@@ -78,6 +78,8 @@ dataSources:
         handler: handleCancel
       - event: emitDelete(indexed bytes32,indexed bytes32,indexed address)
         handler: handleDelete
+      - event: emitFee(indexed bytes32,indexed address,indexed address,bytes32,address,uint256)
+        handler: handleFee
   - kind: ethereum/contract
     name: BathHouse
     network: {{ network }}
