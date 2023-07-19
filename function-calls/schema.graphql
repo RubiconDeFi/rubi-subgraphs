@@ -1,0 +1,39 @@
+type Transaction @entity(immutable: true) {
+    " the transaction hash "
+    id: Bytes!
+    " the transaction timestamp "
+    timestamp: BigInt!
+    " the transaction block number "
+    block_number: BigInt!
+    " the transaction block index "
+    block_index: BigInt!
+    " the address that sent the transaction "
+    sender: Bytes!
+    " map to all buy calls in the transaction "
+    buys: [Buy!]! @derivedFrom(field: "transaction")
+    " map to all buy all amount calls in the transaction "
+    buy_all: [BuyAll!]! @derivedFrom(field: "transaction")
+    " map to all sell all amount cllas in the transaction "
+    sell_all: [SellAll!]! @derivedFrom(field: "transaction")
+}
+
+type Buy @entity(immutable: true) {
+    " the transaction hash "
+    id: Bytes!
+    " the transaction entity "
+    transaction: Transaction!
+}
+
+type BuyAll @entity(immutable: true) {
+    " the transaction hash "
+    id: Bytes!
+    " the transaction entity "
+    transaction: Transaction!
+}
+
+type SellAll @entity(immutable: true) {
+    " the transaction hash "
+    id: Bytes!
+    " the transaction entity "
+    transaction: Transaction!
+}

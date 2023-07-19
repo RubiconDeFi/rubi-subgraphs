@@ -1,0 +1,33 @@
+specVersion: 0.0.5
+description: a subgraph to support the Rubicon dAPP utlizing the v2 protocol
+repository: https://github.com/RubiconDeFi/rubi-subgraphs
+schema: 
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: RubiconMarket
+    network: {{ network }}
+    source: 
+      address: '{{ RubiconMarket-address }}'
+      abi: RubiconMarket
+      startBlock: {{ startBlock }}
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/RubiconMarket.ts
+      entities: 
+        - Transaction
+        - Buy 
+        - BuyAll
+        - SellAll
+      abis:
+        - name: RubiconMarket
+          file: ./abis/RubiconMarket.json
+      callHandlers: 
+        - function: buy(uint256,uint256)
+          handler: handleBuy
+        - function: buyAllAmount(address,uint256,address,uint256)
+          handler: handleBuyAllAmount
+        - function: sellAllAmount(address,uint256,address,uint256)
+          handler: handleSellAllAmount
