@@ -63,6 +63,12 @@ type Offer @entity {
     removed_timestamp: BigInt
     " the block the offer was removed in "
     removed_block: BigInt
+    " the block index the offer was removed in "
+    removed_block_index: BigInt
+    " the log index the offer was removed in "
+    removed_log_index: BigInt
+    " the fees of the offer "
+    fee: [Fee!]! @derivedFrom(field: "offer")
 }
 
 type Take @entity(immutable: true) {
@@ -256,3 +262,4 @@ type CandleOneDay @entity {
     " the ratio of token0 to token 1 at the low "
     low_ratio: BigDecimal!
 }
+

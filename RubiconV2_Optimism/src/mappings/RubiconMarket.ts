@@ -54,14 +54,7 @@ export function handleTake(event: emitTake): void {
     // update the offer entity
     offer.paid_amt = offer.paid_amt.plus(event.params.take_amt)
     offer.bought_amt = offer.bought_amt.plus(event.params.give_amt)
-
-    // if the offer is filled, mark it as inactive and update the entity 
-    if (offer.paid_amt.equals(offer.pay_amt)) {
-        offer.open = false
-        offer.removed_timestamp = event.block.timestamp
-        offer.removed_block = event.block.number
-    }
-    offer.save()
+    offer.save() 
 
     // create the take entity
     let take = new Take(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex))))
@@ -93,6 +86,8 @@ export function handleCancel(event: emitCancel): void {
     offer.open = false
     offer.removed_timestamp = event.block.timestamp
     offer.removed_block = event.block.number
+    offer.removed_block_index = event.transaction.index;
+    offer.removed_log_index = event.logIndex
     offer.save()
 }
 
@@ -138,6 +133,8 @@ export function handleDelete(event: emitDelete): void {
     offer.open = false
     offer.removed_timestamp = event.block.timestamp
     offer.removed_block = event.block.number
+    offer.removed_block_index = event.transaction.index;
+    offer.removed_log_index = event.logIndex
     offer.save()
 }
 
@@ -190,14 +187,7 @@ export function handleLogTake(event: LogTake): void {
     // update the offer entity
     offer.paid_amt = offer.paid_amt.plus(event.params.take_amt)
     offer.bought_amt = offer.bought_amt.plus(event.params.give_amt)
-
-    // if the offer is filled, mark it as inactive and update the entity 
-    if (offer.paid_amt.equals(offer.pay_amt)) {
-        offer.open = false
-        offer.removed_timestamp = event.block.timestamp
-        offer.removed_block = event.block.number
-    }
-    offer.save()
+    offer.save() 
 
     // create the take entity
     let take = new Take(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex))))
@@ -229,6 +219,8 @@ export function handleLogKill(event: LogKill): void {
     offer.open = false
     offer.removed_timestamp = event.block.timestamp
     offer.removed_block = event.block.number
+    offer.removed_block_index = event.transaction.index;
+    offer.removed_log_index = event.logIndex
     offer.save()
 }
 
@@ -274,5 +266,7 @@ export function handleOfferDeleted(event: OfferDeleted): void {
     offer.open = false
     offer.removed_timestamp = event.block.timestamp
     offer.removed_block = event.block.number
+    offer.removed_block_index = event.transaction.index;
+    offer.removed_log_index = event.logIndex
     offer.save()
 }
