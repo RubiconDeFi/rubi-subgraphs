@@ -1,4 +1,4 @@
-import { Bytes, ethereum } from "@graphprotocol/graph-ts"
+import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts"
 import { getUser } from "../utils/entities/user"
 import { updateCandles } from "../utils/entities/candles"
 import { getTransaction } from "../utils/entities/transaction"
@@ -54,6 +54,17 @@ export function handleTake(event: emitTake): void {
     // update the offer entity
     offer.paid_amt = offer.paid_amt.plus(event.params.take_amt)
     offer.bought_amt = offer.bought_amt.plus(event.params.give_amt)
+
+    // TODO: at some point in time (very early on) the delete/cancel event was not being emitted.
+    // so, if an offer is filled, we are going to assume it was deleted/cancelled and mark it as such at the log_index + 1
+    // if there was a delete/cancel event, it will overwrite this data
+    if (offer.paid_amt.equals(offer.pay_amt)) {
+        offer.open = false
+        offer.removed_timestamp = event.block.timestamp
+        offer.removed_block = event.block.number
+        offer.removed_block_index = event.transaction.index;
+        offer.removed_log_index = event.logIndex.plus(BigInt.fromString('1'))
+    }    
     offer.save() 
 
     // create the take entity
@@ -187,6 +198,17 @@ export function handleLogTake(event: LogTake): void {
     // update the offer entity
     offer.paid_amt = offer.paid_amt.plus(event.params.take_amt)
     offer.bought_amt = offer.bought_amt.plus(event.params.give_amt)
+
+    // TODO: at some point in time (very early on) the delete/cancel event was not being emitted.
+    // so, if an offer is filled, we are going to assume it was deleted/cancelled and mark it as such at the log_index + 1
+    // if there was a delete/cancel event, it will overwrite this data
+    if (offer.paid_amt.equals(offer.pay_amt)) {
+        offer.open = false
+        offer.removed_timestamp = event.block.timestamp
+        offer.removed_block = event.block.number
+        offer.removed_block_index = event.transaction.index;
+        offer.removed_log_index = event.logIndex.plus(BigInt.fromString('1'))
+    }
     offer.save() 
 
     // create the take entity

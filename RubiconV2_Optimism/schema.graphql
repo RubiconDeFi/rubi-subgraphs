@@ -67,6 +67,8 @@ type Offer @entity {
     removed_block_index: BigInt
     " the log index the offer was removed in "
     removed_log_index: BigInt
+    " the takes of the offer "
+    take: [Take!]! @derivedFrom(field: "offer")
     " the fees of the offer "
     fee: [Fee!]! @derivedFrom(field: "offer")
 }
@@ -262,4 +264,6 @@ type CandleOneDay @entity {
     " the ratio of token0 to token 1 at the low "
     low_ratio: BigDecimal!
 }
+
+
 
