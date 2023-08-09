@@ -1,5 +1,5 @@
 {
-    "network" : "base-testnet",
+    "network" : "base-goerli",
     "startBlock": 	0,
     "RubiconMarket-address" : "0x6490483D77866e81743Ce86E5DbD2C16391a4b85", 
     "RubiconRouter-address" : "0x6CB24A263732579EfD56f3E071851e989d78cE75"

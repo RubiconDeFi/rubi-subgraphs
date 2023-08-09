@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: RubiconMarket
-    network: mumbai
+    network: base
     source: 
-      address: '0x10418D9e730fa659b0Baf0b640ee41FcF4EA2aaE'
+      address: '0x9A5215E96E1185d4e6002C95C3Cc0aB6eEaD354F'
       abi: RubiconMarket
-      startBlock: 33397000
+      startBlock: 0
     mapping: 
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -44,11 +44,11 @@ dataSources:
           handler: handleDelete
   - kind: ethereum/contract
     name: RubiconRouter
-    network: mumbai
+    network: base
     source: 
-      address: '0xbA81dF0251A017C2fB687e5469a897529442f008'
+      address: '0x929675f6a6aC12D7cC3463BE1df7221ca35b8a00'
       abi: RubiconRouter
-      startBlock: 33397000
+      startBlock: 0
     mapping: 
       kind: ethereum/events
       apiVersion: 0.0.7
