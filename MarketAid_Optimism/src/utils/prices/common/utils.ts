@@ -1,4 +1,5 @@
 import * as BSC from "../config/bsc";
+import * as BASE from "../config/base";
 import * as CELO from "../config/celo";
 import * as FUSE from "../config/fuse";
 import * as XDAI from "../config/gnosis";
@@ -90,6 +91,8 @@ export function getConfig(): Configurations {
     return new CELO.config();
   } else if (network == FUSE.NETWORK_STRING) {
     return new FUSE.config();
+  } else if (network == BASE.NETWORK_STRING) {
+    return new BASE.config();
   }
 
   return new TEMPLATE.config();
