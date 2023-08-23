@@ -1,0 +1,9 @@
+{
+    "network" : "base",
+    "startBlock": 0,
+    "RubiconMarket-address" : "0x9A5215E96E1185d4e6002C95C3Cc0aB6eEaD354F", 
+    "RubiconRouter-address" : "0x929675f6a6aC12D7cC3463BE1df7221ca35b8a00",
+    "MarketAidFactory-address" : "0xc2b33a7601f3f0ecFF2eE4b5b7c647770069A836",
+    "BathHouse-address" : "0x1229036F63679B61910CB1463e5BB57f68D19bb2",
+    "BathPair-address" : "0x9dBf17d518f722B5Aae5573D808B94024b635529" 
+} 

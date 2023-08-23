@@ -6,9 +6,9 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: RubiconMarket
-    network: optimism
+    network: base
     source: 
-      address: '0x7a512d3609211e719737E82c7bb7271eC05Da70d'
+      address: '0x9A5215E96E1185d4e6002C95C3Cc0aB6eEaD354F'
       abi: RubiconMarket
       startBlock: 0
     mapping: 
@@ -78,13 +78,11 @@ dataSources:
         handler: handleCancel
       - event: emitDelete(indexed bytes32,indexed bytes32,indexed address)
         handler: handleDelete
-      # - event: LogMatch(uint256,uint256)
-      #   handler: handleLogMatch     
   - kind: ethereum/contract
     name: BathHouse
-    network: optimism
+    network: base
     source: 
-      address: '0x203328C161D23dCEee3E439DeEB25cA19e2c4984'
+      address: '0x1229036F63679B61910CB1463e5BB57f68D19bb2'
       abi: BathHouse
       startBlock: 0
     mapping: 
@@ -105,7 +103,7 @@ dataSources:
 templates: 
   - kind: ethereum/contract
     name: BathToken
-    network: optimism
+    network: base
     source:
       abi: BathToken
     mapping:
