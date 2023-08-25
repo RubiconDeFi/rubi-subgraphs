@@ -5,10 +5,15 @@
     "scripts": {
         "test": "graph test",
         "coverage": "graph test -- -c",
+
         "prepare:arbitrum": "mustache config/arbitrum.json subgraph.template.yaml > subgraph.yaml",
         "prepare:arbitrum:goerli": "mustache config/arbitrum_goerli.json subgraph.template.yaml > subgraph.yaml",
+
         "prepare:polygon:mumbai": "mustache config/polygon_mumbai.json subgraph.template.yaml > subgraph.yaml",
+
+        "prepare:base": "mustache config/base.json subgraph.template.yaml > subgraph.yaml",
         "prepare:base:goerli": "mustache config/base_goerli.json subgraph.template.yaml > subgraph.yaml",
+        
         "codegen": "graph codegen",
         "build": "graph build",
         "deploy:arbitrum": "graph deploy --product hosted-service denverbaumgartner/rubiconv2-arbitrum-one",
@@ -18,12 +23,22 @@
         "create-local": "graph create --node http://localhost:8020/ RubiconV2",
         "remove-local": "graph remove --node http://localhost:8020/ RubiconV2",
         "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 RubiconV2",
+        
         "create:cloud:arbitrum:goerli": "GRAPH_NODE_URL=$(grep GRAPH_NODE_URL .env | cut -d '=' -f2) && graph create --node ${GRAPH_NODE_URL} RubiconV2_Arbitrum_Goerli",
         "remove:cloud:arbitrum:goerli": "GRAPH_NODE_URL=$(grep GRAPH_NODE_URL .env | cut -d '=' -f2) && graph remove --node ${GRAPH_NODE_URL} RubiconV2_Arbitrum_Goerli",
         "deploy:cloud:arbitrum:goerli": "GRAPH_NODE_URL=$(grep GRAPH_NODE_URL .env | cut -d '=' -f2) && IPFS_URL=$(grep IPFS_URL .env | cut -d '=' -f2) && graph deploy --node ${GRAPH_NODE_URL} --ipfs ${IPFS_URL} RubiconV2_Arbitrum_Goerli",
+        
         "create:cloud:arbitrum": "source ../.env && graph create --node $GRAPH_NODE_URL RubiconV2_Arbitrum_One",
         "remove:cloud:arbitrum": "source ../.env && graph remove --node $GRAPH_NODE_URL RubiconV2_Arbitrum_One",
-        "deploy:cloud:arbitrum": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL RubiconV2_Arbitrum_One"
+        "deploy:cloud:arbitrum": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL RubiconV2_Arbitrum_One",
+
+        "create:cloud:base:goerli": "source ../.env && graph create --node $GRAPH_NODE_URL RubiconV2_Base_Goerli",
+        "remove:cloud:base:goerli": "source ../.env && graph remove --node $GRAPH_NODE_URL RubiconV2_Base_Goerli",
+        "deploy:cloud:base:goerli": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL RubiconV2_Base_Goerli",
+
+        "create:cloud:base": "source ../.env && graph create --node $GRAPH_NODE_URL RubiconV2_Base_Mainnet",
+        "remove:cloud:base": "source ../.env && graph remove --node $GRAPH_NODE_URL RubiconV2_Base_Mainnet",
+        "deploy:cloud:base": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL RubiconV2_Base_Mainnet"
     },
     "devDependencies": {
         "@graphprotocol/graph-cli": "^0.48.0",

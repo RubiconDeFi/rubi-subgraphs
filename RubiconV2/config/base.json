@@ -1,0 +1,6 @@
+{
+    "network" : "base",
+    "startBlock": 	0,
+    "RubiconMarket-address" : "0x9A5215E96E1185d4e6002C95C3Cc0aB6eEaD354F", 
+    "RubiconRouter-address" : "0x929675f6a6aC12D7cC3463BE1df7221ca35b8a00"
+}
