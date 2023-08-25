@@ -14,15 +14,26 @@
         "create-local": "graph create --node http://localhost:8020/ RubiconV2_Optimism",
         "remove-local": "graph remove --node http://localhost:8020/ RubiconV2_Optimism",
         "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 RubiconV2_Optimism",
+        
         "create:cloud:optimism": "source ../.env && graph create --node $GRAPH_NODE_URL RubiconV2_Optimism_Mainnet",
         "remove:cloud:optimism": "source ../.env && graph remove --node $GRAPH_NODE_URL RubiconV2_Optimism_Mainnet",
         "deploy:cloud:optimism": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL RubiconV2_Optimism_Mainnet",
+        
         "create:cloud:optimism:goerli": "source ../.env && graph create --node $GRAPH_NODE_URL RubiconV2_Optimism_Goerli",
         "remove:cloud:optimism:goerli": "source ../.env && graph remove --node $GRAPH_NODE_URL RubiconV2_Optimism_Goerli",
         "deploy:cloud:optimism:goerli": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL RubiconV2_Optimism_Goerli",
+        
         "create:cloud:optimism:internal": "source ../.env && graph create --node $GRAPH_NODE_URL RubiconV2_Optimism_Mainnet_Internal",
         "remove:cloud:optimism:internal": "source ../.env && graph remove --node $GRAPH_NODE_URL RubiconV2_Optimism_Mainnet_Internal",
-        "deploy:cloud:optimism:internal": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL RubiconV2_Optimism_Mainnet_Internal"
+        "deploy:cloud:optimism:internal": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL RubiconV2_Optimism_Mainnet_Internal",
+
+        "create:cloud:optimism:temp": "source ../.env && graph create --node $GRAPH_NODE_URL_TEMP RubiconV2_Optimism_Mainnet",
+        "remove:cloud:optimism:temp": "source ../.env && graph remove --node $GRAPH_NODE_URL_TEMP RubiconV2_Optimism_Mainnet",
+        "deploy:cloud:optimism:temp": "source ../.env && graph deploy --node $GRAPH_NODE_URL_TEMP --ipfs $IPFS_URL_TEMP RubiconV2_Optimism_Mainnet",
+
+        "create:cloud:optimism:goerli:temp": "source ../.env && graph create --node $GRAPH_NODE_URL_TEMP RubiconV2_Optimism_Goerli",
+        "remove:cloud:optimism:goerli:temp": "source ../.env && graph remove --node $GRAPH_NODE_URL_TEMP RubiconV2_Optimism_Goerli",
+        "deploy:cloud:optimism:goerli:temp": "source ../.env && graph deploy --node $GRAPH_NODE_URL_TEMP --ipfs $IPFS_URL_TEMP RubiconV2_Optimism_Goerli"
     },
     "devDependencies": {
         "@graphprotocol/graph-cli": "^0.48.0",
