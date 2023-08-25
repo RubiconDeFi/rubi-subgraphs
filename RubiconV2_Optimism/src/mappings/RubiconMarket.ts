@@ -1,5 +1,6 @@
-import { Bytes, ethereum } from "@graphprotocol/graph-ts"
+import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts"
 import { getUser } from "../utils/entities/user"
+import { getPair } from "../utils/entities/pair"
 import { updateCandles } from "../utils/entities/candles"
 import { getTransaction } from "../utils/entities/transaction"
 import { Offer, Take, Fee } from "../../generated/schema"
@@ -15,6 +16,9 @@ export function handleOffer(event: emitOffer): void {
     let maker = getUser(event.params.maker)
     let from = event.transaction.from == event.params.maker ? maker : getUser(event.transaction.from)
 
+    // load the pair entity
+    let pair = getPair(event.params.pay_gem, event.params.buy_gem)
+
     // calculate the price of the offer (pay_amt / buy_amt)
     let price = event.params.pay_amt.toBigDecimal().div(event.params.buy_amt.toBigDecimal())
 
@@ -25,6 +29,7 @@ export function handleOffer(event: emitOffer): void {
     offer.index = event.logIndex
     offer.maker = maker.id
     offer.from_address = from.id
+    offer.pair = pair.id
     offer.pay_gem = event.params.pay_gem
     offer.buy_gem = event.params.buy_gem
     offer.pay_amt = event.params.pay_amt
@@ -45,6 +50,9 @@ export function handleTake(event: emitTake): void {
     let taker = getUser(event.params.taker)
     let from = event.transaction.from == event.params.taker ? taker : getUser(event.transaction.from)
 
+    // get the pair associated with the take 
+    let pair = getPair(event.params.pay_gem, event.params.buy_gem)
+
     // load the offer entity
     let offer = Offer.load(event.params.id)
     if (!offer) {
@@ -55,13 +63,17 @@ export function handleTake(event: emitTake): void {
     offer.paid_amt = offer.paid_amt.plus(event.params.take_amt)
     offer.bought_amt = offer.bought_amt.plus(event.params.give_amt)
 
-    // if the offer is filled, mark it as inactive and update the entity 
+    // TODO: at some point in time (very early on) the delete/cancel event was not being emitted.
+    // so, if an offer is filled, we are going to assume it was deleted/cancelled and mark it as such at the log_index + 1
+    // if there was a delete/cancel event, it will overwrite this data
     if (offer.paid_amt.equals(offer.pay_amt)) {
         offer.open = false
         offer.removed_timestamp = event.block.timestamp
         offer.removed_block = event.block.number
-    }
-    offer.save()
+        offer.removed_block_index = event.transaction.index;
+        offer.removed_log_index = event.logIndex.plus(BigInt.fromString('1'))
+    }    
+    offer.save() 
 
     // create the take entity
     let take = new Take(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex))))
@@ -70,6 +82,7 @@ export function handleTake(event: emitTake): void {
     take.index = event.logIndex
     take.taker = taker.id
     take.from_address = from.id
+    take.pair = pair.id
     take.offer = offer.id
     take.take_gem = offer.pay_gem
     take.give_gem = offer.buy_gem
@@ -93,6 +106,8 @@ export function handleCancel(event: emitCancel): void {
     offer.open = false
     offer.removed_timestamp = event.block.timestamp
     offer.removed_block = event.block.number
+    offer.removed_block_index = event.transaction.index;
+    offer.removed_log_index = event.logIndex
     offer.save()
 }
 
@@ -138,6 +153,8 @@ export function handleDelete(event: emitDelete): void {
     offer.open = false
     offer.removed_timestamp = event.block.timestamp
     offer.removed_block = event.block.number
+    offer.removed_block_index = event.transaction.index;
+    offer.removed_log_index = event.logIndex
     offer.save()
 }
 
@@ -151,6 +168,9 @@ export function handleLogMake(event: LogMake): void {
     let maker = getUser(event.params.maker)
     let from = event.transaction.from == event.params.maker ? maker : getUser(event.transaction.from)
 
+    // load the pair entity
+    let pair = getPair(event.params.pay_gem, event.params.buy_gem)
+
     // calculate the price of the offer (pay_amt / buy_amt)
     let price = event.params.pay_amt.toBigDecimal().div(event.params.buy_amt.toBigDecimal())
 
@@ -161,6 +181,7 @@ export function handleLogMake(event: LogMake): void {
     offer.index = event.logIndex
     offer.maker = maker.id
     offer.from_address = from.id
+    offer.pair = pair.id
     offer.pay_gem = event.params.pay_gem
     offer.buy_gem = event.params.buy_gem
     offer.pay_amt = event.params.pay_amt
@@ -181,6 +202,9 @@ export function handleLogTake(event: LogTake): void {
     let taker = getUser(event.params.taker)
     let from = event.transaction.from == event.params.taker ? taker : getUser(event.transaction.from)
 
+    // get the pair associated with the take 
+    let pair = getPair(event.params.pay_gem, event.params.buy_gem)
+
     // load the offer entity
     let offer = Offer.load(event.params.id)
     if (!offer) {
@@ -191,13 +215,17 @@ export function handleLogTake(event: LogTake): void {
     offer.paid_amt = offer.paid_amt.plus(event.params.take_amt)
     offer.bought_amt = offer.bought_amt.plus(event.params.give_amt)
 
-    // if the offer is filled, mark it as inactive and update the entity 
+    // TODO: at some point in time (very early on) the delete/cancel event was not being emitted.
+    // so, if an offer is filled, we are going to assume it was deleted/cancelled and mark it as such at the log_index + 1
+    // if there was a delete/cancel event, it will overwrite this data
     if (offer.paid_amt.equals(offer.pay_amt)) {
         offer.open = false
         offer.removed_timestamp = event.block.timestamp
         offer.removed_block = event.block.number
+        offer.removed_block_index = event.transaction.index;
+        offer.removed_log_index = event.logIndex.plus(BigInt.fromString('1'))
     }
-    offer.save()
+    offer.save() 
 
     // create the take entity
     let take = new Take(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex))))
@@ -206,6 +234,7 @@ export function handleLogTake(event: LogTake): void {
     take.index = event.logIndex
     take.taker = taker.id
     take.from_address = from.id
+    take.pair = pair.id
     take.offer = offer.id
     take.take_gem = offer.pay_gem
     take.give_gem = offer.buy_gem
@@ -229,6 +258,8 @@ export function handleLogKill(event: LogKill): void {
     offer.open = false
     offer.removed_timestamp = event.block.timestamp
     offer.removed_block = event.block.number
+    offer.removed_block_index = event.transaction.index;
+    offer.removed_log_index = event.logIndex
     offer.save()
 }
 
@@ -274,5 +305,7 @@ export function handleOfferDeleted(event: OfferDeleted): void {
     offer.open = false
     offer.removed_timestamp = event.block.timestamp
     offer.removed_block = event.block.number
+    offer.removed_block_index = event.transaction.index;
+    offer.removed_log_index = event.logIndex
     offer.save()
 }
