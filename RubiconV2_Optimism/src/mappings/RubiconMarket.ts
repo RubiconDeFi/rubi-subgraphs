@@ -1,5 +1,6 @@
 import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts"
 import { getUser } from "../utils/entities/user"
+import { getPair } from "../utils/entities/pair"
 import { updateCandles } from "../utils/entities/candles"
 import { getTransaction } from "../utils/entities/transaction"
 import { Offer, Take, Fee } from "../../generated/schema"
@@ -15,6 +16,9 @@ export function handleOffer(event: emitOffer): void {
     let maker = getUser(event.params.maker)
     let from = event.transaction.from == event.params.maker ? maker : getUser(event.transaction.from)
 
+    // load the pair entity
+    let pair = getPair(event.params.pay_gem, event.params.buy_gem)
+
     // calculate the price of the offer (pay_amt / buy_amt)
     let price = event.params.pay_amt.toBigDecimal().div(event.params.buy_amt.toBigDecimal())
 
@@ -25,6 +29,7 @@ export function handleOffer(event: emitOffer): void {
     offer.index = event.logIndex
     offer.maker = maker.id
     offer.from_address = from.id
+    offer.pair = pair.id
     offer.pay_gem = event.params.pay_gem
     offer.buy_gem = event.params.buy_gem
     offer.pay_amt = event.params.pay_amt
@@ -44,6 +49,9 @@ export function handleTake(event: emitTake): void {
     // get the taker and from entities (users)
     let taker = getUser(event.params.taker)
     let from = event.transaction.from == event.params.taker ? taker : getUser(event.transaction.from)
+
+    // get the pair associated with the take 
+    let pair = getPair(event.params.pay_gem, event.params.buy_gem)
 
     // load the offer entity
     let offer = Offer.load(event.params.id)
@@ -74,6 +82,7 @@ export function handleTake(event: emitTake): void {
     take.index = event.logIndex
     take.taker = taker.id
     take.from_address = from.id
+    take.pair = pair.id
     take.offer = offer.id
     take.take_gem = offer.pay_gem
     take.give_gem = offer.buy_gem
@@ -159,6 +168,9 @@ export function handleLogMake(event: LogMake): void {
     let maker = getUser(event.params.maker)
     let from = event.transaction.from == event.params.maker ? maker : getUser(event.transaction.from)
 
+    // load the pair entity
+    let pair = getPair(event.params.pay_gem, event.params.buy_gem)
+
     // calculate the price of the offer (pay_amt / buy_amt)
     let price = event.params.pay_amt.toBigDecimal().div(event.params.buy_amt.toBigDecimal())
 
@@ -169,6 +181,7 @@ export function handleLogMake(event: LogMake): void {
     offer.index = event.logIndex
     offer.maker = maker.id
     offer.from_address = from.id
+    offer.pair = pair.id
     offer.pay_gem = event.params.pay_gem
     offer.buy_gem = event.params.buy_gem
     offer.pay_amt = event.params.pay_amt
@@ -188,6 +201,9 @@ export function handleLogTake(event: LogTake): void {
     // get the taker and from entities (users)
     let taker = getUser(event.params.taker)
     let from = event.transaction.from == event.params.taker ? taker : getUser(event.transaction.from)
+
+    // get the pair associated with the take 
+    let pair = getPair(event.params.pay_gem, event.params.buy_gem)
 
     // load the offer entity
     let offer = Offer.load(event.params.id)
@@ -218,6 +234,7 @@ export function handleLogTake(event: LogTake): void {
     take.index = event.logIndex
     take.taker = taker.id
     take.from_address = from.id
+    take.pair = pair.id
     take.offer = offer.id
     take.take_gem = offer.pay_gem
     take.give_gem = offer.buy_gem

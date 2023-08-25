@@ -70,6 +70,9 @@ describe("hello defi cowboy 🦖", () => {
         assert.fieldEquals("Offer", "0x02000000", "bought_amt", "0")
         assert.fieldEquals("Offer", "0x02000000", "maker", "0xb0be5d911e3bd4ee2a8706cf1fac8d767a550497")
         assert.fieldEquals("Offer", "0x02000000", "price", "0.1")
+
+        // check that the pair entity is properly created
+        assert.fieldEquals("Pair", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1", "id", "0x4200000000000000000000000000000000000006da10009cbd5d07dd0cecc66161fc93d7c9000da1")
     })
 
     test("can create trades from custom events", () => {
@@ -149,7 +152,7 @@ describe("hello defi cowboy 🦖", () => {
         assert.fieldEquals("Take", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e01", "take_amt", "10")
         assert.fieldEquals("Take", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e01", "give_amt", "100")
         assert.fieldEquals("Take", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e01", "taker", USER_TWO.toLowerCase())
-        assert.fieldEquals("Take", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e01", "from", USER_TWO.toLowerCase())
+        assert.fieldEquals("Take", "0x764ef8aba8e67af506fa65bad1342bf34571ec3e01", "from_address", USER_TWO.toLowerCase())
 
         assert.fieldEquals("Take", "0x510e8308fe82836fd793336910ab01ff0242b24002", "id", "0x510e8308fe82836fd793336910ab01ff0242b24002")
         assert.fieldEquals("Take", "0x510e8308fe82836fd793336910ab01ff0242b24002", "offer", "0x02000000")
@@ -158,7 +161,7 @@ describe("hello defi cowboy 🦖", () => {
         assert.fieldEquals("Take", "0x510e8308fe82836fd793336910ab01ff0242b24002", "take_amt", "10")
         assert.fieldEquals("Take", "0x510e8308fe82836fd793336910ab01ff0242b24002", "give_amt", "100")
         assert.fieldEquals("Take", "0x510e8308fe82836fd793336910ab01ff0242b24002", "taker", USER_TWO.toLowerCase())
-        assert.fieldEquals("Take", "0x510e8308fe82836fd793336910ab01ff0242b24002", "from", USER_TWO.toLowerCase())
+        assert.fieldEquals("Take", "0x510e8308fe82836fd793336910ab01ff0242b24002", "from_address", USER_TWO.toLowerCase())
 
         // check that the offer entity was updated
         assert.fieldEquals("Offer", "0x01000000", "paid_amt", "10")

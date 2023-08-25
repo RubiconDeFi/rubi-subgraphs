@@ -30,6 +30,21 @@ type User @entity(immutable: true) {
     fees_received: [Fee!]! @derivedFrom(field: "recipient")
 }
 
+type Pair @entity(immutable: true) {
+    " the pair id (alpha-numeric order of the token addresses (token0.concat(token1))) "
+    id: Bytes!
+    " the token0 of the pair "
+    token0: Bytes!
+    " the token1 of the pair "
+    token1: Bytes!
+    " map to all offers created in the pair "
+    offers: [Offer!]! @derivedFrom(field: "pair")
+    " map to all takes created in the pair "
+    takes: [Take!]! @derivedFrom(field: "pair")
+    " map to all swaps created in the pair "
+    swaps: [Swap!]! @derivedFrom(field: "pair")
+}
+
 type Offer @entity {
     " the offer id "
     id: Bytes!
@@ -43,6 +58,8 @@ type Offer @entity {
     maker: User!
     " the user that originated the transaction that the offer was a part of "
     from_address: User!
+    " the pair that the offer is associated with "
+    pair: Pair!
     " the pay token of the offer (the asset the maker is selling) "
     pay_gem: Bytes!
     " the buy token of the offer (the asset the maker is buying) "
@@ -86,6 +103,8 @@ type Take @entity(immutable: true) {
     taker: User!
     " the user that originated the transaction that the take was a part of "
     from_address: User!
+    " the pair associated with the take "
+    pair: Pair!
     " the offer that was taken "
     offer: Offer!
     " the pay token of the offer (the asset the maker is selling & the asset the taker is buying) "
@@ -109,6 +128,8 @@ type Swap @entity(immutable: true) {
     index: BigInt!
     " the user that initiated the swap "
     swapper: User!
+    " the pair associated with the swap "
+    pair: Pair!
     " the input token of the swap "
     input_gem: Bytes!
     " the output token of the swap "
@@ -264,6 +285,3 @@ type CandleOneDay @entity {
     " the ratio of token0 to token 1 at the low "
     low_ratio: BigDecimal!
 }
-
-
-
