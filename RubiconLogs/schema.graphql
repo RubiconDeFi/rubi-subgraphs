@@ -1,0 +1,40 @@
+type Deposited @entity {
+    id: ID!
+    timestamp: BigInt!
+    block: BigInt!
+    block_index: BigInt!
+    txn: String!
+    evt_index: BigInt!
+    user: String!
+    asset: String!
+    amount: BigInt!
+    shares: BigInt!
+    pool: String!
+}
+
+type Withdrawed @entity {
+    id: ID!
+    timestamp: BigInt!
+    block: BigInt!
+    block_index: BigInt!
+    txn: String!
+    evt_index: BigInt!
+    user: String!
+    asset: String!
+    amount: BigInt!
+    shares: BigInt!
+    pool: String!
+}
+
+type Transfered @entity {
+    id: ID!
+    timestamp: BigInt!
+    block: BigInt!
+    block_index: BigInt!
+    txn: String!
+    evt_index: BigInt!
+    from_address: String!
+    to: String!
+    amount: BigInt!
+    pool: String!
+}
