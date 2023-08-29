@@ -90,7 +90,7 @@ describe("hello defi cowboy 🦖", () => {
         assert.fieldEquals("Take", "0xa16081f360e3847006db660bae1c6d1b2e17ec2a01000000", "take_amt", "10")
         assert.fieldEquals("Take", "0xa16081f360e3847006db660bae1c6d1b2e17ec2a01000000", "give_amt", "100")
         assert.fieldEquals("Take", "0xa16081f360e3847006db660bae1c6d1b2e17ec2a01000000", "taker", USER_TWO.toLowerCase())
-        assert.fieldEquals("Take", "0xa16081f360e3847006db660bae1c6d1b2e17ec2a01000000", "from", USER_TWO.toLowerCase())
+        assert.fieldEquals("Take", "0xa16081f360e3847006db660bae1c6d1b2e17ec2a01000000", "from_address", USER_TWO.toLowerCase())
 
         // check that the offer entity was updated
         assert.fieldEquals("Offer", "0x01000000", "paid_amt", "10")
