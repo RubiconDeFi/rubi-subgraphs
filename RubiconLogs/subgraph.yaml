@@ -1,0 +1,216 @@
+specVersion: 0.0.5
+description: basic logs from bath token
+repository: https://github.com/RubiconDeFi/rubicon_subgraph
+schema: 
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: bathETH
+    network: optimism
+    source: 
+      address: '0xB0bE5d911E3BD4Ee2A8706cF1fAc8d767A550497'
+      abi: BathToken
+      startBlock: 0
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./mappings/BathToken.ts
+      entities: 
+        - Deposit
+        - Withdraw
+        - Transfer
+      abis:
+        - name: BathToken
+          file: ./abis/BathToken.json
+      eventHandlers: 
+        - event: LogDeposit(uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleDeposit
+        - event: Deposit(uint256,address,uint256,address)
+          handler: handlePriorDeposit
+        - event: LogWithdraw(uint256,address,uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleWithdraw
+        - event: Withdraw(uint256,address,uint256,address,uint256,address)
+          handler: handlePriorWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: bathWBTC
+    network: optimism
+    source: 
+      address: '0x7571CC9895D8E997853B1e0A1521eBd8481aa186'
+      abi: BathToken
+      startBlock: 0
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./mappings/BathToken.ts
+      entities: 
+        - Deposit
+        - Withdraw
+        - Transfer
+      abis:
+        - name: BathToken
+          file: ./abis/BathToken.json
+      eventHandlers: 
+        - event: LogDeposit(uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleDeposit
+        - event: Deposit(uint256,address,uint256,address)
+          handler: handlePriorDeposit
+        - event: LogWithdraw(uint256,address,uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleWithdraw
+        - event: Withdraw(uint256,address,uint256,address,uint256,address)
+          handler: handlePriorWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: bathUSDC
+    network: optimism
+    source: 
+      address: '0xe0e112e8f33d3f437D1F895cbb1A456836125952'
+      abi: BathToken
+      startBlock: 0
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./mappings/BathToken.ts
+      entities: 
+        - Deposit
+        - Withdraw
+        - Transfer
+      abis:
+        - name: BathToken
+          file: ./abis/BathToken.json
+      eventHandlers: 
+        - event: LogDeposit(uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleDeposit
+        - event: Deposit(uint256,address,uint256,address)
+          handler: handlePriorDeposit
+        - event: LogWithdraw(uint256,address,uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleWithdraw
+        - event: Withdraw(uint256,address,uint256,address,uint256,address)
+          handler: handlePriorWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: bathDAI
+    network: optimism
+    source: 
+      address: '0x60daEC2Fc9d2e0de0577A5C708BcaDBA1458A833'
+      abi: BathToken
+      startBlock: 0
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./mappings/BathToken.ts
+      entities: 
+        - Deposit
+        - Withdraw
+        - Transfer
+      abis:
+        - name: BathToken
+          file: ./abis/BathToken.json
+      eventHandlers: 
+        - event: LogDeposit(uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleDeposit
+        - event: Deposit(uint256,address,uint256,address)
+          handler: handlePriorDeposit
+        - event: LogWithdraw(uint256,address,uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleWithdraw
+        - event: Withdraw(uint256,address,uint256,address,uint256,address)
+          handler: handlePriorWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: bathUSDT
+    network: optimism
+    source: 
+      address: '0xfFBD695bf246c514110f5DAe3Fa88B8c2f42c411'
+      abi: BathToken
+      startBlock: 0
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./mappings/BathToken.ts
+      entities: 
+        - Deposit
+        - Withdraw
+        - Transfer
+      abis:
+        - name: BathToken
+          file: ./abis/BathToken.json
+      eventHandlers: 
+        - event: LogDeposit(uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleDeposit
+        - event: Deposit(uint256,address,uint256,address)
+          handler: handlePriorDeposit
+        - event: LogWithdraw(uint256,address,uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleWithdraw
+        - event: Withdraw(uint256,address,uint256,address,uint256,address)
+          handler: handlePriorWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: bathSNX
+    network: optimism
+    source: 
+      address: '0xeb5F29AfaaA3f44eca8559c3e8173003060e919f'
+      abi: BathToken
+      startBlock: 0
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./mappings/BathToken.ts
+      entities: 
+        - Deposit
+        - Withdraw
+        - Transfer
+      abis:
+        - name: BathToken
+          file: ./abis/BathToken.json
+      eventHandlers: 
+        - event: LogDeposit(uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleDeposit
+        - event: Deposit(uint256,address,uint256,address)
+          handler: handlePriorDeposit
+        - event: LogWithdraw(uint256,address,uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleWithdraw
+        - event: Withdraw(uint256,address,uint256,address,uint256,address)
+          handler: handlePriorWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: bathOP
+    network: optimism
+    source: 
+      address: '0x574a21fE5ea9666DbCA804C9d69d8Caf21d5322b'
+      abi: BathToken
+      startBlock: 0
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./mappings/BathToken.ts
+      entities: 
+        - Deposit
+        - Withdraw
+        - Transfer
+      abis:
+        - name: BathToken
+          file: ./abis/BathToken.json
+      eventHandlers: 
+        - event: LogDeposit(uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleDeposit
+        - event: Deposit(uint256,address,uint256,address)
+          handler: handlePriorDeposit
+        - event: LogWithdraw(uint256,address,uint256,address,uint256,address,uint256,uint256,uint256)
+          handler: handleWithdraw
+        - event: Withdraw(uint256,address,uint256,address,uint256,address)
+          handler: handlePriorWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
