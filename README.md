@@ -96,3 +96,47 @@ For checking the status of any subgraph, an easy query for doing is below. It sh
   }
 }
 ```
+
+## Subgraphs, A High Level Overview
+
+An overview of the design principles in place within this repo can be found [here](https://thegraph.com/blog/event-driven-development-unlocking-optimized-dapps-and-subgraphs/). In short, the Rubicon protocol emits events which correspond to relevant actions that are occuring on the protocol. These events are defined within the `subgraph.template.yaml`, along with details regarding the smart contracts the originate from. `src/mappings` defines how those events are handled in relation to the `schema.graphql`, which is the underlying database architecture that the sugbraph is populating. Types corresponding to the events and smart contracts are generated when `codegen` is ran, and stored within the `generated/` file. The `config/` file contains relevant information to the network that is being indexed, and populates the `subgraph.yaml` based upon the `subgraph.template.yaml` when you run `npm run prepare:<network>`. 
+
+```
+.
+├── abis
+│   ├── RubiconMarket.json
+│   └── RubiconRouter.json
+├── config
+│   ├── arbitrum.json
+│   ├── arbitrum_goerli.json
+│   ├── base.json
+│   ├── base_goerli.json
+│   └── polygon_mumbai.json
+├── generated
+│   ├── RubiconMarket
+│   │   ├── ...
+│   │   └── RubiconMarket.ts
+│   ├── RubiconRouter
+│   │   ├── ...
+│   │   └── RubiconRouter.ts
+│   └── schema.ts
+├── package.json
+├── schema.graphql
+├── src
+│   ├── mappings
+│   │   ├── RubiconMarket.ts
+│   │   └── RubiconRouter.ts
+│   └── utils
+│       ├── constants.ts
+│       └── entities
+│           ├── candles.ts
+│           ├── pair.ts
+│           ├── transaction.ts
+│           └── user.ts
+├── subgraph.template.yaml
+├── subgraph.yaml
+└── tests
+    ├── constants.ts
+    ├── rubicon.test.ts
+    └── utils.ts
+```
