@@ -13,6 +13,7 @@ import {
 import { BigInt, Address, BigDecimal, store } from '@graphprotocol/graph-ts'
 
 export function handleDeposit(event: LogDeposit): void {
+    
     let id = event.transaction.hash.toString().concat('-').concat(event.logIndex.toString())
     let deposit = new Deposited(id)
     deposit.timestamp = event.block.timestamp
@@ -20,11 +21,19 @@ export function handleDeposit(event: LogDeposit): void {
     deposit.block_index = event.transaction.index
     deposit.txn = event.transaction.hash.toHexString()
     deposit.evt_index = event.logIndex
-    deposit.user = event.params.depositor.toHexString()
+    //deposit.user = event.params.depositor.toHexString()
     deposit.asset = event.params.asset.toHexString()
     deposit.amount = event.params.depositedAmt
     deposit.shares = event.params.sharesReceived
     deposit.pool = event.address.toHexString()
+
+    // if the depositor is the router, use the transaction origin 
+    if (event.params.depositor.toHexString() == "0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf") {
+        deposit.user = event.transaction.from.toHexString()
+    } else {
+        deposit.user = event.params.depositor.toHexString()
+    }
+
     deposit.save()
 }
 
@@ -36,11 +45,19 @@ export function handlePriorDeposit(event: Deposit): void {
     deposit.block_index = event.transaction.index
     deposit.txn = event.transaction.hash.toHexString()
     deposit.evt_index = event.logIndex
-    deposit.user = event.params.depositor.toHexString()
+    //deposit.user = event.params.depositor.toHexString()
     deposit.asset = event.params.asset.toHexString()
     deposit.amount = event.params.depositedAmt
     deposit.shares = event.params.sharesReceived
     deposit.pool = event.address.toHexString()
+
+    // if the depositor is the router, use the transaction origin 
+    if (event.params.depositor.toHexString() == "0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf") {
+        deposit.user = event.transaction.from.toHexString()
+    } else {
+        deposit.user = event.params.depositor.toHexString()
+    }
+
     deposit.save()
 }
 
@@ -52,11 +69,19 @@ export function handleWithdraw(event: LogWithdraw): void {
     withdraw.block_index = event.transaction.index
     withdraw.txn = event.transaction.hash.toHexString()
     withdraw.evt_index = event.logIndex
-    withdraw.user = event.params.withdrawer.toHexString()
+    //withdraw.user = event.params.withdrawer.toHexString()
     withdraw.asset = event.params.asset.toHexString()
     withdraw.amount = event.params.amountWithdrawn
     withdraw.shares = event.params.sharesWithdrawn
     withdraw.pool = event.address.toHexString()
+    
+    // if the withdrawer is the router, use the transaction origin 
+    if (event.params.withdrawer.toHexString() == "0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf") {
+        withdraw.user = event.transaction.from.toHexString()
+    } else {
+        withdraw.user = event.params.withdrawer.toHexString()
+    }
+
     withdraw.save()
 }
 
@@ -68,11 +93,19 @@ export function handlePriorWithdraw(event: Withdraw): void {
     withdraw.block_index = event.transaction.index
     withdraw.txn = event.transaction.hash.toHexString()
     withdraw.evt_index = event.logIndex
-    withdraw.user = event.params.withdrawer.toHexString()
+    //withdraw.user = event.params.withdrawer.toHexString()
     withdraw.asset = event.params.asset.toHexString()
     withdraw.amount = event.params.amountWithdrawn
     withdraw.shares = event.params.sharesWithdrawn
     withdraw.pool = event.address.toHexString()
+
+    // if the withdrawer is the router, use the transaction origin 
+    if (event.params.withdrawer.toHexString() == "0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf") {
+        withdraw.user = event.transaction.from.toHexString()
+    } else {
+        withdraw.user = event.params.withdrawer.toHexString()
+    }
+
     withdraw.save()
 }
 
