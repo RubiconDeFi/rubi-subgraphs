@@ -1,0 +1,186 @@
+type Transaction @entity(immutable: true) {
+    " the transaction hash "
+    id: Bytes!
+    " the transaction timestamp "
+    timestamp: BigInt!
+    " the transaction block number "
+    block_number: BigInt!
+    " the transaction block index "
+    block_index: BigInt!
+    " map to all fills created in the transaction "
+    takes: [Take!]! @derivedFrom(field: "transaction")
+}
+
+type User @entity(immutable: true) {
+    " the user address "
+    id: Bytes!
+    " map to all orders the user has filled "
+    takes: [Take!]! @derivedFrom(field: "taker")
+    " map to all orders user has made"
+    makes: [Take!]! @derivedFrom(field: "from_address")
+}
+
+type Pair @entity(immutable: true) {
+    " the pair id (alpha-numeric order of the token addresses (token0.concat(token1))) "
+    id: Bytes!
+    " the token0 of the pair "
+    token0: Bytes!
+    " the token1 of the pair "
+    token1: Bytes!
+    " map to all takes created in the pair "
+    takes: [Take!]! @derivedFrom(field: "pair")
+}
+
+type Take @entity(immutable: true) {
+    " the transaction hash and log index of the take "
+    id: Bytes!
+    " the transaction that the take was a part of "
+    transaction: Transaction!
+    " the timestamp of the transaction that the take was a part of "
+    timestamp: BigInt!
+    " the event log index of the take "
+    index: BigInt!
+    " the user that took the offer "
+    taker: User!
+    " the user that originated the transaction that the take was a part of "
+    from_address: User!
+    " the pair associated with the take "
+    pair: Pair!
+    " the pay token of the offer (the asset the maker is selling & the asset the taker is buying) "
+    take_gem: Bytes!
+    " the buy token of the offer (the asset the maker is buying & the asset the taker is paying in) "
+    give_gem: Bytes!
+    " the amount of pay token the taker is buying "
+    take_amt: BigInt!
+    " the amount of buy token the taker is paying in "
+    give_amt: BigInt!
+}
+
+type CandleOneMinute @entity {
+    " token0 + token1 + timestamp / 60 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleFiveMinute @entity {
+    " token0 + token1 + timestamp / 300 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleFifteenMinute @entity {
+    " token0 + token1 + timestamp / 900 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleOneHour @entity {
+    " token0 + token1 + timestamp / 3600 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleOneDay @entity {
+    " token0 + token1 + timestamp / 86400 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+
+
+

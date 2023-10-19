@@ -7,3 +7,4 @@ generated/
 yarn.lock
 **/.bin
 **/.env
+**/data

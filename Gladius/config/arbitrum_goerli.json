@@ -1,0 +1,5 @@
+{
+    "network" : "arbitrum-goerli",
+    "startBlock": 41110604,
+    "ExclusiveDutchOrderReactor-address" : "0x53B91D1724F4bb523C2598340849Ff7eb1A12465"
+}

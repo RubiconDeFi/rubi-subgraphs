@@ -1,0 +1,34 @@
+specVersion: 0.0.5
+description: a subgraph to support the Rubicon dAPP utlizing the v2 protocol
+repository: https://github.com/RubiconDeFi/rubi-subgraphs
+schema: 
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: ExclusiveDutchOrderReactor
+    network: {{ network }}
+    source: 
+      address: '{{ ExclusiveDutchOrderReactor-address }}'
+      abi: ExclusiveDutchOrderReactor
+      startBlock: {{ startBlock }}
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/ExclusiveDutchOrderReactor.ts
+      entities: 
+        - Fill
+        - Transaction
+        - CandleOneMinute
+        - CandleFiveMinute
+        - CandleFifteenMinute
+        - CandleOneHour
+        - CandleOneDay
+      abis:
+        - name: ExclusiveDutchOrderReactor
+          file: ./abis/ExclusiveDutchOrderReactor.json
+      eventHandlers:
+        - event: Fill(indexed bytes32,indexed address,indexed address,uint256)
+          handler: handleFill
+          receipt: true
+
