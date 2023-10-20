@@ -11,6 +11,19 @@ type Transaction @entity(immutable: true) {
     takes: [Take!]! @derivedFrom(field: "transaction")
 }
 
+type Fee @entity(immutable: true) {
+    " unique fee id using transaction + logindex"
+    id: Bytes!
+    " transaction fee was a part of "
+    transaction: Transaction!
+    " address of fee recipient (our EOA)"
+    recipient: Bytes!
+    " erc20 sent to recipient "
+    token: Bytes!
+    " amount of erc20 sent "
+    amount: BigInt!
+}
+
 type User @entity(immutable: true) {
     " the user address "
     id: Bytes!
@@ -18,6 +31,8 @@ type User @entity(immutable: true) {
     takes: [Take!]! @derivedFrom(field: "taker")
     " map to all orders user has made"
     makes: [Take!]! @derivedFrom(field: "from_address")
+    " map to all fees user has collected"
+    fees: [Fee!]! @derivedFrom(field: "recipient")
 }
 
 type Pair @entity(immutable: true) {
