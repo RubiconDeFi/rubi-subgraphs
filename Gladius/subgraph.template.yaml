@@ -17,8 +17,11 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/mappings/ExclusiveDutchOrderReactor.ts
       entities: 
-        - Fill
         - Transaction
+        - Fee
+        - User
+        - Pair
+        - Take
         - CandleOneMinute
         - CandleFiveMinute
         - CandleFifteenMinute

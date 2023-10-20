@@ -1,7 +1,7 @@
 import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
 import { updateCandles } from "../utils/entities/candles";
 import { getTransaction } from "../utils/entities/transaction";
-import { Fee, Take } from "../../generated/schema";
+import { Fee } from "../../generated/schema";
 import { Fill } from '../../generated/ExclusiveDutchOrderReactor/ExclusiveDutchOrderReactor';
 import { getUser } from "../utils/entities/user";
 import { getPair } from "../utils/entities/pair";
