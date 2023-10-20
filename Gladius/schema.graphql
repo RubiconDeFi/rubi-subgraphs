@@ -31,8 +31,6 @@ type User @entity(immutable: true) {
     takes: [Take!]! @derivedFrom(field: "taker")
     " map to all orders user has made"
     makes: [Take!]! @derivedFrom(field: "from_address")
-    " map to all fees user has collected"
-    fees: [Fee!]! @derivedFrom(field: "recipient")
 }
 
 type Pair @entity(immutable: true) {
