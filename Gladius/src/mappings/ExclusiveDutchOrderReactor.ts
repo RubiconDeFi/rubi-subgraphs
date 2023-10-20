@@ -8,14 +8,14 @@ import { getPair } from "../utils/entities/pair";
 import { TRANSFER_SIGNATURE, FILL_SIGNATURE } from "../utils/constants";
 import { getTake } from "../utils/entities/take";
 
-export function handleTake(event: Fill): void {
+export function handleFill(event: Fill): void {
 
     // get the transaction entity 
     const transaction = getTransaction(event)
 
     const receipt = event.receipt
 
-    if (receipt === null) return;
+    if (receipt == null) return;
 
     let inputTransfers: ethereum.Log[] = [];
     let outputTransfers: ethereum.Log[][] = [];
@@ -25,42 +25,42 @@ export function handleTake(event: Fill): void {
 
     for (let i: i32 = 0; i < receipt.logs.length; i++) {
         if (
-            receipt.logs[i].topics[0] === Bytes.fromHexString(TRANSFER_SIGNATURE) &&
-            receipt.logs[i].topics[1] === event.params.swapper &&
-            receipt.logs[i].topics[2] === event.params.filler
+            receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
+            receipt.logs[i].topics[1] == event.params.swapper &&
+            receipt.logs[i].topics[2] == event.params.filler
         ) inputTransfers.push(receipt.logs[i])
 
         if (
-            receipt.logs[i].topics[0] === Bytes.fromHexString(TRANSFER_SIGNATURE) &&
-            receipt.logs[i].topics[1] === event.params.filler &&
-            receipt.logs[i].topics[2] === event.params.swapper &&
-            firstOutputTransferIndex === -1
+            receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
+            receipt.logs[i].topics[1] == event.params.filler &&
+            receipt.logs[i].topics[2] == event.params.swapper &&
+            firstOutputTransferIndex == -1
         ) {
             firstOutputTransferIndex = i
             break
         }
     }
 
-    if (firstOutputTransferIndex === -1) return;
+    if (firstOutputTransferIndex == -1) return;
 
     for (let i: i32 = firstOutputTransferIndex; i < receipt.logs.length; i++) {
         if (
-            receipt.logs[i].topics[0] === Bytes.fromHexString(TRANSFER_SIGNATURE) &&
-            receipt.logs[i].topics[1] === event.params.filler &&
-            receipt.logs[i].topics[2] === event.params.swapper
+            receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
+            receipt.logs[i].topics[1] == event.params.filler &&
+            receipt.logs[i].topics[2] == event.params.swapper
         ) {
             outputTransfers[fills.length] =
                 outputTransfers[fills.length] ? outputTransfers[fills.length].concat([receipt.logs[i]]) : [receipt.logs[i]]
         }
 
         if (
-            receipt.logs[i].topics[0] === Bytes.fromHexString(TRANSFER_SIGNATURE) &&
-            receipt.logs[i].topics[1] === event.params.filler &&
+            receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
+            receipt.logs[i].topics[1] == event.params.filler &&
             receipt.logs[i].topics[2] !== event.params.swapper
         ) fees[fills.length] =
             fees[fills.length] ? fees[fills.length].concat([receipt.logs[i]]) : [receipt.logs[i]]
 
-        if (receipt.logs[i].topics[0] === Bytes.fromHexString(FILL_SIGNATURE))
+        if (receipt.logs[i].topics[0] == Bytes.fromHexString(FILL_SIGNATURE))
             fills.push(receipt.logs[i]);
     }
 

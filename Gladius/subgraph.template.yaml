@@ -34,4 +34,3 @@ dataSources:
         - event: Fill(indexed bytes32,indexed address,indexed address,uint256)
           handler: handleFill
           receipt: true
-

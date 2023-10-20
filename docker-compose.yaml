@@ -18,7 +18,7 @@ services:
       postgres_db: graph-node
       ipfs: 'ipfs:5001'
       # Change next line if you want to connect to a different JSON-RPC endpoint
-      ethereum: 'optimism:http://mmt.optimism.mainnet.rubicon.ninja'
+      ethereum: 'arbitrum_goerli:https://arbitrum.testnet.rubicon.ninja'
       GRAPH_LOG: info
   ipfs:
     image: ipfs/go-ipfs:v0.4.23
