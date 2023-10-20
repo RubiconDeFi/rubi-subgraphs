@@ -6,6 +6,7 @@ import { Fill } from '../../generated/ExclusiveDutchOrderReactor/ExclusiveDutchO
 import { getUser } from "../utils/entities/user";
 import { getPair } from "../utils/entities/pair";
 import { TRANSFER_SIGNATURE, FILL_SIGNATURE } from "../utils/constants";
+import { getTake } from "../utils/entities/take";
 
 export function handleTake(event: Fill): void {
 
@@ -73,8 +74,10 @@ export function handleTake(event: Fill): void {
             // get the pair associated with the take
             const pair = getPair(inputTransfers[i].address, outputTransfers[i][j].address)
 
+            const id = event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex)));
+            const take = getTake(id);
+
             // create the take entity
-            let take = new Take(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex))))
             take.transaction = transaction.id
             take.timestamp = event.block.timestamp
             take.index = event.logIndex
