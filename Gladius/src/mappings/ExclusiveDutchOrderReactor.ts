@@ -1,4 +1,4 @@
-import { BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
+import { BigInt, ByteArray, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 import { updateCandles } from "../utils/entities/candles";
 import { getTransaction } from "../utils/entities/transaction";
 import { Fee, Take, Transaction } from "../../generated/schema";
@@ -55,8 +55,6 @@ export function handleFill(event: Fill): void {
             receipt.logs[i].topics[2].toHexString().slice(26) == event.params.swapper.toHexString().slice(2) &&
             firstOutputTransferIndex == -1
         ) {
-            log.error(`BREAKING`, [])
-
             firstOutputTransferIndex = i
             break
         }
@@ -116,6 +114,9 @@ export function handleFill(event: Fill): void {
             const id = event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex)));
             const take = new Take(id);
 
+            log.error(`Input transfer address ${inputTransfers[i].address}`, [])
+            log.error(`Input transfer amount ${inputTransfers[i].data.toHexString()}`, [])
+
             // create the take entity
             take.transaction = event.transaction.hash
             take.timestamp = event.block.timestamp
@@ -125,8 +126,8 @@ export function handleFill(event: Fill): void {
             take.pair = pair.id
             take.take_gem = inputTransfers[i].address
             take.give_gem = outputTransfers[i][j].address
-            take.take_amt = BigInt.fromByteArray(inputTransfers[i].data)
-            take.give_amt = BigInt.fromByteArray(outputTransfers[i][j].data)
+            take.take_amt = BigInt.fromByteArray(ByteArray.fromHexString(inputTransfers[i].data.toHexString()))
+            take.give_amt = BigInt.fromByteArray(ByteArray.fromHexString(outputTransfers[i][j].data.toHexString()))
             take.save()
 
             // update the candle entities
@@ -138,7 +139,7 @@ export function handleFill(event: Fill): void {
         for (let j: i32 = 0; j < fees[i].length; j++) {
             const feeLog = fees[i][j]
             let fee = new Fee(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(feeLog.logIndex))))
-            fee.amount = BigInt.fromByteArray(feeLog.data)
+            fee.amount = BigInt.fromByteArray(ByteArray.fromHexString(feeLog.data.toHexString()))
             fee.transaction = transaction.id
             fee.token = feeLog.address
             fee.recipient = feeLog.topics[2]
