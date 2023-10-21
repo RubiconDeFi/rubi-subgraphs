@@ -18,8 +18,9 @@ services:
       postgres_db: graph-node
       ipfs: 'ipfs:5001'
       # Change next line if you want to connect to a different JSON-RPC endpoint
-      ethereum: 'arbitrum_goerli:https://arbitrum.testnet.rubicon.ninja'
+      ethereum: 'arbitrum-goerli:https://arbitrum.testnet.rubicon.ninja'
       GRAPH_LOG: info
+      GRAPH_FORK_BASE: 'https://api.thegraph.com/subgraphs/id/'
   ipfs:
     image: ipfs/go-ipfs:v0.4.23
     ports:

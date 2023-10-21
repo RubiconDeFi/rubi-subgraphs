@@ -15,11 +15,13 @@
 
         "deploy:arbitrum": "graph deploy --product hosted-service etherealiska/gladius-arbitrum",
         "deploy:arbitrum:goerli": "graph deploy --product hosted-service etherealiska/gladius-arbitrum-goerli",
-        "deploy:optimism": "graph deploy --help",
+        "deploy:optimism": "graph deploy --product hosted-service etherealiska/gladius-optimism",
 
         "create-local": "graph create --node http://localhost:8020/ Gladius",
         "remove-local": "graph remove --node http://localhost:8020/ Gladius",
         "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 Gladius",
+
+        "deploy-forked": "graph deploy Gladius --node http://localhost:8020/ --ipfs http://localhost:5001 --debug-fork QmNU9tHGa26VdJbqfq8njxb5x6PQnWz1oHK3PmyUG7uHAP",
 
         "create:cloud:arbitrum": "source ../.env && graph create --node $GRAPH_NODE_URL Gladius_Arbitrum",
         "remove:cloud:arbitrum": "source ../.env && graph remove --node $GRAPH_NODE_URL Gladius_Arbitrum",
