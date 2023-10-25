@@ -1,5 +1,5 @@
 {
     "network" : "optimism",
-    "startBlock": 110001699,
+    "startBlock": 110001695,
     "ExclusiveDutchOrderReactor-address" : "0xcB23e6c82c900E68d6F761bd5a193a5151A1D6d2"
 }

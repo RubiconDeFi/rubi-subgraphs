@@ -106,30 +106,31 @@ export function handleFill(event: Fill): void {
     const from = getUser(event.params.swapper)
 
     for (let i: i32 = 0; i < inputTransfers.length; i++) {
-        for (let j: i32 = 0; j < outputTransfers[i].length; j++) {
+        // multi output is borked
+        if (outputTransfers[i].length > 1) continue;
 
-            // get the pair associated with the take
-            const pair = getPair(inputTransfers[i].address, outputTransfers[i][j].address)
+        // get the pair associated with the take
+        const pair = getPair(inputTransfers[i].address, outputTransfers[i][0].address)
 
-            const id = event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex)));
-            const take = new Take(id);
+        const id = event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex)));
+        const take = new Take(id);
 
-            // create the take entity
-            take.transaction = event.transaction.hash
-            take.timestamp = event.block.timestamp
-            take.index = event.logIndex
-            take.taker = taker.id
-            take.from_address = from.id
-            take.pair = pair.id
-            take.take_gem = inputTransfers[i].address
-            take.give_gem = outputTransfers[i][j].address
-            take.take_amt = BigInt.fromString(HexBigInt.fromString(inputTransfers[i].data.toHexString()).toString())
-            take.give_amt = BigInt.fromString(HexBigInt.fromString(outputTransfers[i][j].data.toHexString()).toString())
-            take.save()
+        // create the take entity
+        take.transaction = event.transaction.hash
+        take.timestamp = event.block.timestamp
+        take.index = event.logIndex
+        take.taker = taker.id
+        take.from_address = from.id
+        take.pair = pair.id
+        take.take_gem = inputTransfers[i].address
+        take.give_gem = outputTransfers[i][0].address
+        take.take_amt = BigInt.fromString(HexBigInt.fromString(inputTransfers[i].data.toHexString()).toString())
+        take.give_amt = BigInt.fromString(HexBigInt.fromString(outputTransfers[i][0].data.toHexString()).toString())
+        take.save()
 
-            // update the candle entities
-            updateCandles(take)
-        }
+        // update the candle entities
+        updateCandles(take)
+
     }
 
     for (let i: i32 = 0; i < fees.length; i++) {

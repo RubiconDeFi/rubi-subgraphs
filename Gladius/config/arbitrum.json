@@ -1,5 +1,5 @@
 {
-    "network" : "arbitrum",
+    "network" : "arbitrum-one",
     "startBlock": 132837528,
     "ExclusiveDutchOrderReactor-address" : "0xAeb3e81b8e1A425985816B5f436BDF1E0b542418"
 } 
