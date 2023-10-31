@@ -1,6 +1,6 @@
 import { BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 import { updateCandles } from "../utils/entities/candles";
-import { Fee, Take, Transaction } from "../../generated/schema";
+import { Fee, Take, Transaction, Fill as FillEntity } from "../../generated/schema";
 import { Fill } from '../../generated/ExclusiveDutchOrderReactor/ExclusiveDutchOrderReactor';
 import { getUser } from "../utils/entities/user";
 import { getPair } from "../utils/entities/pair";
@@ -8,6 +8,10 @@ import { TRANSFER_SIGNATURE, FILL_SIGNATURE } from "../utils/constants";
 import { BigInt as HexBigInt } from "as-bigint"
 
 export function handleFill(event: Fill): void {
+
+    const fill = new FillEntity(event.params.orderHash);
+    fill.transaction = event.transaction.hash;
+    fill.save();
 
     let transaction = Transaction.load(event.transaction.hash);
 

@@ -33,6 +33,11 @@ type User @entity(immutable: true) {
     makes: [Take!]! @derivedFrom(field: "from_address")
 }
 
+type Fill @entity(immutable: true) {
+    id: Bytes!
+    transaction: Transaction!
+}
+
 type Pair @entity(immutable: true) {
     " the pair id (alpha-numeric order of the token addresses (token0.concat(token1))) "
     id: Bytes!
