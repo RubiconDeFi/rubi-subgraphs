@@ -9,10 +9,6 @@ import { BigInt as HexBigInt } from "as-bigint"
 
 export function handleFill(event: Fill): void {
 
-    const fill = new FillEntity(event.params.orderHash);
-    fill.transaction = event.transaction.hash;
-    fill.save();
-
     let transaction = Transaction.load(event.transaction.hash);
 
     if (transaction) {
@@ -42,7 +38,6 @@ export function handleFill(event: Fill): void {
     log.error(`Swapper ${event.params.swapper.toHexString()}`, [])
 
     for (let i: i32 = 0; i < receipt.logs.length; i++) {
-
 
         if (
             receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
@@ -147,5 +142,11 @@ export function handleFill(event: Fill): void {
             fee.recipient = feeLog.topics[2]
             fee.save()
         }
+    }
+
+    for (let i: i32 = 0; i < fills.length; i++) {
+        const fill = new FillEntity(fills[i].topics[1]);
+        fill.transaction = event.transaction.hash;
+        fill.save();
     }
 }
