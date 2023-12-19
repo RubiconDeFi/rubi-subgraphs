@@ -35,6 +35,10 @@ type User @entity(immutable: true) {
 
 type Fill @entity(immutable: true) {
     id: Bytes!
+    inputToken: Bytes!
+    outputToken: Bytes!
+    inputAmount: BigInt!
+    outputAmount: BigInt!
     transaction: Transaction!
 }
 

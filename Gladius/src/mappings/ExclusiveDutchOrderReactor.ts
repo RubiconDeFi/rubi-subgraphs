@@ -147,6 +147,10 @@ export function handleFill(event: Fill): void {
     for (let i: i32 = 0; i < fills.length; i++) {
         const fill = new FillEntity(fills[i].topics[1]);
         fill.transaction = event.transaction.hash;
+        fill.inputToken = inputTransfers[i].address
+        fill.outputToken = outputTransfers[i][0].address
+        fill.inputAmount = BigInt.fromString(HexBigInt.fromString(inputTransfers[i].data.toHexString()).toString())
+        fill.outputAmount = BigInt.fromString(HexBigInt.fromString(outputTransfers[i][0].data.toHexString()).toString())
         fill.save();
     }
 }
