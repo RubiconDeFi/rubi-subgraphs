@@ -34,9 +34,6 @@ export function handleFill(event: Fill): void {
     let firstOutputTransferIndex: i32 = -1;
     let fills: ethereum.Log[] = [];
 
-    log.error(`Filler ${event.params.filler.toHexString()}`, [])
-    log.error(`Swapper ${event.params.swapper.toHexString()}`, [])
-
     for (let i: i32 = 0; i < receipt.logs.length; i++) {
 
         if (
@@ -92,13 +89,6 @@ export function handleFill(event: Fill): void {
             feesTemp = []
         }
     }
-
-    log.error(`Inputs {}\nOutputs {}\nFees {}\nFills {}`, [
-        inputTransfers.length.toString(),
-        outputTransfers.length.toString(),
-        fees.length.toString(),
-        fills.length.toString()
-    ])
 
     // get the taker and from entities (users)
     const taker = getUser(event.params.filler)

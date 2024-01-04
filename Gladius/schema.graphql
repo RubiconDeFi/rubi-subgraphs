@@ -78,6 +78,31 @@ type Take @entity(immutable: true) {
     give_amt: BigInt!
 }
 
+# Uniswap Pool
+type Pool @entity {
+  # pool address
+  id: ID!
+  # creation
+  createdAtTimestamp: BigInt!
+  # block pool was created at
+  createdAtBlockNumber: BigInt!
+  # token0
+  token0: Token!
+  # token1
+  token1: Token!
+}
+
+type Token @entity {
+  # token address
+  id: ID!
+  # token symbol
+  symbol: String!
+  # token name
+  name: String!
+  # token decimals
+  decimals: BigInt!
+}
+
 type CandleOneMinute @entity {
     " token0 + token1 + timestamp / 60 "
     id: Bytes!
