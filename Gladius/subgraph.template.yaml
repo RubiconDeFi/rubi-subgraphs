@@ -40,10 +40,10 @@ dataSources:
     source:
       address: '{{ UniswapV3Router-address }}'
       abi: Factory
-      startBlock: {{ UniswapV3Router-startBlock }}
+      startBlock: {{ startBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/Uni.ts
       entities:
@@ -71,7 +71,7 @@ templates:
       abi: Pool
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/Uni.ts
       entities:

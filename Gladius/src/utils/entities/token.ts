@@ -74,21 +74,3 @@ export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
   }
   return BigInt.fromI32(totalSupplyValue as i32)
 }
-
-export function fetchTokenDecimals(tokenAddress: Address): BigInt {
-  let contract = ERC20.bind(tokenAddress)
-  // try types uint8 for decimals
-  let decimalValue = null
-  let decimalResult = contract.try_decimals()
-  if (!decimalResult.reverted) {
-    decimalValue = decimalResult.value
-  } else {
-    // try with the static definition
-    let staticTokenDefinition = StaticTokenDefinition.fromAddress(tokenAddress)
-    if(staticTokenDefinition != null) {
-      return staticTokenDefinition.decimals
-    }
-  }
-
-  return BigInt.fromI32(decimalValue as i32)
-}

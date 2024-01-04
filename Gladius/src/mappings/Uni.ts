@@ -2,7 +2,7 @@
 import { PoolCreated } from '../../generated/Factory/Factory'
 import { Pool, Token } from '../../generated/schema'
 import { Pool as PoolTemplate } from '../../generated/templates'
-import { fetchTokenSymbol, fetchTokenName, fetchTokenDecimals } from '../utils/entities/token'
+import { fetchTokenSymbol, fetchTokenName } from '../utils/entities/token'
 import { log, Bytes } from '@graphprotocol/graph-ts'
 import { Take } from '../../generated/schema'
 import { updateCandles } from '../utils/entities/candles'
@@ -61,28 +61,12 @@ export function handlePoolCreated(event: PoolCreated): void {
     token0 = new Token(event.params.token0.toHexString())
     token0.symbol = fetchTokenSymbol(event.params.token0)
     token0.name = fetchTokenName(event.params.token0)
-    let decimals = fetchTokenDecimals(event.params.token0)
-
-    // bail if we couldn't figure out the decimals
-    if (decimals === null) {
-      log.debug('mybug the decimal on token 0 was null', [])
-      return
-    }
-
-    token0.decimals = decimals
   }
 
   if (token1 === null) {
     token1 = new Token(event.params.token1.toHexString())
     token1.symbol = fetchTokenSymbol(event.params.token1)
     token1.name = fetchTokenName(event.params.token1)
-    let decimals = fetchTokenDecimals(event.params.token1)
-    // bail if we couldn't figure out the decimals
-    if (decimals === null) {
-      log.debug('mybug the decimal on token 0 was null', [])
-      return
-    }
-    token1.decimals = decimals
   }
 
   pool.token0 = token0.id

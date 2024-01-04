@@ -99,8 +99,6 @@ type Token @entity {
   symbol: String!
   # token name
   name: String!
-  # token decimals
-  decimals: BigInt!
 }
 
 type CandleOneMinute @entity {
