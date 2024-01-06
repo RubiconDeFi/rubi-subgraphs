@@ -1,4 +1,4 @@
-specVersion: 0.0.5
+specVersion: 0.0.8
 description: a subgraph to support the Rubicon dAPP utlizing the v2 protocol
 repository: https://github.com/RubiconDeFi/rubi-subgraphs
 schema: 
@@ -40,7 +40,7 @@ dataSources:
     source:
       address: '{{ UniswapV3Router-address }}'
       abi: Factory
-      startBlock: {{ startBlock }}
+      startBlock: {{ UniswapV3Router-startBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -63,6 +63,10 @@ dataSources:
       eventHandlers:
         - event: PoolCreated(indexed address,indexed address,indexed uint24,int24,address)
           handler: handlePoolCreated
+      blockHandlers:
+        - handler: handleOnce
+          filter:
+            kind: once
 templates:
   - kind: ethereum/contract
     name: Pool
