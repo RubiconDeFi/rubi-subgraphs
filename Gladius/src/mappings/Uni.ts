@@ -32,6 +32,13 @@ export function handleSwap(event: SwapEvent): void {
   let amount0 = event.params.amount0
   let amount1 = event.params.amount1
 
+  if (amount0.lt(ZERO_BI)) {
+    amount0 = amount0.times(BigInt.fromI32(-1))
+  }
+  if (amount1.lt(ZERO_BI)) {
+    amount1 = amount1.times(BigInt.fromI32(-1))
+  }
+
   if (amount0.equals(ZERO_BI) || amount1.equals(ZERO_BI)) return;
 
   const id = event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex)));
@@ -53,6 +60,7 @@ export function handleSwap(event: SwapEvent): void {
   take.give_gem = token1
   take.take_amt = amount0
   take.give_amt = amount1
+  take.save()
 
   // update the candle entities
   updateCandles(take)

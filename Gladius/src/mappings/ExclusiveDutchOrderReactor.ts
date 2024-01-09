@@ -141,6 +141,7 @@ export function handleFill(event: Fill): void {
         fill.outputToken = outputTransfers[i][0].address
         fill.inputAmount = BigInt.fromString(HexBigInt.fromString(inputTransfers[i].data.toHexString()).toString())
         fill.outputAmount = BigInt.fromString(HexBigInt.fromString(outputTransfers[i][0].data.toHexString()).toString())
+        fill.timestamp = event.block.timestamp
         fill.save();
     }
 }
