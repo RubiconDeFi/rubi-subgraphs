@@ -7,3 +7,5 @@ generated/
 yarn.lock
 **/.bin
 **/.env
+**/data
+**/subgraph.yaml
