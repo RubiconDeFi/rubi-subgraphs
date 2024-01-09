@@ -1,7 +1,45 @@
 import { ethereum, Bytes, Address } from "@graphprotocol/graph-ts"
 import { ZERO_BD, ZERO_BI } from "../constants"
 import { fetchToken } from "../entities/token"
-import { HourVolume, DayVolume, TokenHourData, TokenDayData } from "../../../generated/schema"
+import { HourVolume, DayVolume, HourMakerRebateVolume, DayMakerRebateVolume, TokenHourData, TokenDayData } from "../../../generated/schema"
+
+export function fetchHourMakerRebateVolume(event: ethereum.Event): HourMakerRebateVolume {
+
+    // create the entity id 
+    let timestamp = event.block.timestamp.toI32()
+    let hourID = timestamp / 3600
+
+    // load the entity
+    let hourMakerRebateVolume = HourMakerRebateVolume.load(hourID.toString())
+
+    // if the entity doesn't exist, create it
+    if (hourMakerRebateVolume == null) {
+        hourMakerRebateVolume = new HourMakerRebateVolume(hourID.toString())
+        hourMakerRebateVolume.hourStartUnix = event.block.timestamp
+        hourMakerRebateVolume.rebate_volume_usd = ZERO_BD
+        hourMakerRebateVolume.save()
+    } 
+    return hourMakerRebateVolume as HourMakerRebateVolume
+}
+
+export function fetchDayMakerRebateVolume(event: ethereum.Event): DayMakerRebateVolume {
+
+    // create the entity id
+    let timestamp = event.block.timestamp.toI32()
+    let dayID = timestamp / 86400
+
+    // load the entity
+    let dayMakerRebateVolume = DayMakerRebateVolume.load(dayID.toString())
+
+    // if the entity doesn't exist, create it
+    if (dayMakerRebateVolume == null) {
+        dayMakerRebateVolume = new DayMakerRebateVolume(dayID.toString())
+        dayMakerRebateVolume.dayStartUnix = event.block.timestamp
+        dayMakerRebateVolume.rebate_volume_usd = ZERO_BD
+        dayMakerRebateVolume.save()
+    }
+    return dayMakerRebateVolume as DayMakerRebateVolume
+}
 
 export function fetchHourVolume(event: ethereum.Event): HourVolume {
 

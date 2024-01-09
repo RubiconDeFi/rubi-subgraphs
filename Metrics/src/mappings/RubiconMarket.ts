@@ -3,11 +3,46 @@ import { Bytes, ethereum, BigDecimal } from "@graphprotocol/graph-ts"
 import { Offer, Take } from "../../generated/schema"
 import { fetchRubicon } from '../utils/entities/rubicon'
 import { fetchUser } from "../utils/entities/user"
+import { isFeeMakerRebate } from "../utils/entities/fee"
 import { fetchTransaction } from "../utils/entities/transaction"
 import { fetchToken, toBigDecimal } from "../utils/entities/token"
 import { getUsdPricePerToken } from "../prices"
-import { fetchHourVolume, fetchDayVolume, fetchTokenHourData, fetchTokenDayData } from "../utils/aggregates/volume"
-import { emitTake, emitOffer, emitCancel, emitDelete, LogMake, LogTake, LogKill, OfferDeleted } from "../../generated/RubiconMarket/RubiconMarket"
+import { fetchHourVolume, fetchDayVolume, fetchHourMakerRebateVolume, fetchDayMakerRebateVolume, fetchTokenHourData, fetchTokenDayData } from "../utils/aggregates/volume"
+import { emitTake, emitOffer, emitCancel, emitDelete, LogMake, LogTake, LogKill, OfferDeleted, emitFee } from "../../generated/RubiconMarket/RubiconMarket"
+
+export function handleFee(event: emitFee): void {
+    if (!isFeeMakerRebate(event)) {
+        return // only handle fees that are maker rebates
+    }
+
+    // get the USD price of the fee asset and calculate the USD amounts
+    let feeAsset = fetchToken(event.params.asset) // buy_gem
+    let feeAmtFormatted = toBigDecimal(event.params.feeAmt, feeAsset.decimals)
+    let fetchFeeAssetPrice = getUsdPricePerToken(event.params.asset)
+    let feeAssetPrice: BigDecimal
+
+    if (!fetchFeeAssetPrice.reverted) {
+        feeAssetPrice = fetchFeeAssetPrice.usdPrice.div(fetchFeeAssetPrice.decimalsBaseTen)
+    } else {
+        feeAssetPrice = fetchFeeAssetPrice.usdPrice
+    }
+
+    let feeAmtUsd = feeAmtFormatted.times(feeAssetPrice)
+
+    // update the rubicon entity 
+    let rubicon = fetchRubicon()
+    rubicon.total_maker_rebate_volume_usd = rubicon.total_maker_rebate_volume_usd.plus(feeAmtUsd)
+    rubicon.save()
+
+    // update the USD aggregate statistic entities 
+    let hourMakerRebateVolume = fetchHourMakerRebateVolume(event)
+    hourMakerRebateVolume.rebate_volume_usd = hourMakerRebateVolume.rebate_volume_usd.plus(feeAmtUsd)
+    hourMakerRebateVolume.save()
+
+    let dayMakerRebateVolume = fetchDayMakerRebateVolume(event)
+    dayMakerRebateVolume.rebate_volume_usd = dayMakerRebateVolume.rebate_volume_usd.plus(feeAmtUsd)
+    dayMakerRebateVolume.save()
+}
 
 export function handleOffer(event: emitOffer): void {
     // emitOffer has the same fields as LogMake so it can be handled the same as LogMake
