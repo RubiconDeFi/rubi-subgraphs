@@ -41,6 +41,8 @@ type Fill @entity(immutable: true) {
     outputAmount: BigInt!
     transaction: Transaction!
     timestamp: BigInt!
+    swapper: Bytes!
+    filler: Bytes!
 }
 
 type Pair @entity(immutable: true) {

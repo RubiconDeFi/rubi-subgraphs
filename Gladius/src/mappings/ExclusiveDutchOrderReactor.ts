@@ -129,7 +129,7 @@ export function handleFill(event: Fill): void {
             fee.amount = BigInt.fromString(HexBigInt.fromString(feeLog.data.toHexString()).toString())
             fee.transaction = transaction.id
             fee.token = feeLog.address
-            fee.recipient = feeLog.topics[2]
+            fee.recipient = Bytes.fromUint8Array(feeLog.topics[2].slice(12))
             fee.save()
         }
     }
@@ -142,6 +142,8 @@ export function handleFill(event: Fill): void {
         fill.inputAmount = BigInt.fromString(HexBigInt.fromString(inputTransfers[i].data.toHexString()).toString())
         fill.outputAmount = BigInt.fromString(HexBigInt.fromString(outputTransfers[i][0].data.toHexString()).toString())
         fill.timestamp = event.block.timestamp
+        fill.swapper = Bytes.fromUint8Array(fills[i].topics[3].slice(12))
+        fill.filler = Bytes.fromUint8Array(fills[i].topics[2].slice(12))
         fill.save();
     }
 }
