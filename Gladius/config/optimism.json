@@ -2,6 +2,8 @@
     "network" : "optimism",
     "startBlock": 111049629,
     "ExclusiveDutchOrderReactor-address" : "0xcB23e6c82c900E68d6F761bd5a193a5151A1D6d2",
+    "GladiusOrderReactor-address" : "0x98169248bDf25E0e297EA478Ab46ac24058Fac78",
+    "GladiusOrderReactor-startBlock" : 116282913,
     "UniswapV3Router-address": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-    "UniswapV3Router-startBlock": 114182912
+    "UniswapV3Router-startBlock": 116282913
 }

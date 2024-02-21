@@ -34,6 +34,36 @@ dataSources:
         - event: Fill(indexed bytes32,indexed address,indexed address,uint256)
           receipt: true
           handler: handleFill
+  - kind: ethereum
+    name: GladiusOrderReactor
+    network: {{ network }}
+    source:
+      address: '{{ GladiusOrderReactor-address }}'
+      abi: GladiusOrderReactor
+      startBlock: {{ GladiusOrderReactor-startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/ExclusiveDutchOrderReactor.ts
+      entities:
+        - Transaction
+        - Fee
+        - User
+        - Pair
+        - Take
+        - CandleOneMinute
+        - CandleFiveMinute
+        - CandleFifteenMinute
+        - CandleOneHour
+        - CandleOneDay
+      abis:
+        - name: GladiusOrderReactor
+          file: ./abis/GladiusOrderReactor.json
+      eventHandlers:
+        - event: Fill(indexed bytes32,indexed address,indexed address,uint256)
+          receipt: true
+          handler: handleFill
   - kind: ethereum/contract
     name: Factory
     network: {{ network }}
