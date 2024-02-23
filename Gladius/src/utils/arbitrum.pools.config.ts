@@ -93,6 +93,11 @@ pools.set(Address.fromString("0x97bca422ec0ee4851f2110ea743c1cd0a14835a1",).toHe
 })
 
 // ARB / DAI
+pools.set(Address.fromString("0xC051405EdeF0E64eBfc501cFe1158Eb0D74F3208",).toHexString(), {
+  token0: Address.fromString("0x912CE59144191C1204E64559FE8253a0e49E6548"),
+  token1: Address.fromString("0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1")
+})
+
 
 // USDC / USDT
 pools.set(Address.fromString("0xa17afcab059f3c6751f5b64347b5a503c3291868",).toHexString(), {
