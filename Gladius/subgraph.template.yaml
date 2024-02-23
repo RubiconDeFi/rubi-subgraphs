@@ -4,36 +4,8 @@ repository: https://github.com/RubiconDeFi/rubi-subgraphs
 schema: 
   file: ./schema.graphql
 dataSources:
-  - kind: ethereum
-    name: ExclusiveDutchOrderReactor
-    network: {{ network }}
-    source: 
-      address: '{{ ExclusiveDutchOrderReactor-address }}'
-      abi: ExclusiveDutchOrderReactor
-      startBlock: {{ startBlock }}
-    mapping: 
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      file: ./src/mappings/ExclusiveDutchOrderReactor.ts
-      entities: 
-        - Transaction
-        - Fee
-        - User
-        - Pair
-        - Take
-        - CandleOneMinute
-        - CandleFiveMinute
-        - CandleFifteenMinute
-        - CandleOneHour
-        - CandleOneDay
-      abis:
-        - name: ExclusiveDutchOrderReactor
-          file: ./abis/ExclusiveDutchOrderReactor.json
-      eventHandlers:
-        - event: Fill(indexed bytes32,indexed address,indexed address,uint256)
-          receipt: true
-          handler: handleFill
+  # ONLY NEEDED FOR OPTIMISM
+pu
   - kind: ethereum
     name: GladiusOrderReactor
     network: {{ network }}
@@ -75,7 +47,7 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
-      file: ./src/mappings/Uni.ts
+      file: './src/mappings/Uni.{{ UniswapV3Router-address }}.ts'
       entities:
         - Pool
         - Token

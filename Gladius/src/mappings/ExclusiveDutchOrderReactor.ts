@@ -118,7 +118,7 @@ export function handleFill(event: Fill): void {
         take.save()
 
         // update the candle entities
-        updateCandles(take)
+        // updateCandles(take) // this causes crappy charts
 
     }
 

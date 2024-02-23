@@ -9,7 +9,7 @@ import {
   Swap as SwapEvent
 } from '../../generated/templates/Pool/Pool'
 import { getPair } from '../utils/entities/pair'
-import { pools } from '../utils/pools.config'
+import { pools } from '../utils/arbitrum.pools.config'
 import { ZERO_BI } from '../utils/constants'
 
 export function handleSwap(event: SwapEvent): void {

@@ -1,5 +1,7 @@
 {
     "network" : "arbitrum",
-    "startBlock": 132837528,
-    "ExclusiveDutchOrderReactor-address" : "0xAeb3e81b8e1A425985816B5f436BDF1E0b542418"
+    "GladiusOrderReactor-startBlock": 182316331,
+    "GladiusOrderReactor-address" : "0x6D81571B4c75CCf08bD16032D0aE54dbaff548b0",
+    "UniswapV3Router-address": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+    "UniswapV3Router-startBlock": 182316331
 } 
