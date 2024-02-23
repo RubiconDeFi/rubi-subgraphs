@@ -7,10 +7,10 @@ class PoolShape {
 
 export const pools = new Map<string, PoolShape>();
 
-// USDC / WETH
+// WETH / USDC
 pools.set(Address.fromString("0xc6962004f452be9203591991d15f6b388e09e8d0",).toHexString(), {
-  token0: Address.fromString("0xaf88d065e77c8cc2239327c5edb3a432268e5831"),
-  token1: Address.fromString("0x82af49447d8a07e3bd95bd0d56f35241523fbab1")
+  token0: Address.fromString("0x82af49447d8a07e3bd95bd0d56f35241523fbab1"),
+  token1: Address.fromString("0xaf88d065e77c8cc2239327c5edb3a432268e5831")
 })
 
 // WETH / USDC.e
