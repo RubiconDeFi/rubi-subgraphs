@@ -1,0 +1,110 @@
+type Rubicon @entity {
+    " the address of the RubiconMarket contract "
+    id: Bytes!
+    " the total user count recorded by the subgraph "
+    total_users: BigInt!
+    " the total transaction count recorded by the subgraph "
+    total_transactions: BigInt!
+    " the total volume of the market in USD "
+    total_volume_usd: BigDecimal!
+}
+
+type User @entity {
+    " the user address "
+    id: Bytes!
+}
+
+type HourVolume @entity {
+    " the unix timestamp divided by 3600 "
+    id: ID!
+    " the unix timestamp "
+    hourStartUnix: BigInt!
+    " the volume in USD "
+    volume_usd: BigDecimal!
+}
+
+type DayVolume @entity {
+    " the unix timestamp divided by 86400 "
+    id: ID!
+    " the unix timestamp "
+    dayStartUnix: BigInt!
+    " the volume in USD "
+    volume_usd: BigDecimal!
+}
+
+type Transaction @entity {
+    " the transaction hash "
+    id: Bytes!
+    " the block number "
+    block: BigInt!
+    " the timestamp "
+    timestamp: BigInt!
+}
+
+type Token @entity {
+    " token address "
+    id: Bytes!
+    " token address "
+    address: String!
+    " token decimals "
+    decimals: BigInt!
+    " the total volume of the token in the token denomination "
+    total_volume: BigInt!
+    " the total volume of the token in USD "
+    total_volume_usd: BigDecimal!
+}
+
+type TokenHourData @entity {
+    " the token address and the hour unix timestamp divided by 3600 "
+    id: Bytes!
+    " the token entity that this data is for "
+    token: Token!
+    " the start of the hour in unix timestamp "
+    hour_start_unix: BigInt!
+    " the total volume of the token in the token denomination "
+    total_volume: BigInt!
+    " the total volume of the token in USD "
+    total_volume_usd: BigDecimal!
+}
+
+type TokenDayData @entity {
+    " the token address and the day unix timestamp divided by 86400 "
+    id: Bytes!
+     " the token entity that this data is for "
+    token: Token!
+    " the start of the day in unix timestamp "
+    day_start_unix: BigInt!
+    " the total volume of the token in the token denomination "
+    total_volume: BigInt!
+    " the total volume of the token in USD "
+    total_volume_usd: BigDecimal!
+}
+
+type Take @entity {
+    " the transaction hash and log index of the take event "
+    id: Bytes!
+    " the transaction entity that this offer was created from "
+    transaction: Transaction!
+    " the user entity that took the offer "
+    taker: User!
+    " the token that the offer will pay with "
+    pay_gem: Token!
+    " the token that the offer offer to buy "
+    buy_gem: Token!
+    " the amount of the pay token that the offer will pay - in the integer format "
+    pay_amt: BigInt!
+    " the amount of the buy token that the offer will buy - in the integer format "
+    buy_amt: BigInt!
+    " the amount of the pay token in human readable format "
+    pay_amt_formatted: BigDecimal!
+    " the amount of the buy token in human readable format "
+    buy_amt_formatted: BigDecimal!
+    " the USD value of the pay token at that block "
+    pay_amt_usd: BigDecimal!
+    " the USD value of the buy token at that block "
+    buy_amt_usd: BigDecimal!
+    " the price of the pay gem at the time of the take "
+    pay_gem_price: BigDecimal!
+    " the price of the buy gem at the time of the take "
+    buy_gem_price: BigDecimal!
+}
