@@ -54,6 +54,21 @@ type Token @entity {
     total_volume_usd: BigDecimal!
 }
 
+type UserPairVolume @entity {
+    " user address + token0 + token1 "
+    id: Bytes!
+    " token entity for token0 "
+    token0: Token!
+    " token entity for token1 "
+    token1: Token!
+    " the total volume of the token0 in the token denomination "
+    total_volume_token0: BigInt!
+    " the total volume of the token1 in the token denomination "
+    total_volume_token1: BigInt!
+    " the total volume of the token in USD "
+    total_volume_usd: BigDecimal!
+}
+
 type TokenHourData @entity {
     " the token address and the hour unix timestamp divided by 3600 "
     id: Bytes!

@@ -1,7 +1,7 @@
 import { ethereum, Bytes, Address } from "@graphprotocol/graph-ts"
 import { ZERO_BD, ZERO_BI } from "../constants"
 import { fetchToken } from "../entities/token"
-import { HourVolume, DayVolume, TokenHourData, TokenDayData } from "../../../generated/schema"
+import { HourVolume, DayVolume, TokenHourData, TokenDayData, UserPairVolume, Token } from "../../../generated/schema"
 
 export function fetchHourVolume(event: ethereum.Event): HourVolume {
 
@@ -40,6 +40,32 @@ export function fetchDayVolume(event: ethereum.Event): DayVolume {
     }
     return dayVolume as DayVolume
 }
+
+export function fetchUserPairVolume(user: Bytes, tokenZero: Bytes, tokenOne: Bytes): UserPairVolume {
+
+    let token0 = tokenZero.toHexString() < tokenOne.toHexString() ? tokenZero : tokenOne
+
+    // token1 = higher alphabetically token
+    let token1 = tokenZero.toHexString() > tokenOne.toHexString() ? tokenZero : tokenOne
+
+    let pairID = user.concat(token0).concat(token1)
+
+    // load the entity
+    let userPairVolume = UserPairVolume.load(pairID)
+
+    // if the entity doesn't exist, create it
+    if (userPairVolume == null) {
+        userPairVolume = new UserPairVolume(pairID)
+        userPairVolume.token0 = token0
+        userPairVolume.token1 = token1
+        userPairVolume.total_volume_token0 = ZERO_BI
+        userPairVolume.total_volume_token1 = ZERO_BI
+        userPairVolume.total_volume_usd = ZERO_BD
+        userPairVolume.save()
+    }
+    return userPairVolume as UserPairVolume;
+}
+
 
 export function fetchTokenHourData(asset: Address, event: ethereum.Event): TokenHourData {
 

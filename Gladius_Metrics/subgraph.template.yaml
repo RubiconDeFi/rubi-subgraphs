@@ -11,7 +11,7 @@ dataSources:
       address: '{{ GladiusOrderReactor-address }}'
       abi: GladiusOrderReactor
       startBlock: {{ startBlock }}
-    mapping: 
+    mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
@@ -67,7 +67,7 @@ dataSources:
           handler: handleFill
   {{#GladiusOrderReactor-address-2}}
   - kind: ethereum/contract
-    name: Gladius
+    name: GladiusOrderReactor-2
     network: {{ network }}
     source: 
       address: '{{ GladiusOrderReactor-address-2 }}'
@@ -80,6 +80,7 @@ dataSources:
       file: ./src/mappings/GladiusOrderReactor.ts
       entities: 
         - Take
+        - Token
       abis: 
         - name: GladiusOrderReactor
           file: ./abis/Rubicon/GladiusOrderReactor.json

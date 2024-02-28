@@ -7,7 +7,7 @@ import { getUsdPricePerToken } from "../prices";
 import { Fill } from "../../generated/GladiusOrderReactor/GladiusOrderReactor"
 import { fetchUser } from "../utils/entities/user"
 import { fetchRubicon } from "../utils/entities/rubicon";
-import { fetchDayVolume, fetchHourVolume, fetchTokenDayData, fetchTokenHourData } from "../utils/aggregates/volume";
+import { fetchDayVolume, fetchHourVolume, fetchTokenDayData, fetchTokenHourData, fetchUserPairVolume } from "../utils/aggregates/volume";
 
 
 export const FILL_SIGNATURE = "0x78ad7ec0e9f89e74012afa58738b6b661c024cb0fd185ee2f616c0a28924bd66";
@@ -104,12 +104,12 @@ export function handleFill(event: Fill): void {
         let payGem = fetchToken(inputTransfers[i].address)
         let buyGem = fetchToken(outputTransfers[i][0].address)
 
-        let take_amt = BigInt.fromString(HexBigInt.fromString(inputTransfers[i].data.toHexString()).toString())
-        let give_amt = BigInt.fromString(HexBigInt.fromString(outputTransfers[i][0].data.toHexString()).toString())
+        let payAmt = BigInt.fromString(HexBigInt.fromString(inputTransfers[i].data.toHexString()).toString())
+        let buyAmt = BigInt.fromString(HexBigInt.fromString(outputTransfers[i][0].data.toHexString()).toString())
 
         // format the amounts based on the token decimals
-        let payAmtFormatted = toBigDecimal(take_amt, payGem.decimals)
-        let buyAmtFormatted = toBigDecimal(give_amt, buyGem.decimals)
+        let payAmtFormatted = toBigDecimal(payAmt, payGem.decimals)
+        let buyAmtFormatted = toBigDecimal(buyAmt, buyGem.decimals)
 
         // get the USD price of the gems and calculate the USD amounts
         let payGemPrice: BigDecimal
@@ -146,23 +146,40 @@ export function handleFill(event: Fill): void {
         dayVolume.save()
     
         // update the token aggregate statistics for the buy gem
-        buyGem.total_volume = buyGem.total_volume.plus(give_amt)
+        buyGem.total_volume = buyGem.total_volume.plus(buyAmt)
         buyGem.total_volume_usd = buyGem.total_volume_usd.plus(buyAmtUsd)
         buyGem.save()
     
         // update the binned token aggregate statistics for the buy gem
         let hourBuyGem = fetchTokenHourData(Address.fromBytes(buyGem.id), event)
-        hourBuyGem.total_volume = hourBuyGem.total_volume.plus(give_amt)
+        hourBuyGem.total_volume = hourBuyGem.total_volume.plus(buyAmt)
         hourBuyGem.total_volume_usd = hourBuyGem.total_volume_usd.plus(buyAmtUsd)
         hourBuyGem.save()
     
         let dayBuyGem = fetchTokenDayData(Address.fromBytes(buyGem.id), event)
-        dayBuyGem.total_volume = dayBuyGem.total_volume.plus(give_amt)
+        dayBuyGem.total_volume = dayBuyGem.total_volume.plus(buyAmt)
         dayBuyGem.total_volume_usd = dayBuyGem.total_volume_usd.plus(buyAmtUsd)
         dayBuyGem.save()
 
-        let swapper = fetchUser(Address.fromUint8Array(fills[i].topics[3].slice(12)))
-        let filler = fetchUser(Address.fromUint8Array(fills[i].topics[2].slice(12)))
+        let swapper = fetchUser(Bytes.fromUint8Array(fills[i].topics[3].slice(12)))
+        let filler = fetchUser(Bytes.fromUint8Array(fills[i].topics[2].slice(12)))
+
+        let swapperVolume = fetchUserPairVolume(swapper.id, payGem.id, buyGem.id)
+        let fillerVolume = fetchUserPairVolume(filler.id, payGem.id, buyGem.id)
+
+        swapperVolume.total_volume_usd = swapperVolume.total_volume_usd.plus(buyAmtUsd)        
+        fillerVolume.total_volume_usd = fillerVolume.total_volume_usd.plus(buyAmtUsd)
+
+        if (swapperVolume.token0 == payGem.id) {
+            swapperVolume.total_volume_token0 = swapperVolume.total_volume_token0.plus(payAmt)
+            fillerVolume.total_volume_token1 = fillerVolume.total_volume_token1.plus(buyAmt)
+        } else {
+            swapperVolume.total_volume_token1 = swapperVolume.total_volume_token1.plus(payAmt)
+            fillerVolume.total_volume_token0 = fillerVolume.total_volume_token0.plus(buyAmt)
+        }
+
+        swapperVolume.save()
+        fillerVolume.save()
 
         // create the take entity
         take.taker = filler.id
@@ -170,8 +187,8 @@ export function handleFill(event: Fill): void {
         take.transaction = transaction.id
         take.pay_gem = payGem.id
         take.buy_gem = buyGem.id
-        take.pay_amt = take_amt
-        take.buy_amt = give_amt
+        take.pay_amt = payAmt
+        take.buy_amt = buyAmt
         take.pay_amt_formatted = payAmtFormatted
         take.buy_amt_formatted = buyAmtFormatted
         take.pay_amt_usd = payAmtUsd

@@ -1,9 +1,9 @@
 import { User } from '../../../generated/schema' 
-import { Address, Bytes } from '@graphprotocol/graph-ts'
+import { Bytes } from '@graphprotocol/graph-ts'
 import { fetchRubicon } from './rubicon'
 import { ONE_BI } from '../constants'
 
-export function fetchUser(userAddress: Address): User {
+export function fetchUser(userAddress: Bytes): User {
 
     // attempt to load the user from the store
     let user = User.load(userAddress)
