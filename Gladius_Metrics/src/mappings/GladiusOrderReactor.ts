@@ -37,6 +37,7 @@ export function handleFill(event: Fill): void {
     let outputTransfers: ethereum.Log[][] = [];
     let firstOutputTransferIndex: i32 = -1;
     let fills: ethereum.Log[] = [];
+    let currentFillIndex = 0;
 
     for (let i: i32 = 0; i < receipt.logs.length; i++) {
         if (receipt.logs[i].topics[0] == Bytes.fromHexString(FILL_SIGNATURE)) {
@@ -44,9 +45,11 @@ export function handleFill(event: Fill): void {
         }
     }
 
-    let currentFillIndex = 0
 
     for (let i: i32 = 0; i < receipt.logs.length; i++) {
+
+        if (currentFillIndex == fills.length) break;
+
         if (
             receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
             HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(fills[currentFillIndex].topics[3].toHexString()) &&
@@ -56,7 +59,9 @@ export function handleFill(event: Fill): void {
             currentFillIndex += 1;
             continue;
         }
+    }
 
+    for (let i: i32 = 0; i < receipt.logs.length; i++) {
         if (
             receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
             HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(fills[0].topics[2].toHexString()) &&
@@ -64,7 +69,7 @@ export function handleFill(event: Fill): void {
             firstOutputTransferIndex == -1
         ) {
             firstOutputTransferIndex = i
-            break
+            break;
         }
     }
 
@@ -75,6 +80,8 @@ export function handleFill(event: Fill): void {
     currentFillIndex = 0;
 
     for (let i: i32 = firstOutputTransferIndex; i < receipt.logs.length; i++) {
+
+        if (currentFillIndex == fills.length) break;
 
         if (
             receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
