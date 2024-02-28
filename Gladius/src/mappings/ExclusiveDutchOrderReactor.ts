@@ -1,5 +1,4 @@
-import { BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
-import { updateCandles } from "../utils/entities/candles";
+import { BigInt, Bytes, ethereum, log, Address } from "@graphprotocol/graph-ts";
 import { Fee, Take, Transaction, Fill as FillEntity } from "../../generated/schema";
 import { Fill } from '../../generated/ExclusiveDutchOrderReactor/ExclusiveDutchOrderReactor';
 import { getUser } from "../utils/entities/user";
@@ -33,22 +32,30 @@ export function handleFill(event: Fill): void {
     let fees: ethereum.Log[][] = [];
     let firstOutputTransferIndex: i32 = -1;
     let fills: ethereum.Log[] = [];
+    let currentFillIndex = 0;
+
+    for (let i: i32 = 0; i < receipt.logs.length; i++) {
+        if (receipt.logs[i].topics[0] == Bytes.fromHexString(FILL_SIGNATURE)) {
+            fills.push(receipt.logs[i])
+        }
+    }
 
     for (let i: i32 = 0; i < receipt.logs.length; i++) {
 
         if (
             receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
-            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(event.params.swapper.toHexString()) &&
-            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) == HexBigInt.fromString(event.params.filler.toHexString())
+            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(fills[currentFillIndex].topics[3].toHexString()) &&
+            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) == HexBigInt.fromString(fills[currentFillIndex].topics[2].toHexString())
         ) {
             inputTransfers.push(receipt.logs[i])
+            currentFillIndex += 1
             continue;
         }
 
         if (
             receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
-            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(event.params.filler.toHexString()) &&
-            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) == HexBigInt.fromString(event.params.swapper.toHexString()) &&
+            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(fills[0].topics[2].toHexString()) &&
+            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) == HexBigInt.fromString(fills[0].topics[3].toHexString()) &&
             firstOutputTransferIndex == -1
         ) {
             firstOutputTransferIndex = i
@@ -60,13 +67,14 @@ export function handleFill(event: Fill): void {
 
     let outputTransfersTemp: ethereum.Log[] = [];
     let feesTemp: ethereum.Log[] = [];
+    currentFillIndex = 0;
 
     for (let i: i32 = firstOutputTransferIndex; i < receipt.logs.length; i++) {
 
         if (
             receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
-            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(event.params.filler.toHexString()) &&
-            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) == HexBigInt.fromString(event.params.swapper.toHexString())
+            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(fills[currentFillIndex].topics[2].toHexString()) &&
+            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) == HexBigInt.fromString(fills[currentFillIndex].topics[3].toHexString())
         ) {
             outputTransfersTemp.push(receipt.logs[i])
             continue;
@@ -74,8 +82,8 @@ export function handleFill(event: Fill): void {
 
         if (
             receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
-            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(event.params.filler.toHexString()) &&
-            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) !== HexBigInt.fromString(event.params.swapper.toHexString())
+            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(fills[currentFillIndex].topics[2].toHexString()) &&
+            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) !== HexBigInt.fromString(fills[currentFillIndex].topics[3].toHexString())
         ) {
             feesTemp.push(receipt.logs[i])
             continue;
@@ -87,22 +95,22 @@ export function handleFill(event: Fill): void {
             fees.push(feesTemp)
             outputTransfersTemp = []
             feesTemp = []
+            currentFillIndex += 1
         }
     }
 
-    // get the taker and from entities (users)
-    const taker = getUser(event.params.filler)
-    const from = getUser(event.params.swapper)
-
-    for (let i: i32 = 0; i < inputTransfers.length; i++) {
+    for (let i: i32 = 0; i < fills.length; i++) {
         // multi output is borked
         if (outputTransfers[i].length > 1) continue;
 
         // get the pair associated with the take
         const pair = getPair(inputTransfers[i].address, outputTransfers[i][0].address)
 
-        const id = event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex)));
+        const id = event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(fills[i].logIndex)));
         const take = new Take(id);
+
+        const taker = getUser(Address.fromUint8Array(fills[i].topics[2].slice(12)))
+        const from = getUser(Address.fromUint8Array(fills[i].topics[3].slice(12)))
 
         // create the take entity
         take.transaction = event.transaction.hash
@@ -120,21 +128,6 @@ export function handleFill(event: Fill): void {
         // update the candle entities
         // updateCandles(take) // this causes crappy charts
 
-    }
-
-    for (let i: i32 = 0; i < fees.length; i++) {
-        for (let j: i32 = 0; j < fees[i].length; j++) {
-            const feeLog = fees[i][j]
-            let fee = new Fee(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(feeLog.logIndex))))
-            fee.amount = BigInt.fromString(HexBigInt.fromString(feeLog.data.toHexString()).toString())
-            fee.transaction = transaction.id
-            fee.token = feeLog.address
-            fee.recipient = Bytes.fromUint8Array(feeLog.topics[2].slice(12))
-            fee.save()
-        }
-    }
-
-    for (let i: i32 = 0; i < fills.length; i++) {
         const fill = new FillEntity(fills[i].topics[1]);
         fill.transaction = event.transaction.hash;
         fill.inputToken = inputTransfers[i].address
@@ -145,5 +138,15 @@ export function handleFill(event: Fill): void {
         fill.swapper = Bytes.fromUint8Array(fills[i].topics[3].slice(12))
         fill.filler = Bytes.fromUint8Array(fills[i].topics[2].slice(12))
         fill.save();
+
+        for (let j: i32 = 0; j < fees[i].length; j++) {
+            const feeLog = fees[i][j]
+            let fee = new Fee(event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(feeLog.logIndex))))
+            fee.amount = BigInt.fromString(HexBigInt.fromString(feeLog.data.toHexString()).toString())
+            fee.transaction = transaction.id
+            fee.token = feeLog.address
+            fee.recipient = Bytes.fromUint8Array(feeLog.topics[2].slice(12))
+            fee.save()
+        }
     }
 }

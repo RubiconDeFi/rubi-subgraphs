@@ -87,6 +87,8 @@ type Take @entity {
     transaction: Transaction!
     " the user entity that took the offer "
     taker: User!
+    " the user entity that made the offer "
+    maker: User!
     " the token that the offer will pay with "
     pay_gem: Token!
     " the token that the offer offer to buy "

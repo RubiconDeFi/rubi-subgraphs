@@ -35,25 +35,32 @@ export function handleFill(event: Fill): void {
 
     let inputTransfers: ethereum.Log[] = [];
     let outputTransfers: ethereum.Log[][] = [];
-    let fees: ethereum.Log[][] = [];
     let firstOutputTransferIndex: i32 = -1;
     let fills: ethereum.Log[] = [];
 
     for (let i: i32 = 0; i < receipt.logs.length; i++) {
+        if (receipt.logs[i].topics[0] == Bytes.fromHexString(FILL_SIGNATURE)) {
+            fills.push(receipt.logs[i])
+        }
+    }
 
+    let currentFillIndex = 0
+
+    for (let i: i32 = 0; i < receipt.logs.length; i++) {
         if (
             receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
-            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(event.params.swapper.toHexString()) &&
-            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) == HexBigInt.fromString(event.params.filler.toHexString())
+            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(fills[currentFillIndex].topics[3].toHexString()) &&
+            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) == HexBigInt.fromString(fills[currentFillIndex].topics[2].toHexString())
         ) {
             inputTransfers.push(receipt.logs[i])
+            currentFillIndex += 1;
             continue;
         }
 
         if (
             receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
-            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(event.params.filler.toHexString()) &&
-            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) == HexBigInt.fromString(event.params.swapper.toHexString()) &&
+            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(fills[0].topics[2].toHexString()) &&
+            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) == HexBigInt.fromString(fills[0].topics[3].toHexString()) &&
             firstOutputTransferIndex == -1
         ) {
             firstOutputTransferIndex = i
@@ -64,44 +71,34 @@ export function handleFill(event: Fill): void {
     if (firstOutputTransferIndex == -1) return;
 
     let outputTransfersTemp: ethereum.Log[] = [];
-    let feesTemp: ethereum.Log[] = [];
+
+    currentFillIndex = 0;
 
     for (let i: i32 = firstOutputTransferIndex; i < receipt.logs.length; i++) {
 
         if (
             receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
-            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(event.params.filler.toHexString()) &&
-            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) == HexBigInt.fromString(event.params.swapper.toHexString())
+            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(fills[currentFillIndex].topics[2].toHexString()) &&
+            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) == HexBigInt.fromString(fills[currentFillIndex].topics[3].toHexString())
         ) {
             outputTransfersTemp.push(receipt.logs[i])
             continue;
         }
 
-        if (
-            receipt.logs[i].topics[0] == Bytes.fromHexString(TRANSFER_SIGNATURE) &&
-            HexBigInt.fromString(receipt.logs[i].topics[1].toHexString()) == HexBigInt.fromString(event.params.filler.toHexString()) &&
-            HexBigInt.fromString(receipt.logs[i].topics[2].toHexString()) !== HexBigInt.fromString(event.params.swapper.toHexString())
-        ) {
-            feesTemp.push(receipt.logs[i])
-            continue;
-        }
-
         if (receipt.logs[i].topics[0] == Bytes.fromHexString(FILL_SIGNATURE)) {
-            fills.push(receipt.logs[i])
             outputTransfers.push(outputTransfersTemp)
-            fees.push(feesTemp)
             outputTransfersTemp = []
-            feesTemp = []
+            currentFillIndex += 1
         }
     }
 
-    for (let i: i32 = 0; i < inputTransfers.length; i++) {
+    for (let i: i32 = 0; i < fills.length; i++) {
         // multi output is borked
         if (outputTransfers[i].length > 1) continue;
 
         // get the pair associated with the take
 
-        const id = event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(event.logIndex)));
+        const id = event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(fills[i].logIndex)));
         const take = new Take(id);
 
         let payGem = fetchToken(inputTransfers[i].address)
@@ -164,10 +161,12 @@ export function handleFill(event: Fill): void {
         dayBuyGem.total_volume_usd = dayBuyGem.total_volume_usd.plus(buyAmtUsd)
         dayBuyGem.save()
 
-        let user = fetchUser(fills[i].topics[3])
+        let swapper = fetchUser(Address.fromUint8Array(fills[i].topics[3].slice(12)))
+        let filler = fetchUser(Address.fromUint8Array(fills[i].topics[2].slice(12)))
 
         // create the take entity
-        take.taker = user.id // this is the swapper but storing as a "taker"
+        take.taker = filler.id
+        take.maker = swapper.id
         take.transaction = transaction.id
         take.pay_gem = payGem.id
         take.buy_gem = buyGem.id
