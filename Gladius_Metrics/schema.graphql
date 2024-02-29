@@ -61,10 +61,18 @@ type UserPairVolume @entity {
     token0: Token!
     " token entity for token1 "
     token1: Token!
-    " the total volume of the token0 in the token denomination "
-    total_volume_token0: BigInt!
-    " the total volume of the token1 in the token denomination "
-    total_volume_token1: BigInt!
+    " the total filler volume of the token0 in the token denomination "
+    total_volume_filler_token0: BigInt!
+    " the total filler volume of the token1 in the token denomination "
+    total_volume_filler_token1: BigInt!
+    " the total filler volume of the token in USD "
+    total_volume_filler_usd: BigDecimal!
+    " the total taker volume of the token1 in the token denomination "
+    total_volume_taker_token0: BigInt!
+    " the total taker volume of the token1 in the token denomination "
+    total_volume_taker_token1: BigInt!
+    " the total taker volume of the token in USD "
+    total_volume_taker_usd: BigDecimal!
     " the total volume of the token in USD "
     total_volume_usd: BigDecimal!
 }

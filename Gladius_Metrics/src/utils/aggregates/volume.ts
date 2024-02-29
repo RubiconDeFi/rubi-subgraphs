@@ -58,8 +58,12 @@ export function fetchUserPairVolume(user: Bytes, tokenZero: Bytes, tokenOne: Byt
         userPairVolume = new UserPairVolume(pairID)
         userPairVolume.token0 = token0
         userPairVolume.token1 = token1
-        userPairVolume.total_volume_token0 = ZERO_BI
-        userPairVolume.total_volume_token1 = ZERO_BI
+        userPairVolume.total_volume_filler_token0 = ZERO_BI
+        userPairVolume.total_volume_filler_token1 = ZERO_BI
+        userPairVolume.total_volume_filler_usd = ZERO_BD
+        userPairVolume.total_volume_taker_token0 = ZERO_BI
+        userPairVolume.total_volume_taker_token1 = ZERO_BI
+        userPairVolume.total_volume_taker_usd = ZERO_BD
         userPairVolume.total_volume_usd = ZERO_BD
         userPairVolume.save()
     }

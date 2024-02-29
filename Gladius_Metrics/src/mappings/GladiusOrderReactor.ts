@@ -174,15 +174,17 @@ export function handleFill(event: Fill): void {
         let swapperVolume = fetchUserPairVolume(swapper.id, payGem.id, buyGem.id)
         let fillerVolume = fetchUserPairVolume(filler.id, payGem.id, buyGem.id)
 
-        swapperVolume.total_volume_usd = swapperVolume.total_volume_usd.plus(buyAmtUsd)        
+        swapperVolume.total_volume_usd = swapperVolume.total_volume_usd.plus(buyAmtUsd)
+        swapperVolume.total_volume_taker_usd = swapperVolume.total_volume_taker_usd.plus(buyAmtUsd)
         fillerVolume.total_volume_usd = fillerVolume.total_volume_usd.plus(buyAmtUsd)
+        fillerVolume.total_volume_filler_usd = fillerVolume.total_volume_filler_usd.plus(buyAmtUsd)
 
         if (swapperVolume.token0 == payGem.id) {
-            swapperVolume.total_volume_token0 = swapperVolume.total_volume_token0.plus(payAmt)
-            fillerVolume.total_volume_token1 = fillerVolume.total_volume_token1.plus(buyAmt)
+            swapperVolume.total_volume_taker_token0 = swapperVolume.total_volume_taker_token0.plus(payAmt)
+            fillerVolume.total_volume_filler_token1 = fillerVolume.total_volume_filler_token1.plus(buyAmt)
         } else {
-            swapperVolume.total_volume_token1 = swapperVolume.total_volume_token1.plus(payAmt)
-            fillerVolume.total_volume_token0 = fillerVolume.total_volume_token0.plus(buyAmt)
+            swapperVolume.total_volume_taker_token1 = swapperVolume.total_volume_taker_token1.plus(payAmt)
+            fillerVolume.total_volume_filler_token0 = fillerVolume.total_volume_filler_token0.plus(buyAmt)
         }
 
         swapperVolume.save()
