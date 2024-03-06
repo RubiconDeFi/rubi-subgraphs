@@ -1,4 +1,4 @@
-import { BigInt, Bytes, ethereum, log, Address } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 import { Fee, Take, Transaction, Fill as FillEntity } from "../../generated/schema";
 import { Fill } from '../../generated/ExclusiveDutchOrderReactor/ExclusiveDutchOrderReactor';
 import { getUser } from "../utils/entities/user";
@@ -116,8 +116,8 @@ export function handleFill(event: Fill): void {
         const id = event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(fills[i].logIndex)));
         const take = new Take(id);
 
-        const taker = getUser(Address.fromUint8Array(fills[i].topics[2].slice(12)))
-        const from = getUser(Address.fromUint8Array(fills[i].topics[3].slice(12)))
+        const taker = getUser(Bytes.fromUint8Array(fills[i].topics[2].slice(12)))
+        const from = getUser(Bytes.fromUint8Array(fills[i].topics[3].slice(12)))
 
         // create the take entity
         take.transaction = event.transaction.hash

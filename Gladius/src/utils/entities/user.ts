@@ -1,7 +1,7 @@
 import { User } from "../../../generated/schema";
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, Bytes } from '@graphprotocol/graph-ts'
 
-export function getUser(address: Address): User {
+export function getUser(address: Bytes): User {
 
     let user = User.load(address);
 
