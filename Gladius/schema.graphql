@@ -54,6 +54,8 @@ type Pair @entity(immutable: true) {
     token1: Bytes!
     " map to all takes created in the pair "
     takes: [Take!]! @derivedFrom(field: "pair")
+    " latest 100 takes "
+    latest: [BigDecimal!]!
 }
 
 type Take @entity(immutable: true) {
