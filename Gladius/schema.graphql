@@ -45,7 +45,7 @@ type Fill @entity(immutable: true) {
     filler: Bytes!
 }
 
-type Pair @entity(immutable: true) {
+type Pair @entity {
     " the pair id (alpha-numeric order of the token addresses (token0.concat(token1))) "
     id: Bytes!
     " the token0 of the pair "
@@ -55,7 +55,7 @@ type Pair @entity(immutable: true) {
     " map to all takes created in the pair "
     takes: [Take!]! @derivedFrom(field: "pair")
     " latest 100 takes "
-    latest: [BigDecimal!]!
+    latestPrices: [BigDecimal!]!
 }
 
 type Take @entity(immutable: true) {

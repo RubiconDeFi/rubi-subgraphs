@@ -64,36 +64,35 @@ export function handleSwap(event: SwapEvent, pools: Map<string, PoolShape>): voi
   take.give_amt = amount1
   take.save()
 
-  if (pair.latest.length == 100) {
+  if (pair.latestPrices.length == 100) {
     // calculate std dev
     let sum = Big.of(0)
     let sumOfSquares = Big.of(0)
 
-    for (let i: i32 = 0; i < pair.latest.length; i++) {
-      sum = sum.plus(Big.of(pair.latest[i].toString()))
+    for (let i: i32 = 0; i < pair.latestPrices.length; i++) {
+      sum = sum.plus(Big.of(pair.latestPrices[i].toString()))
     }
 
-    const mean = sum.div(Big.of(pair.latest.length))
+    const mean = sum.div(Big.of(pair.latestPrices.length))
 
-    for (let i: i32 = 0; i < pair.latest.length; i++) {
-      const distanceSquared = Big.of(pair.latest[i].toString()).minus(mean).pow(2)
+    for (let i: i32 = 0; i < pair.latestPrices.length; i++) {
+      const distanceSquared = Big.of(pair.latestPrices[i].toString()).minus(mean).pow(2)
       sumOfSquares = sumOfSquares.plus(distanceSquared)
     }
 
-    const sigma = sumOfSquares.div(Big.of(pair.latest.length - 1)).sqrt()
-    const currentPrice = Big.of(amount0).div(Big.of(amount1))
+    const sigma = sumOfSquares.div(Big.of(pair.latestPrices.length - 1)).sqrt()
+    const currentPrice = Big.of(amount0.toString()).div(Big.of(amount1.toString()))
 
     // if within two std deviations: update
 
-    if (currentPrice.gte(mean.minus(sigma.times(2))) && currentPrice.lte(mean.plus(sigma.times(2)))) {
-      pair.latest = pair.latest.slice(1)
-      pair.latest.push(new BigDecimal(amount0).div(new BigDecimal(amount1)))
+    if (currentPrice.gte(mean.minus(sigma.times(5))) && currentPrice.lte(mean.plus(sigma.times(5)))) {
+      pair.latestPrices = pair.latestPrices.slice(1).concat([new BigDecimal(amount0).div(new BigDecimal(amount1))])
       pair.save()
       // update the candle entities
       updateCandles(take)
     }
   } else {
-    pair.latest.push(new BigDecimal(amount0).div(new BigDecimal(amount1)))
+    pair.latestPrices = pair.latestPrices.concat([new BigDecimal(amount0).div(new BigDecimal(amount1))])
     pair.save()
   }
 }

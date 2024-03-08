@@ -8,11 +8,11 @@ import { pools } from '../utils/ethereum.pools.config'
 import { handleSwap as handleUniSwap, handlePoolCreated as handleUniPoolCreated } from './common'
 import { PoolCreated } from '../../generated/Factory/Factory'
 
-export function handleSwap(event: SwapEvent) {
+export function handleSwap(event: SwapEvent): void {
   handleUniSwap(event, pools)
 }
 
-export function handlePoolCreated(event: PoolCreated) {
+export function handlePoolCreated(event: PoolCreated): void {
   handleUniPoolCreated(event)
 }
 

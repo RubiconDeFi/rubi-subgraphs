@@ -16,6 +16,7 @@ export function getPair(tokenZero: Bytes, tokenOne: Bytes): Pair {
         pair = new Pair(pairID)
         pair.token0 = token0
         pair.token1 = token1
+        pair.latestPrices = []
         pair.save()
     }
 

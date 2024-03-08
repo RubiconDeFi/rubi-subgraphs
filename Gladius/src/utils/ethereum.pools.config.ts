@@ -1,13 +1,9 @@
 import { Address } from "@graphprotocol/graph-ts";
-
-class PoolShape {
-  token0: Address;
-  token1: Address;
-}
+import { PoolShape } from "../mappings/common"
 
 export const pools = new Map<string, PoolShape>();
 
-// WETH / USDC
+// USDC / WETH
 pools.set(Address.fromString("0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",).toHexString(), {
   token0: Address.fromString("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"),
   token1: Address.fromString("0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")

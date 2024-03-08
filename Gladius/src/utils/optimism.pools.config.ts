@@ -1,9 +1,5 @@
 import { Address } from "@graphprotocol/graph-ts";
-
-class PoolShape {
-  token0: Address;
-  token1: Address;
-}
+import { PoolShape } from "../mappings/common";
 
 export const pools = new Map<string, PoolShape>();
 

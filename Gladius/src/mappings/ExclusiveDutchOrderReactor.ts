@@ -1,10 +1,12 @@
-import { BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
+import { BigDecimal, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 import { Fee, Take, Transaction, Fill as FillEntity } from "../../generated/schema";
 import { Fill } from '../../generated/ExclusiveDutchOrderReactor/ExclusiveDutchOrderReactor';
 import { getUser } from "../utils/entities/user";
 import { getPair } from "../utils/entities/pair";
 import { TRANSFER_SIGNATURE, FILL_SIGNATURE } from "../utils/constants";
 import { BigInt as HexBigInt } from "as-bigint"
+import Big from "as-big";
+import { updateCandles } from "../utils/entities/candles";
 
 export function handleFill(event: Fill): void {
 
@@ -132,8 +134,39 @@ export function handleFill(event: Fill): void {
         take.give_amt = BigInt.fromString(HexBigInt.fromString(outputTransfers[i][0].data.toHexString()).toString())
         take.save()
 
-        // update the candle entities
-        // updateCandles(take) // this causes crappy charts
+        if (pair.latestPrices.length == 100) {
+            // calculate std dev
+            let sum = Big.of(0)
+            let sumOfSquares = Big.of(0)
+        
+            for (let i: i32 = 0; i < pair.latestPrices.length; i++) {
+                sum = sum.plus(Big.of(pair.latestPrices[i].toString()))
+            }
+        
+            const mean = sum.div(Big.of(pair.latestPrices.length))
+        
+            for (let i: i32 = 0; i < pair.latestPrices.length; i++) {
+                const distanceSquared = Big.of(pair.latestPrices[i].toString()).minus(mean).pow(2)
+                sumOfSquares = sumOfSquares.plus(distanceSquared)
+            }
+        
+            const sigma = sumOfSquares.div(Big.of(pair.latestPrices.length - 1)).sqrt()
+            const currentPrice = Big.of(inputTransfers[i].data.toString()).div(Big.of(outputTransfers[i][0].data.toString()))
+        
+            // if within two std deviations: update
+        
+            if (currentPrice.gte(mean.minus(sigma.times(5))) && currentPrice.lte(mean.plus(sigma.times(5)))) {
+                pair.latestPrices = pair.latestPrices
+                    .slice(1)
+                    .concat([BigDecimal.fromString(inputTransfers[i].data.toString()).div(BigDecimal.fromString(outputTransfers[i][0].data.toString()))])
+                pair.save()
+                // update the candle entities
+                updateCandles(take)
+            }
+        } else {
+            pair.latestPrices = pair.latestPrices.concat([BigDecimal.fromString(inputTransfers[i].data.toString()).div(BigDecimal.fromString(outputTransfers[i][0].data.toString()))])
+            pair.save()
+        }
 
         const fill = new FillEntity(fills[i].topics[1]);
         fill.transaction = event.transaction.hash;
