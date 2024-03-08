@@ -5,7 +5,7 @@ import { getUser } from "../utils/entities/user";
 import { getPair } from "../utils/entities/pair";
 import { TRANSFER_SIGNATURE, FILL_SIGNATURE } from "../utils/constants";
 import { BigInt as HexBigInt } from "as-bigint"
-import Big from "as-big";
+import { BigNumber } from "as-bignumber"
 import { updateCandles } from "../utils/entities/candles";
 
 export function handleFill(event: Fill): void {
@@ -136,37 +136,38 @@ export function handleFill(event: Fill): void {
 
         if (pair.latestPrices.length == 100) {
             // calculate std dev
-            let sum = Big.of(0)
-            let sumOfSquares = Big.of(0)
+            let sum = BigNumber.from(0)
+            let sumOfSquares = BigNumber.from(0)
         
             for (let i: i32 = 0; i < pair.latestPrices.length; i++) {
-                sum = sum.plus(Big.of(pair.latestPrices[i].toString()))
+              sum = sum.add(BigNumber.from(pair.latestPrices[i].toString()))
             }
         
-            const mean = sum.div(Big.of(pair.latestPrices.length))
+            const mean = sum.div(BigNumber.from(pair.latestPrices.length))
         
             for (let i: i32 = 0; i < pair.latestPrices.length; i++) {
-                const distanceSquared = Big.of(pair.latestPrices[i].toString()).minus(mean).pow(2)
-                sumOfSquares = sumOfSquares.plus(distanceSquared)
+              const distanceSquared = BigNumber.from(pair.latestPrices[i].toString()).sub(mean).pow(2)
+              sumOfSquares = sumOfSquares.add(distanceSquared)
             }
         
-            const sigma = sumOfSquares.div(Big.of(pair.latestPrices.length - 1)).sqrt()
-            const currentPrice = Big.of(inputTransfers[i].data.toString()).div(Big.of(outputTransfers[i][0].data.toString()))
+            const sigma = sumOfSquares.div(BigNumber.from(pair.latestPrices.length - 1)).sqrt()
+            const currentPrice = BigNumber.from(inputTransfers[i].data.toString()).div(BigNumber.from(outputTransfers[i][0].data.toString()))
         
             // if within two std deviations: update
-        
-            if (currentPrice.gte(mean.minus(sigma.times(5))) && currentPrice.lte(mean.plus(sigma.times(5)))) {
-                pair.latestPrices = pair.latestPrices
-                    .slice(1)
-                    .concat([BigDecimal.fromString(inputTransfers[i].data.toString()).div(BigDecimal.fromString(outputTransfers[i][0].data.toString()))])
-                pair.save()
-                // update the candle entities
-                updateCandles(take)
+            if (currentPrice.gte(mean.sub(sigma.mul(3))) && currentPrice.lte(mean.add(sigma.mul(3)))) {
+              pair.latestPrices = pair.latestPrices
+                .slice(1)
+                .concat([BigDecimal.fromString(inputTransfers[i].data.toString()).div(BigDecimal.fromString(outputTransfers[i][0].data.toString()))])
+              pair.save()
+              // update the candle entities
+              updateCandles(take)
             }
         } else {
-            pair.latestPrices = pair.latestPrices.concat([BigDecimal.fromString(inputTransfers[i].data.toString()).div(BigDecimal.fromString(outputTransfers[i][0].data.toString()))])
-            pair.save()
+        log.info("Saving Price {}", [BigDecimal.fromString(inputTransfers[i].data.toString()).div(BigDecimal.fromString(outputTransfers[i][0].data.toString())).toString()])
+        pair.latestPrices = pair.latestPrices.concat([BigDecimal.fromString(inputTransfers[i].data.toString()).div(BigDecimal.fromString(outputTransfers[i][0].data.toString()))])
+        pair.save()
         }
+        
 
         const fill = new FillEntity(fills[i].topics[1]);
         fill.transaction = event.transaction.hash;

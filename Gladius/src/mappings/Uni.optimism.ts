@@ -14,7 +14,7 @@ export function handleSwap(event: SwapEvent): void {
 }
 
 export function handlePoolCreated(event: PoolCreated): void {
-  handleUniPoolCreated(event)
+  // handleUniPoolCreated(event)
 }
 
 export function handleOnce(block: ethereum.Block): void {
