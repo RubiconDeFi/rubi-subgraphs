@@ -84,14 +84,14 @@ export function handleSwap(event: SwapEvent, pools: Map<string, PoolShape>): voi
     const currentPrice = BigNumber.from(amount0.toString()).div(BigNumber.from(amount1.toString()))
 
     // if within two std deviations: update
-    if (currentPrice.gte(mean.sub(sigma.mul(3))) && currentPrice.lte(mean.add(sigma.mul(3)))) {
-      pair.latestPrices = pair.latestPrices
-        .slice(1)
-        .concat([new BigDecimal(amount0).div(new BigDecimal(amount1))])
-      pair.save()
+    if (currentPrice.gte(mean.sub(sigma.mul(5))) && currentPrice.lte(mean.add(sigma.mul(5)))) {
       // update the candle entities
       updateCandles(take)
     }
+    pair.latestPrices = pair.latestPrices
+      .slice(1)
+      .concat([new BigDecimal(amount0).div(new BigDecimal(amount1))])
+    pair.save()
   } else {
     log.info("Saving Price {}", [new BigDecimal(amount0).div(new BigDecimal(amount1)).toString()])
     pair.latestPrices = pair.latestPrices.concat([new BigDecimal(amount0).div(new BigDecimal(amount1))])

@@ -99,7 +99,6 @@ export function handleFill(event: Fill): void {
         }
 
         if (receipt.logs[i].topics[0] == Bytes.fromHexString(FILL_SIGNATURE)) {
-            fills.push(receipt.logs[i])
             outputTransfers.push(outputTransfersTemp)
             fees.push(feesTemp)
             outputTransfersTemp = []
@@ -113,7 +112,7 @@ export function handleFill(event: Fill): void {
         if (outputTransfers[i].length > 1) continue;
 
         // get the pair associated with the take
-        const pair = getPair(inputTransfers[i].address, outputTransfers[i][0].address)
+        let pair = getPair(inputTransfers[i].address, outputTransfers[i][0].address)
 
         const id = event.transaction.hash.concat(Bytes.fromByteArray(Bytes.fromBigInt(fills[i].logIndex)));
         const take = new Take(id);
@@ -121,6 +120,8 @@ export function handleFill(event: Fill): void {
         const taker = getUser(Bytes.fromUint8Array(fills[i].topics[2].slice(12)))
         const from = getUser(Bytes.fromUint8Array(fills[i].topics[3].slice(12)))
 
+        const take_amt = BigInt.fromString(HexBigInt.fromString(inputTransfers[i].data.toHexString()).toString())
+        const give_amt = BigInt.fromString(HexBigInt.fromString(outputTransfers[i][0].data.toHexString()).toString())
         // create the take entity
         take.transaction = event.transaction.hash
         take.timestamp = event.block.timestamp
@@ -130,8 +131,8 @@ export function handleFill(event: Fill): void {
         take.pair = pair.id
         take.take_gem = inputTransfers[i].address
         take.give_gem = outputTransfers[i][0].address
-        take.take_amt = BigInt.fromString(HexBigInt.fromString(inputTransfers[i].data.toHexString()).toString())
-        take.give_amt = BigInt.fromString(HexBigInt.fromString(outputTransfers[i][0].data.toHexString()).toString())
+        take.take_amt = take_amt
+        take.give_amt = give_amt
         take.save()
 
         if (pair.latestPrices.length == 100) {
@@ -151,21 +152,21 @@ export function handleFill(event: Fill): void {
             }
         
             const sigma = sumOfSquares.div(BigNumber.from(pair.latestPrices.length - 1)).sqrt()
-            const currentPrice = BigNumber.from(inputTransfers[i].data.toString()).div(BigNumber.from(outputTransfers[i][0].data.toString()))
+            const currentPrice = BigNumber.from(take_amt.toString()).div(BigNumber.from(give_amt.toString()))
         
             // if within two std deviations: update
-            if (currentPrice.gte(mean.sub(sigma.mul(3))) && currentPrice.lte(mean.add(sigma.mul(3)))) {
-              pair.latestPrices = pair.latestPrices
-                .slice(1)
-                .concat([BigDecimal.fromString(inputTransfers[i].data.toString()).div(BigDecimal.fromString(outputTransfers[i][0].data.toString()))])
-              pair.save()
+            if (currentPrice.gte(mean.sub(sigma.mul(5))) && currentPrice.lte(mean.add(sigma.mul(5)))) {
               // update the candle entities
               updateCandles(take)
             }
+            pair.latestPrices = pair.latestPrices
+              .slice(1)
+              .concat([BigDecimal.fromString(take_amt.toString()).div(BigDecimal.fromString(give_amt.toString()))])
+            pair.save()
         } else {
-        log.info("Saving Price {}", [BigDecimal.fromString(inputTransfers[i].data.toString()).div(BigDecimal.fromString(outputTransfers[i][0].data.toString())).toString()])
-        pair.latestPrices = pair.latestPrices.concat([BigDecimal.fromString(inputTransfers[i].data.toString()).div(BigDecimal.fromString(outputTransfers[i][0].data.toString()))])
-        pair.save()
+            pair.latestPrices = pair.latestPrices.concat([BigDecimal.fromString(take_amt.toString()).div(BigDecimal.fromString(give_amt.toString()))])
+            pair.save()
+            updateCandles(take)
         }
         
 

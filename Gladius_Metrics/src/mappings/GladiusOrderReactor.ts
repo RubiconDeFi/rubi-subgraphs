@@ -45,7 +45,6 @@ export function handleFill(event: Fill): void {
         }
     }
 
-
     for (let i: i32 = 0; i < receipt.logs.length; i++) {
 
         if (currentFillIndex == fills.length) break;
