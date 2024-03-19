@@ -1,9 +1,5 @@
 {
     "network" : "arbitrum-one",
-    "startBlock": 99504000,
-    "RubiconMarket-address" : "0xC715a30FDe987637A082Cf5F19C74648b67f2db8", 
-    "RubiconRouter-address" : "0x7B24e6F4Dd84674696c2a5809c24154EC6AC7F03",
-    "MarketAidFactory-address" : "0x6CB24A263732579EfD56f3E071851e989d78cE75",
-    "BathHouse-address" : "0x1229036F63679B61910CB1463e5BB57f68D19bb2",
-    "BathPair-address" : "0x9dBf17d518f722B5Aae5573D808B94024b635529" 
-} 
+    "startBlock": 182316331,
+    "GladiusOrderReactor-address": "0x6D81571B4c75CCf08bD16032D0aE54dbaff548b0"
+}
