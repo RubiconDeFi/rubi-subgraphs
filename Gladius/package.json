@@ -9,6 +9,7 @@
         "prepare:arbitrum:goerli": "mustache config/arbitrum_goerli.json subgraph.template.yaml > subgraph.yaml",
         "prepare:optimism": "mustache config/optimism.json subgraph.template.yaml > subgraph.yaml",
         "prepare:ethereum": "mustache config/ethereum.json subgraph.template.yaml > subgraph.yaml",
+        "prepare:base": "mustache config/base.json subgraph.template.yaml > subgraph.yaml",
         "codegen": "graph codegen",
         "build": "graph build",
         "deploy:arbitrum": "graph deploy --product hosted-service etherealiska/gladius-arbitrum-v2",
@@ -25,7 +26,10 @@
         "deploy:cloud:optimism": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL Gladius_Optimism_V2",
         "create:cloud:ethereum": "source ../.env && graph create --node $GRAPH_NODE_URL Gladius_Ethereum_V2",
         "remove:cloud:ethereum": "source ../.env && graph remove --node $GRAPH_NODE_URL Gladius_Ethereum_V2",
-        "deploy:cloud:ethereum": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL Gladius_Ethereum_V2"
+        "deploy:cloud:ethereum": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL Gladius_Ethereum_V2",
+        "create:cloud:base": "source ../.env && graph create --node $GRAPH_NODE_URL Gladius_Base_V2",
+        "remove:cloud:base": "source ../.env && graph remove --node $GRAPH_NODE_URL Gladius_Base_V2",
+        "deploy:cloud:base": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL Gladius_Base_V2"
     },
     "devDependencies": {
         "@graphprotocol/graph-cli": "^0.48.0",
