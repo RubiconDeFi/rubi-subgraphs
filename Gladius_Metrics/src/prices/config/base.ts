@@ -48,7 +48,7 @@ UNISWAP_ROUTER_ADDRESS.set(
 );
 UNISWAP_ROUTER_ADDRESS.set(
   "routerV2",
-  Address.fromString("0x0000000000000000000000000000000000000000")
+  Address.fromString("0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6")
 );
 
 export const UNISWAP_PATH_OVERRIDE = new TypedMap<Address, Address[]>();
