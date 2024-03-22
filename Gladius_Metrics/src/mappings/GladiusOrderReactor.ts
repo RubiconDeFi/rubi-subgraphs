@@ -8,6 +8,7 @@ import { Fill } from "../../generated/GladiusOrderReactor/GladiusOrderReactor"
 import { fetchUser } from "../utils/entities/user"
 import { fetchRubicon } from "../utils/entities/rubicon";
 import { fetchDayVolume, fetchHourVolume, fetchTokenDayData, fetchTokenHourData, fetchUserPairVolume } from "../utils/aggregates/volume";
+import { BIGDECIMAL_ZERO } from "../prices/common/constants";
 
 
 export const FILL_SIGNATURE = "0x78ad7ec0e9f89e74012afa58738b6b661c024cb0fd185ee2f616c0a28924bd66";
@@ -123,48 +124,56 @@ export function handleFill(event: Fill): void {
         let fetchPayGemPrice = getUsdPricePerToken(inputTransfers[i].address)
         let fetchBuyGemPrice = getUsdPricePerToken(outputTransfers[i][0].address)
 
-        if (!fetchPayGemPrice.reverted) {
-            payGemPrice = fetchPayGemPrice.usdPrice.div(fetchPayGemPrice.decimalsBaseTen)
-        } else {
-            payGemPrice = fetchPayGemPrice.usdPrice
-        }
+        let amtUsd: BigDecimal
 
-        if (!fetchBuyGemPrice.reverted) {
-            buyGemPrice = fetchBuyGemPrice.usdPrice.div(fetchBuyGemPrice.decimalsBaseTen)
-        } else {
+        if (fetchBuyGemPrice.reverted && fetchPayGemPrice.reverted) {
+            payGemPrice = fetchPayGemPrice.usdPrice
             buyGemPrice = fetchBuyGemPrice.usdPrice
+            amtUsd = BIGDECIMAL_ZERO
+        } else if (fetchBuyGemPrice.reverted && !fetchPayGemPrice.reverted) {
+            payGemPrice = fetchPayGemPrice.usdPrice.div(fetchPayGemPrice.decimalsBaseTen)
+            buyGemPrice = fetchBuyGemPrice.usdPrice
+            amtUsd = payAmtFormatted.times(payGemPrice)
+        } else if (!fetchBuyGemPrice.reverted && fetchPayGemPrice.reverted) {
+            buyGemPrice = fetchBuyGemPrice.usdPrice.div(fetchBuyGemPrice.decimalsBaseTen)
+            payGemPrice = fetchPayGemPrice.usdPrice
+            amtUsd = buyAmtFormatted.times(buyGemPrice)
+        } else {
+            payGemPrice = fetchPayGemPrice.usdPrice.div(fetchPayGemPrice.decimalsBaseTen)
+            buyGemPrice = fetchBuyGemPrice.usdPrice.div(fetchBuyGemPrice.decimalsBaseTen)
+            amtUsd = buyAmtFormatted.times(buyGemPrice)
         }
 
         let payAmtUsd = payAmtFormatted.times(payGemPrice)
         let buyAmtUsd = buyAmtFormatted.times(buyGemPrice)
 
         let rubicon = fetchRubicon()
-        rubicon.total_volume_usd = rubicon.total_volume_usd.plus(buyAmtUsd)
+        rubicon.total_volume_usd = rubicon.total_volume_usd.plus(amtUsd)
         rubicon.save()
     
         // update the USD aggregate statistic entities 
         let hourVolume = fetchHourVolume(event)
-        hourVolume.volume_usd = hourVolume.volume_usd.plus(buyAmtUsd)
+        hourVolume.volume_usd = hourVolume.volume_usd.plus(amtUsd)
         hourVolume.save()
     
         let dayVolume = fetchDayVolume(event)
-        dayVolume.volume_usd = dayVolume.volume_usd.plus(buyAmtUsd)
+        dayVolume.volume_usd = dayVolume.volume_usd.plus(amtUsd)
         dayVolume.save()
     
         // update the token aggregate statistics for the buy gem
         buyGem.total_volume = buyGem.total_volume.plus(buyAmt)
-        buyGem.total_volume_usd = buyGem.total_volume_usd.plus(buyAmtUsd)
+        buyGem.total_volume_usd = buyGem.total_volume_usd.plus(amtUsd)
         buyGem.save()
     
         // update the binned token aggregate statistics for the buy gem
         let hourBuyGem = fetchTokenHourData(Address.fromBytes(buyGem.id), event)
         hourBuyGem.total_volume = hourBuyGem.total_volume.plus(buyAmt)
-        hourBuyGem.total_volume_usd = hourBuyGem.total_volume_usd.plus(buyAmtUsd)
+        hourBuyGem.total_volume_usd = hourBuyGem.total_volume_usd.plus(amtUsd)
         hourBuyGem.save()
     
         let dayBuyGem = fetchTokenDayData(Address.fromBytes(buyGem.id), event)
         dayBuyGem.total_volume = dayBuyGem.total_volume.plus(buyAmt)
-        dayBuyGem.total_volume_usd = dayBuyGem.total_volume_usd.plus(buyAmtUsd)
+        dayBuyGem.total_volume_usd = dayBuyGem.total_volume_usd.plus(amtUsd)
         dayBuyGem.save()
 
         let swapper = fetchUser(Bytes.fromUint8Array(fills[i].topics[3].slice(12)))
@@ -173,10 +182,10 @@ export function handleFill(event: Fill): void {
         let swapperVolume = fetchUserPairVolume(swapper.id, payGem.id, buyGem.id)
         let fillerVolume = fetchUserPairVolume(filler.id, payGem.id, buyGem.id)
 
-        swapperVolume.total_volume_usd = swapperVolume.total_volume_usd.plus(buyAmtUsd)
-        swapperVolume.total_volume_taker_usd = swapperVolume.total_volume_taker_usd.plus(buyAmtUsd)
-        fillerVolume.total_volume_usd = fillerVolume.total_volume_usd.plus(buyAmtUsd)
-        fillerVolume.total_volume_filler_usd = fillerVolume.total_volume_filler_usd.plus(buyAmtUsd)
+        swapperVolume.total_volume_usd = swapperVolume.total_volume_usd.plus(amtUsd)
+        swapperVolume.total_volume_taker_usd = swapperVolume.total_volume_taker_usd.plus(amtUsd)
+        fillerVolume.total_volume_usd = fillerVolume.total_volume_usd.plus(amtUsd)
+        fillerVolume.total_volume_filler_usd = fillerVolume.total_volume_filler_usd.plus(amtUsd)
 
         if (swapperVolume.token0 == payGem.id) {
             swapperVolume.total_volume_taker_token0 = swapperVolume.total_volume_taker_token0.plus(payAmt)
