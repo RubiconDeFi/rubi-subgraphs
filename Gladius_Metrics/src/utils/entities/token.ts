@@ -32,6 +32,7 @@ export function fetchToken(tokenAddress: Address): Token {
         }
         token.total_volume = ZERO_BI
         token.total_volume_usd = ZERO_BD
+        token.currentPrice = ZERO_BD
         token.save()
     }
     return token as Token

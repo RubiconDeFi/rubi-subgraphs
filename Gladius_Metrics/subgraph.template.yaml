@@ -128,3 +128,27 @@ dataSources:
           receipt: true
           handler: handleFill
   {{/GladiusOrderReactor-address-2}}
+  {{#ChainlinkFeeds}}
+  - kind: ethereum/contract
+    name: Chainlink-{{ name }}
+    network: {{ network }}
+    source: 
+      address: '{{ address }}'
+      abi: ChainlinkAggregator
+      startBlock: {{ startBlock }}
+    mapping: 
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/ChainlinkAggregator.ts
+      entities:
+        - Token
+      abis: 
+        - name: ChainlinkAggregator
+          file: ./abis/Chainlink/aggregator.json
+      eventHandlers:
+        - event: AnswerUpdated(indexed int256,indexed uint256,uint256)
+          receipt: true
+          handler: handleAnswerUpdated
+  {{/ChainlinkFeeds}}
+  

@@ -1,5 +1,12 @@
 {
   "network" : "base",
   "startBlock": 12053265,
-  "GladiusOrderReactor-address" : "0x3C53c04d633bec3fB0De3492607C239BF92d07f9"
+  "GladiusOrderReactor-address" : "0x3C53c04d633bec3fB0De3492607C239BF92d07f9",
+  "ChainLinkFeeds": [ 
+      { "name" : "ETH-USD", "address": "0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70" },
+      { "name" : "BTC-USD", "address": "0x64c911996D3c6aC71f9b455B1E8E7266BcbD848F" },
+      { "name" : "USDC-USD", "address": "0x7e860098F58bBFC8648a4311b374B1D669a2bc6B" },
+      { "name" : "USDT-USD", "address": "0xf19d560eB8d2ADf07BD6D13ed03e1D11215721F9" },
+      { "name" : "DAI-USD", "address": "0x591e79239a7d679378eC8c847e5038150364C78F" }
+  ]
 }
