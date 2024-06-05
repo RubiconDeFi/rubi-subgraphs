@@ -3,12 +3,11 @@ import { Take, Transaction } from "../../generated/schema";
 import { BigInt as HexBigInt } from "as-bigint"
 import { fetchToken, toBigDecimal } from "../utils/entities/token";
 import { BigDecimal } from "@graphprotocol/graph-ts";
-import { getUsdPricePerToken } from "../prices";
 import { Fill } from "../../generated/GladiusOrderReactor/GladiusOrderReactor"
 import { fetchUser } from "../utils/entities/user"
 import { fetchRubicon } from "../utils/entities/rubicon";
 import { fetchDayVolume, fetchHourVolume, fetchTokenDayData, fetchTokenHourData, fetchUserPairVolume } from "../utils/aggregates/volume";
-import { BIGDECIMAL_ZERO } from "../prices/common/constants";
+import { ZERO_BD } from "../utils/constants";
 
 
 export const FILL_SIGNATURE = "0x78ad7ec0e9f89e74012afa58738b6b661c024cb0fd185ee2f616c0a28924bd66";
@@ -119,28 +118,18 @@ export function handleFill(event: Fill): void {
         let buyAmtFormatted = toBigDecimal(buyAmt, buyGem.decimals)
 
         // get the USD price of the gems and calculate the USD amounts
-        let payGemPrice: BigDecimal
-        let buyGemPrice: BigDecimal
-        let fetchPayGemPrice = getUsdPricePerToken(inputTransfers[i].address)
-        let fetchBuyGemPrice = getUsdPricePerToken(outputTransfers[i][0].address)
+        let payGemPrice: BigDecimal = payGem.currentPrice;
+        let buyGemPrice: BigDecimal = buyGem.currentPrice;
 
         let amtUsd: BigDecimal
 
-        if (fetchBuyGemPrice.reverted && fetchPayGemPrice.reverted) {
-            payGemPrice = fetchPayGemPrice.usdPrice
-            buyGemPrice = fetchBuyGemPrice.usdPrice
-            amtUsd = BIGDECIMAL_ZERO
-        } else if (fetchBuyGemPrice.reverted && !fetchPayGemPrice.reverted) {
-            payGemPrice = fetchPayGemPrice.usdPrice.div(fetchPayGemPrice.decimalsBaseTen)
-            buyGemPrice = fetchBuyGemPrice.usdPrice
+        if (buyGemPrice.equals(ZERO_BD) && payGemPrice.equals(ZERO_BD)) {
+            amtUsd = ZERO_BD
+        } else if (buyGemPrice.equals(ZERO_BD) && !payGemPrice.equals(ZERO_BD)) {
             amtUsd = payAmtFormatted.times(payGemPrice)
-        } else if (!fetchBuyGemPrice.reverted && fetchPayGemPrice.reverted) {
-            buyGemPrice = fetchBuyGemPrice.usdPrice.div(fetchBuyGemPrice.decimalsBaseTen)
-            payGemPrice = fetchPayGemPrice.usdPrice
+        } else if (!buyGemPrice.equals(ZERO_BD) && payGemPrice.equals(ZERO_BD)) {
             amtUsd = buyAmtFormatted.times(buyGemPrice)
         } else {
-            payGemPrice = fetchPayGemPrice.usdPrice.div(fetchPayGemPrice.decimalsBaseTen)
-            buyGemPrice = fetchBuyGemPrice.usdPrice.div(fetchBuyGemPrice.decimalsBaseTen)
             amtUsd = buyAmtFormatted.times(buyGemPrice)
         }
 
