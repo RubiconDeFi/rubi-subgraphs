@@ -113,9 +113,6 @@ export function handleFill(event: Fill): void {
         let payAmt = BigInt.fromString(HexBigInt.fromString(inputTransfers[i].data.toHexString()).toString())
         let buyAmt = BigInt.fromString(HexBigInt.fromString(outputTransfers[i][0].data.toHexString()).toString())
 
-        // format the amounts based on the token decimals
-        let payAmtFormatted = toBigDecimal(payAmt, payGem.decimals)
-        let buyAmtFormatted = toBigDecimal(buyAmt, buyGem.decimals)
 
         // get the USD price of the gems and calculate the USD amounts
         let payGemPrice: BigDecimal = payGem.currentPrice;
@@ -126,15 +123,15 @@ export function handleFill(event: Fill): void {
         if (buyGemPrice.equals(ZERO_BD) && payGemPrice.equals(ZERO_BD)) {
             amtUsd = ZERO_BD
         } else if (buyGemPrice.equals(ZERO_BD) && !payGemPrice.equals(ZERO_BD)) {
-            amtUsd = payAmtFormatted.times(payGemPrice)
+            amtUsd = (new BigDecimal(payAmt)).times(payGemPrice)
         } else if (!buyGemPrice.equals(ZERO_BD) && payGemPrice.equals(ZERO_BD)) {
-            amtUsd = buyAmtFormatted.times(buyGemPrice)
+            amtUsd = ((new BigDecimal(buyAmt))).times(buyGemPrice)
         } else {
-            amtUsd = buyAmtFormatted.times(buyGemPrice)
+            amtUsd = ((new BigDecimal(buyAmt))).times(buyGemPrice)
         }
 
-        let payAmtUsd = payAmtFormatted.times(payGemPrice)
-        let buyAmtUsd = buyAmtFormatted.times(buyGemPrice)
+        let payAmtUsd = (new BigDecimal(payAmt)).times(payGemPrice)
+        let buyAmtUsd = (new BigDecimal(buyAmt)).times(buyGemPrice)
 
         let rubicon = fetchRubicon()
         rubicon.total_volume_usd = rubicon.total_volume_usd.plus(amtUsd)
@@ -195,8 +192,6 @@ export function handleFill(event: Fill): void {
         take.buy_gem = buyGem.id
         take.pay_amt = payAmt
         take.buy_amt = buyAmt
-        take.pay_amt_formatted = payAmtFormatted
-        take.buy_amt_formatted = buyAmtFormatted
         take.pay_amt_usd = payAmtUsd
         take.buy_amt_usd = buyAmtUsd
         take.pay_gem_price = payGemPrice

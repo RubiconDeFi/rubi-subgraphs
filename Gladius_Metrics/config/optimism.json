@@ -5,10 +5,10 @@
     "startBlock-2": 116354792,
     "GladiusOrderReactor-address-2" : "0x98169248bDf25E0e297EA478Ab46ac24058Fac78",
     "ChainlinkFeeds": [
-        { "name" : "ETH-USD", "address": "0x13e3Ee699D1909E989722E753853AE30b17e08c5" },
-        { "name" : "BTC-USD", "address": "0xD702DD976Fb76Fffc2D3963D037dfDae5b04E593" },
-        { "name" : "USDC-USD", "address": "0x16a9FA2FDa030272Ce99B29CF780dFA30361E0f3" },
-        { "name" : "USDT-USD", "address": "0xECef79E109e997bCA29c1c0897ec9d7b03647F5E" },
-        { "name" : "DAI-USD", "address": "0x8dBa75e83DA73cc766A7e5a0ee71F656BAb470d6" }
-      ]
+      { "name" : "ETH-USD", "address": "0x02f5E9e9dcc66ba6392f6904D5Fcf8625d9B19C9" },
+      { "name" : "BTC-USD", "address": "0x0C1272d2aC652D10d03bb4dEB0D31F15ea3EAb2b" },
+      { "name" : "USDC-USD", "address": "0xd1Cb03cc31caa72D34dba7eBE21897D9580c4AF0" },
+      { "name" : "USDT-USD", "address": "0xAc37790fF4aBf9483fAe2D1f62fC61fE6b8E4789" },
+      { "name" : "DAI-USD", "address": "0xbCe7579e241e5d676c2371Dc21891489dAcDA250" }
+    ]
 }

@@ -13,23 +13,6 @@ export function fetchToken(tokenAddress: Address): Token {
     if (token == null) {
         token = new Token(tokenAddress)
         token.address = tokenAddress.toHexString()
-
-        // attempt to load the decimals from the contract
-        let contract = _ERC20.bind(tokenAddress)
-
-        // if the contract is null, set the decimals to 18
-        if (contract == null) {
-
-            token.decimals = BigInt.fromI32(18)
-
-        } else {
-            let decimalsResult = contract.try_decimals()
-            if (decimalsResult.reverted) {
-                token.decimals = BigInt.fromI32(18)
-            } else {
-                token.decimals = decimalsResult.value
-            }
-        }
         token.total_volume = ZERO_BI
         token.total_volume_usd = ZERO_BD
         token.currentPrice = ZERO_BD

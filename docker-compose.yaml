@@ -1,7 +1,7 @@
 version: '3'
 services:
   graph-node:
-    image: graphprotocol/graph-node
+    image: graphprotocol/graph-node:v0.34.1
     ports:
       - '8000:8000'
       - '8001:8001'
@@ -18,9 +18,9 @@ services:
       postgres_db: graph-node
       ipfs: 'ipfs:5001'
       # Change next line if you want to connect to a different JSON-RPC endpoint
-      ethereum: 'optimism:https://optimism.mainnet.rubicon.ninja'
+      ethereum: 'arbitrum:https://arbitrum.mainnet.rubicon.ninja'
       GRAPH_LOG: info
-      GRAPH_FORK_BASE: 'https://api.thegraph.com/subgraphs/id/'
+      # GRAPH_FORK_BASE: 'https://api.thegraph.com/subgraphs/id/'
   ipfs:
     image: ipfs/go-ipfs:v0.4.23
     ports:

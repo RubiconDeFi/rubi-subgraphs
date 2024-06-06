@@ -146,9 +146,10 @@ dataSources:
       abis: 
         - name: ChainlinkAggregator
           file: ./abis/Chainlink/aggregator.json
+        - name: _ERC20
+          file: ./abis/Prices/ERC20.json
       eventHandlers:
         - event: AnswerUpdated(indexed int256,indexed uint256,uint256)
           receipt: true
           handler: handleAnswerUpdated
   {{/ChainlinkFeeds}}
-  

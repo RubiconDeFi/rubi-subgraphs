@@ -47,8 +47,6 @@ type Token @entity {
     " token address "
     address: String!
     " token decimals "
-    decimals: BigInt!
-    " the total volume of the token in the token denomination "
     total_volume: BigInt!
     " the total volume of the token in USD "
     total_volume_usd: BigDecimal!
@@ -122,10 +120,6 @@ type Take @entity {
     pay_amt: BigInt!
     " the amount of the buy token that the offer will buy - in the integer format "
     buy_amt: BigInt!
-    " the amount of the pay token in human readable format "
-    pay_amt_formatted: BigDecimal!
-    " the amount of the buy token in human readable format "
-    buy_amt_formatted: BigDecimal!
     " the USD value of the pay token at that block "
     pay_amt_usd: BigDecimal!
     " the USD value of the buy token at that block "
