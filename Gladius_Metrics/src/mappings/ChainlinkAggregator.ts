@@ -11,7 +11,7 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
   if (receipt == null) return;
 
   let amount = event.params.current;
-  let price = toBigDecimal(amount, new BigInt(8)); // all non-eth pairs have 8 decimal places
+  let price = toBigDecimal(amount, BigInt.fromI32(8)); // all non-eth pairs have 8 decimal places
 
   log.info(price.toString(), [])
   let addresses = feedToTokenConfig.get(event.address.toHexString());
