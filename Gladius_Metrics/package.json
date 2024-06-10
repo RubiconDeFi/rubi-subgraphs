@@ -24,7 +24,10 @@
         "deploy:cloud:optimism": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL Gladius_Metrics_Optimism_V2",
         "create:cloud:base": "source ../.env && graph create --node $GRAPH_NODE_URL Gladius_Metrics_Base_V2",
         "remove:cloud:base": "source ../.env && graph remove --node $GRAPH_NODE_URL Gladius_Metrics_Base_V2",
-        "deploy:cloud:base": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL Gladius_Metrics_Base_V2"
+        "deploy:cloud:base": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL Gladius_Metrics_Base_V2",
+        "create:cloud:mainnet": "source ../.env && graph create --node $GRAPH_NODE_URL Gladius_Metrics_Mainnet_V2",
+        "remove:cloud:mainnet": "source ../.env && graph remove --node $GRAPH_NODE_URL Gladius_Metrics_Mainnet_V2",
+        "deploy:cloud:mainnet": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL Gladius_Metrics_Mainnet_V2"
     },
     "devDependencies": {
         "@graphprotocol/graph-cli": "^0.51.2",

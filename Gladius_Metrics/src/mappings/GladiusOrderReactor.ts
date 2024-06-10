@@ -8,6 +8,7 @@ import { fetchUser } from "../utils/entities/user"
 import { fetchRubicon } from "../utils/entities/rubicon";
 import { fetchDayVolume, fetchHourVolume, fetchTokenDayData, fetchTokenHourData, fetchUserPairVolume } from "../utils/aggregates/volume";
 import { ZERO_BD } from "../utils/constants";
+import { decimals } from "../config";
 
 
 export const FILL_SIGNATURE = "0x78ad7ec0e9f89e74012afa58738b6b661c024cb0fd185ee2f616c0a28924bd66";
@@ -118,20 +119,38 @@ export function handleFill(event: Fill): void {
         let payGemPrice: BigDecimal = payGem.currentPrice;
         let buyGemPrice: BigDecimal = buyGem.currentPrice;
 
+
+        let payGemDecimals: i32;
+        let buyGemDecimals: i32;
+
+        let payAmtFormatted: BigDecimal = BigDecimal.fromString("0");
+        let buyAmtFormatted: BigDecimal = BigDecimal.fromString("0");
+
+
+        if (decimals.has(Address.fromHexString(payGem.address).toHexString())) {
+            payGemDecimals = decimals.get(Address.fromHexString(payGem.address).toHexString()) as i32
+            payAmtFormatted = toBigDecimal(payAmt, BigInt.fromI32(payGemDecimals as i32))
+        }
+
+        if (decimals.has(Address.fromHexString(buyGem.address).toHexString())) {
+            buyGemDecimals = decimals.get(Address.fromHexString(buyGem.address).toHexString()) as i32
+            buyAmtFormatted = toBigDecimal(buyAmt, BigInt.fromI32(buyGemDecimals as i32))
+        }
+
         let amtUsd: BigDecimal
 
         if (buyGemPrice.equals(ZERO_BD) && payGemPrice.equals(ZERO_BD)) {
             amtUsd = ZERO_BD
         } else if (buyGemPrice.equals(ZERO_BD) && !payGemPrice.equals(ZERO_BD)) {
-            amtUsd = (new BigDecimal(payAmt)).times(payGemPrice)
+            amtUsd = payAmtFormatted.times(payGemPrice)
         } else if (!buyGemPrice.equals(ZERO_BD) && payGemPrice.equals(ZERO_BD)) {
-            amtUsd = ((new BigDecimal(buyAmt))).times(buyGemPrice)
+            amtUsd = buyAmtFormatted.times(buyGemPrice)
         } else {
-            amtUsd = ((new BigDecimal(buyAmt))).times(buyGemPrice)
+            amtUsd = buyAmtFormatted.times(buyGemPrice)
         }
 
-        let payAmtUsd = (new BigDecimal(payAmt)).times(payGemPrice)
-        let buyAmtUsd = (new BigDecimal(buyAmt)).times(buyGemPrice)
+        let payAmtUsd = payAmtFormatted.times(payGemPrice)
+        let buyAmtUsd = buyAmtFormatted.times(buyGemPrice)
 
         let rubicon = fetchRubicon()
         rubicon.total_volume_usd = rubicon.total_volume_usd.plus(amtUsd)
@@ -196,6 +215,8 @@ export function handleFill(event: Fill): void {
         take.buy_amt_usd = buyAmtUsd
         take.pay_gem_price = payGemPrice
         take.buy_gem_price = buyGemPrice
+        take.pay_amt_formatted = payAmtFormatted
+        take.buy_amt_formatted = buyAmtFormatted
         take.save()
     }
 }

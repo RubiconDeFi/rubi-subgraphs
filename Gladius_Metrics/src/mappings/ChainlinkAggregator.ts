@@ -1,4 +1,4 @@
-import { BigInt, log } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import { AnswerUpdated } from "../../generated/Chainlink-ETH-USD/ChainlinkAggregator"
 import { fetchToken, toBigDecimal } from "../utils/entities/token";
 import { feedToTokenConfig } from "../config";
@@ -13,7 +13,6 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
   let amount = event.params.current;
   let price = toBigDecimal(amount, BigInt.fromI32(8)); // all non-eth pairs have 8 decimal places
 
-  log.info(price.toString(), [])
   let addresses = feedToTokenConfig.get(event.address.toHexString());
 
   if (!addresses) {
