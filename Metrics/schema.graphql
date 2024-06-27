@@ -48,8 +48,6 @@ type Token @entity {
     id: Bytes!
     " token address "
     address: String!
-    " token decimals "
-    decimals: BigInt!
     " the total volume of the token in the token denomination "
     total_volume: BigInt!
     " the total volume of the token in USD "

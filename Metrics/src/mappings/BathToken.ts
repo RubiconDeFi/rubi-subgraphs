@@ -37,14 +37,7 @@ export function handleLogDeposit(event: LogDeposit): void {
     let price = amount_formatted.div(shares_formatted)
 
     // get the USD price of the gems and calculate the USD amount
-    let assetPrice: BigDecimal
-    let fetchAssetPrice = getUsdPricePerToken(event.params.asset)
-
-    if (!fetchAssetPrice.reverted) {
-        assetPrice = fetchAssetPrice.usdPrice.div(fetchAssetPrice.decimalsBaseTen)
-    } else {
-        assetPrice = fetchAssetPrice.usdPrice
-    }
+    let assetPrice: BigDecimal = asset.currentPrice;
 
     let assetAmtUsd = amount_formatted.times(assetPrice)
 
