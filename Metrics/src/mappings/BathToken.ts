@@ -1,4 +1,3 @@
-import { getUsdPrice, getUsdPricePerToken } from "../prices"
 import { fetchPool } from "../utils/entities/pool"
 import { fetchUser } from "../utils/entities/user"
 import { ZERO_BI, BI_18 } from "../utils/constants"
@@ -104,14 +103,7 @@ export function handleLogWithdraw(event: LogWithdraw): void {
     let price = amount_formatted.div(shares_formatted)
 
     // get the USD price of the gems and calculate the USD amount
-    let assetPrice: BigDecimal
-    let fetchAssetPrice = getUsdPricePerToken(event.params.asset)
-
-    if (!fetchAssetPrice.reverted) {
-        assetPrice = fetchAssetPrice.usdPrice.div(fetchAssetPrice.decimalsBaseTen)
-    } else {
-        assetPrice = fetchAssetPrice.usdPrice
-    }
+    let assetPrice = asset.currentPrice;
 
     let assetAmtUsd = amount_formatted.times(assetPrice)
     let feeAmtUsd = fee_formatted.times(assetPrice)

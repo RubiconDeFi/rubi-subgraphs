@@ -54,6 +54,8 @@ type Token @entity {
     total_volume: BigInt!
     " the total volume of the token in USD "
     total_volume_usd: BigDecimal!
+    " current usd price "
+    currentPrice: BigDecimal!
 }
 
 type TokenHourData @entity {

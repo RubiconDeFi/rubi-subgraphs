@@ -5,5 +5,12 @@
     "RubiconRouter-address" : "0x7B24e6F4Dd84674696c2a5809c24154EC6AC7F03",
     "MarketAidFactory-address" : "0x6CB24A263732579EfD56f3E071851e989d78cE75",
     "BathHouse-address" : "0x1229036F63679B61910CB1463e5BB57f68D19bb2",
-    "BathPair-address" : "0x9dBf17d518f722B5Aae5573D808B94024b635529" 
+    "BathPair-address" : "0x9dBf17d518f722B5Aae5573D808B94024b635529",
+    "ChainlinkFeeds": [ 
+        { "name" : "ETH-USD", "address": "0x3607e46698d218B3a5Cae44bF381475C0a5e2ca7" },
+        { "name" : "BTC-USD", "address": "0x942d00008D658dbB40745BBEc89A93c253f9B882" },
+        { "name" : "USDC-USD", "address": "0x2946220288DbBF77dF0030fCecc2a8348CbBE32C" },
+        { "name" : "USDT-USD", "address": "0xCb35fE6E53e71b30301Ec4a3948Da4Ad3c65ACe4" },
+        { "name" : "DAI-USD", "address": "0xFc06bB03a9e1D8033f87eA6A682cbd65477A43b9" }
+    ]
 } 

@@ -1,13 +1,13 @@
 import { ZERO_BD, ZERO_BI } from "../utils/constants"
-import { Bytes, ethereum, BigDecimal } from "@graphprotocol/graph-ts"
+import { Bytes, ethereum, BigDecimal, Address, BigInt } from "@graphprotocol/graph-ts"
 import { Offer, Take } from "../../generated/schema"
 import { fetchRubicon } from '../utils/entities/rubicon'
 import { fetchUser } from "../utils/entities/user"
 import { fetchTransaction } from "../utils/entities/transaction"
 import { fetchToken, toBigDecimal } from "../utils/entities/token"
-import { getUsdPricePerToken } from "../prices"
 import { fetchHourVolume, fetchDayVolume, fetchTokenHourData, fetchTokenDayData } from "../utils/aggregates/volume"
 import { emitTake, emitOffer, emitCancel, emitDelete, LogMake, LogTake, LogKill, OfferDeleted } from "../../generated/RubiconMarket/RubiconMarket"
+import { decimals } from "../config";
 
 export function handleOffer(event: emitOffer): void {
     // emitOffer has the same fields as LogMake so it can be handled the same as LogMake
@@ -61,26 +61,26 @@ export function handleLogMake(event: LogMake): void {
     let payGem = fetchToken(event.params.pay_gem)
     let buyGem = fetchToken(event.params.buy_gem)
 
-    // format the amounts based on the token decimals
-    let payAmtFormatted = toBigDecimal(event.params.pay_amt, payGem.decimals)
-    let buyAmtFormatted = toBigDecimal(event.params.buy_amt, buyGem.decimals)
-
     // get the USD price of the gems and calculate the USD amounts
-    let payGemPrice: BigDecimal
-    let buyGemPrice: BigDecimal
-    let fetchPayGemPrice = getUsdPricePerToken(event.params.pay_gem)
-    let fetchBuyGemPrice = getUsdPricePerToken(event.params.buy_gem)
+    let payGemPrice: BigDecimal = payGem.currentPrice;
+    let buyGemPrice: BigDecimal = buyGem.currentPrice;
 
-    if (!fetchPayGemPrice.reverted) {
-        payGemPrice = fetchPayGemPrice.usdPrice.div(fetchPayGemPrice.decimalsBaseTen)
-    } else {
-        payGemPrice = fetchPayGemPrice.usdPrice
+
+    let payGemDecimals: i32;
+    let buyGemDecimals: i32;
+
+    let payAmtFormatted: BigDecimal = BigDecimal.fromString("0");
+    let buyAmtFormatted: BigDecimal = BigDecimal.fromString("0");
+
+
+    if (decimals.has(Address.fromHexString(payGem.address).toHexString())) {
+        payGemDecimals = decimals.get(Address.fromHexString(payGem.address).toHexString()) as i32
+        payAmtFormatted = toBigDecimal(event.params.pay_amt, BigInt.fromI32(payGemDecimals as i32))
     }
 
-    if (!fetchBuyGemPrice.reverted) {
-        buyGemPrice = fetchBuyGemPrice.usdPrice.div(fetchBuyGemPrice.decimalsBaseTen)
-    } else {
-        buyGemPrice = fetchBuyGemPrice.usdPrice
+    if (decimals.has(Address.fromHexString(buyGem.address).toHexString())) {
+        buyGemDecimals = decimals.get(Address.fromHexString(buyGem.address).toHexString()) as i32
+        buyAmtFormatted = toBigDecimal(event.params.buy_amt, BigInt.fromI32(buyGemDecimals as i32))
     }
 
     let payAmtUsd = payAmtFormatted.times(payGemPrice)
@@ -167,26 +167,26 @@ export function handleLogTake(event: LogTake): void {
     let payGem = fetchToken(event.params.pay_gem)
     let buyGem = fetchToken(event.params.buy_gem)
 
-    // format the amounts based on the token decimals
-    let payAmtFormatted = toBigDecimal(event.params.take_amt, payGem.decimals)
-    let buyAmtFormatted = toBigDecimal(event.params.give_amt, buyGem.decimals)
-
     // get the USD price of the gems and calculate the USD amounts
-    let payGemPrice: BigDecimal
-    let buyGemPrice: BigDecimal
-    let fetchPayGemPrice = getUsdPricePerToken(event.params.pay_gem)
-    let fetchBuyGemPrice = getUsdPricePerToken(event.params.buy_gem)
+    let payGemPrice: BigDecimal = payGem.currentPrice;
+    let buyGemPrice: BigDecimal = buyGem.currentPrice;
 
-    if (!fetchPayGemPrice.reverted) {
-        payGemPrice = fetchPayGemPrice.usdPrice.div(fetchPayGemPrice.decimalsBaseTen)
-    } else {
-        payGemPrice = fetchPayGemPrice.usdPrice
+
+    let payGemDecimals: i32;
+    let buyGemDecimals: i32;
+
+    let payAmtFormatted: BigDecimal = BigDecimal.fromString("0");
+    let buyAmtFormatted: BigDecimal = BigDecimal.fromString("0");
+
+
+    if (decimals.has(Address.fromHexString(payGem.address).toHexString())) {
+        payGemDecimals = decimals.get(Address.fromHexString(payGem.address).toHexString()) as i32
+        payAmtFormatted = toBigDecimal(event.params.take_amt, BigInt.fromI32(payGemDecimals as i32))
     }
 
-    if (!fetchBuyGemPrice.reverted) {
-        buyGemPrice = fetchBuyGemPrice.usdPrice.div(fetchBuyGemPrice.decimalsBaseTen)
-    } else {
-        buyGemPrice = fetchBuyGemPrice.usdPrice
+    if (decimals.has(Address.fromHexString(buyGem.address).toHexString())) {
+        buyGemDecimals = decimals.get(Address.fromHexString(buyGem.address).toHexString()) as i32
+        buyAmtFormatted = toBigDecimal(event.params.give_amt, BigInt.fromI32(buyGemDecimals as i32))
     }
 
     let payAmtUsd = payAmtFormatted.times(payGemPrice)
