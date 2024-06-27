@@ -4,9 +4,11 @@ import { ZERO_BI, BI_18 } from "../utils/constants"
 import { fetchTransaction } from "../utils/entities/transaction"
 import { Withdraw, Deposit } from "../../generated/schema"
 import { fetchPoolHourData, fetchPoolDayData } from "../utils/aggregates/value"
-import { Address, Bytes, ethereum, BigDecimal } from "@graphprotocol/graph-ts"
+import { Address, Bytes, ethereum, BigDecimal, BigInt } from "@graphprotocol/graph-ts"
 import { fetchToken, toBigDecimal } from "../utils/entities/token"
 import { LogDeposit, LogWithdraw, LogClaimBonusTokn } from "../../generated/templates/BathToken/BathToken"
+import { decimals } from "../config";
+
 
 export function handleLogDeposit(event: LogDeposit): void {
 
@@ -23,14 +25,20 @@ export function handleLogDeposit(event: LogDeposit): void {
     let asset = fetchToken(event.params.asset)
     //let bathToken = fetchToken(event.address)
 
+    if (!decimals.has(Address.fromHexString(asset.address).toHexString())) {
+        return;
+    }
+
+    let tokenDecimals = BigInt.fromI32(decimals.get(Address.fromHexString(asset.address).toHexString()) as i32)
+
     // load the related entities
     let transaction = fetchTransaction(event)
     let depositor = fetchUser(event.params.depositor)
-    //let pool = fetchPool(event, asset, event.params.underlyingBalance, event.params.outstandingAmount, event.params.totalSupply, asset.decimals, bathToken.decimals)
-    let pool = fetchPool(event, asset, event.params.underlyingBalance, event.params.outstandingAmount, event.params.totalSupply, asset.decimals, BI_18)
+    //let pool = fetchPool(event, asset, event.params.underlyingBalance, event.params.outstandingAmount, event.params.totalSupply, tokenDecimals, bathToken.decimals)
+    let pool = fetchPool(event, asset, event.params.underlyingBalance, event.params.outstandingAmount, event.params.totalSupply, tokenDecimals, BI_18)
 
     // format the balances based on the decimals of the associated token
-    let amount_formatted = toBigDecimal(event.params.depositedAmt, asset.decimals)
+    let amount_formatted = toBigDecimal(event.params.depositedAmt, tokenDecimals)
     let shares_formatted = toBigDecimal(event.params.sharesReceived, BI_18)
 
     // calculate the price of the bathtoken based upon the ratio of the deposit amount to shares received
@@ -82,15 +90,21 @@ export function handleLogWithdraw(event: LogWithdraw): void {
     // retrieve the underlying asset and bathtoken entities
     let asset = fetchToken(event.params.asset)
 
+    if (!decimals.has(Address.fromHexString(asset.address).toHexString())) {
+        return;
+    }
+
+    let tokenDecimals = BigInt.fromI32(decimals.get(Address.fromHexString(asset.address).toHexString()) as i32)
+
     // load the related entities
     let transaction = fetchTransaction(event)
     let withdrawer = fetchUser(event.params.withdrawer)
-    let pool = fetchPool(event, asset, event.params.underlyingBalance, event.params.outstandingAmount, event.params.totalSupply, asset.decimals, BI_18)
+    let pool = fetchPool(event, asset, event.params.underlyingBalance, event.params.outstandingAmount, event.params.totalSupply, tokenDecimals, BI_18)
 
     // format the balances based on the decimals of the associated token
-    let amount_formatted = toBigDecimal(event.params.amountWithdrawn, asset.decimals)
+    let amount_formatted = toBigDecimal(event.params.amountWithdrawn, tokenDecimals)
     let shares_formatted = toBigDecimal(event.params.sharesWithdrawn, BI_18)
-    let fee_formatted = toBigDecimal(event.params.fee, asset.decimals)
+    let fee_formatted = toBigDecimal(event.params.fee, tokenDecimals)
     
     // calculate the price of the bathtoken based upon the ratio of the deposit amount to shares received - note this does not include the fee
     let price = amount_formatted.div(shares_formatted)
