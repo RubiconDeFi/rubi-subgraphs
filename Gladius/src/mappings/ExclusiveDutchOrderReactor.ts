@@ -158,11 +158,12 @@ export function handleFill(event: Fill): void {
             if (currentPrice.gte(mean.sub(sigma.mul(5))) && currentPrice.lte(mean.add(sigma.mul(5)))) {
               // update the candle entities
               updateCandles(take)
+              pair.latestPrices = pair.latestPrices
+                .slice(1)
+                .concat([BigDecimal.fromString(take_amt.toString()).div(BigDecimal.fromString(give_amt.toString()))])
+              pair.save()
             }
-            pair.latestPrices = pair.latestPrices
-              .slice(1)
-              .concat([BigDecimal.fromString(take_amt.toString()).div(BigDecimal.fromString(give_amt.toString()))])
-            pair.save()
+            
         } else {
             pair.latestPrices = pair.latestPrices.concat([BigDecimal.fromString(take_amt.toString()).div(BigDecimal.fromString(give_amt.toString()))])
             pair.save()
