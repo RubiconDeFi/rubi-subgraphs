@@ -21,5 +21,6 @@ export function handleLPCreated(event: LPCreated) {
   position.token0Amount = BigInt.fromI32(0);
   position.token1Amount = BigInt.fromI32(0);
   position.timestamp = event.block.timestamp;
+  position.open = false;
   position.save();
 }

@@ -1,3 +1,4 @@
+import { BigInt } from '@graphprotocol/graph-ts'
 import { Position } from '../../generated/schema'
 import { Withdrawn, Deposited } from '../../generated/templates/Position/Position'
 
@@ -9,6 +10,10 @@ export function handleWithdraw(event: Withdrawn) {
     position.token0Amount = position.token0Amount.minus(event.params.amount)
   } else {
     position.token1Amount = position.token1Amount.minus(event.params.amount)
+  }
+
+  if (position.token0Amount == BigInt.fromI32(0) && position.token1Amount == BigInt.fromI32(0)) {
+    position.open = false;
   }
 }
 
@@ -22,5 +27,7 @@ export function handleDeposit(event: Deposited) {
   } else {
     position.token1Amount = position.token1Amount.plus(event.params.amount)
   }
+
+  position.open = true;
 
 }

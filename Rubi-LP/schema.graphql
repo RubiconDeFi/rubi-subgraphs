@@ -20,6 +20,8 @@ type Position @entity {
     token1Amount: BigInt!
     " position creation time"
     timestamp: BigInt!
+    " outstanding position "
+    open: Boolean!
 }
 
 
