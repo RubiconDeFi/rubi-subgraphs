@@ -2,7 +2,7 @@ import { BigInt } from '@graphprotocol/graph-ts'
 import { Position } from '../../generated/schema'
 import { Withdrawn, Deposited } from '../../generated/templates/Position/Position'
 
-export function handleWithdraw(event: Withdrawn) {
+export function handleWithdraw(event: Withdrawn): void {
   let position = Position.load(event.address)
   if (!position) throw "Something is very wrong. Position not found."
   
@@ -15,9 +15,11 @@ export function handleWithdraw(event: Withdrawn) {
   if (position.token0Amount == BigInt.fromI32(0) && position.token1Amount == BigInt.fromI32(0)) {
     position.open = false;
   }
+
+  position.save()
 }
 
-export function handleDeposit(event: Deposited) {
+export function handleDeposit(event: Deposited): void {
   let position = Position.load(event.address)
 
   if (!position) throw "Something is very wrong. Position not found."
@@ -29,5 +31,7 @@ export function handleDeposit(event: Deposited) {
   }
 
   position.open = true;
+
+  position.save();
 
 }

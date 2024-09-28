@@ -3,7 +3,7 @@ import { LPCreated } from '../../generated/LPFactory/LPFactory'
 import { Position } from '../../generated/schema';
 import { getUser } from '../utils/entities/user'
 
-export function handleLPCreated(event: LPCreated) {
+export function handleLPCreated(event: LPCreated): void {
   
   let user = getUser(event.params.owner);
 
