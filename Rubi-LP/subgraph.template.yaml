@@ -1,0 +1,48 @@
+specVersion: 0.0.8
+description: a subgraph to support the Rubicon dAPP utlizing the v2 protocol
+repository: https://github.com/RubiconDeFi/rubi-subgraphs
+schema: 
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: LPFactory
+    network: {{ network }}
+    source:
+      address: '{{ address }}'
+      abi: LPFactory
+      startBlock: {{ startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/LPFactory.ts
+      entities:
+        - User
+        - Position
+      abis:
+        - name: LPFactory
+          file: ./abis/lp-factory.json
+      eventHandlers:
+        - event: LPCreated(indexed address,indexed address,address,address)
+          handler: handleLPCreated
+templates:
+  - kind: ethereum/contract
+    name: Position
+    network: {{ network }}
+    source:
+      abi: Position
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/position.ts
+      entities:
+        - Position
+      abis:
+        - name: Position
+          file: ./abis/lp.json
+      eventHandlers:
+        - event: Withdrawn(indexed address,uint256)
+          handler: handleWithdraw
+        - event: Deposited(indexed address,uint256)
+          handler: handleDeposit

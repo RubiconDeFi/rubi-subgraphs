@@ -1,0 +1,27 @@
+type User @entity {
+    " user address "
+    id: Bytes!
+    " all positions for a user "
+    positions: [Position!] @derivedFrom(field: "user")
+}
+
+type Position @entity {
+    " contract address "
+    id: Bytes!
+    " first token by alphanumeric sort "
+    token0: Bytes!
+    " second token by alphanumeric sort "
+    token1: Bytes!
+    " user entity "
+    user: User!
+    " amount of token0 "
+    token0Amount: BigInt!
+    " amount of token1 "
+    token1Amount: BigInt!
+    " position creation time"
+    timestamp: BigInt!
+}
+
+
+
+
