@@ -24,6 +24,9 @@ type Position @entity {
     open: Boolean!
 }
 
-
-
-
+type ArenaToken @entity {
+    " arena token address "
+    id: Bytes!
+    " ipfs hash of metadata "
+    ipfsHash: String!
+}
