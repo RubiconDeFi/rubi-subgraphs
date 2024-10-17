@@ -29,4 +29,6 @@ type ArenaToken @entity {
     id: Bytes!
     " ipfs hash of metadata "
     ipfsHash: String!
+    " creation unix timestamp "
+    createdAt: BigInt!
 }

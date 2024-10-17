@@ -26,7 +26,8 @@ export function handleLPCreated(event: LPCreated): void {
 
   if (event.params.ipfsHash.length > 0) {
     let token = new ArenaToken(event.params.baseToken)
-    token.ipfsHash = event.params.ipfsHash
+    token.ipfsHash = event.params.ipfsHash;
+    token.createdAt = event.block.timestamp;
     token.save();
   }
 }
