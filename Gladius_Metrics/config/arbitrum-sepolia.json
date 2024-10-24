@@ -1,0 +1,12 @@
+{
+  "network" : "arbitrum-sepolia",
+  "startBlock": 75637590,
+  "GladiusOrderReactor-address": "0x1456a1897509Bb9A42610d8fF5FE869D2612C181",
+  "ChainlinkFeeds": [ 
+      { "name" : "ETH-USD", "address": "0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165" },
+      { "name" : "BTC-USD", "address": "0x56a43EB56Da12C0dc1D972ACb089c06a5dEF8e69" },
+      { "name" : "USDC-USD", "address": "0x0153002d20B96532C639313c2d54c3dA09109309" },
+      { "name" : "USDT-USD", "address": "0x80EDee6f667eCc9f63a0a6f55578F870651f06A4" },
+      { "name" : "DAI-USD", "address": "0xb113F5A928BCfF189C998ab20d753a47F9dE5A61" }
+  ]
+}

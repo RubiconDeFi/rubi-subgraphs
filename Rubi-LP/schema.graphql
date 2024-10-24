@@ -31,4 +31,31 @@ type ArenaToken @entity {
     ipfsHash: String!
     " creation unix timestamp "
     createdAt: BigInt!
+    " Last trade "
+    lastTrade: Trade
+}
+
+type Trade @entity(immutable: true) {
+    id: Bytes!
+    inputToken: Bytes!
+    outputToken: Bytes!
+    inputAmount: BigInt!
+    outputAmount: BigInt!
+    transaction: Transaction!
+    timestamp: BigInt!
+    swapper: Bytes!
+    filler: Bytes!
+}
+
+type Transaction @entity(immutable: true) {
+    " the transaction hash "
+    id: Bytes!
+    " the transaction timestamp "
+    timestamp: BigInt!
+    " the transaction block number "
+    block_number: BigInt!
+    " the transaction block index "
+    block_index: BigInt!
+    " map to all fills created in the transaction "
+    trades: [Trade!]! @derivedFrom(field: "transaction")
 }

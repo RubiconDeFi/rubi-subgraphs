@@ -5,6 +5,7 @@
     "scripts": {
         "prepare:optimism": "mustache config/optimism.json subgraph.template.yaml > subgraph.yaml",
         "prepare:arbitrum": "mustache config/arbitrum.json subgraph.template.yaml > subgraph.yaml",
+        "prepare:arbitrum:sepolia": "mustache config/arbitrum-sepolia.json subgraph.template.yaml > subgraph.yaml",
         "prepare:mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml",
         "prepare:base": "mustache config/base.json subgraph.template.yaml > subgraph.yaml",
         "codegen": "graph codegen",
@@ -19,6 +20,9 @@
         "create:cloud:arbitrum": "source ../.env && graph create --node $GRAPH_NODE_URL Gladius_Metrics_Arbitrum_V2",
         "remove:cloud:arbitrum": "source ../.env && graph remove --node $GRAPH_NODE_URL Gladius_Metrics_Arbitrum_V2",
         "deploy:cloud:arbitrum": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL Gladius_Metrics_Arbitrum_V2",
+        "create:cloud:arbitrum:sepolia": "source ../.env && graph create --node $GRAPH_NODE_URL Gladius_Metrics_Arbitrum_Sepolia_V2",
+        "remove:cloud:arbitrum:sepolia": "source ../.env && graph remove --node $GRAPH_NODE_URL Gladius_Metrics_Arbitrum_Sepolia_V2",
+        "deploy:cloud:arbitrum:sepolia": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL Gladius_Metrics_Arbitrum_Sepolia_V2",
         "create:cloud:optimism": "source ../.env && graph create --node $GRAPH_NODE_URL Gladius_Metrics_Optimism_V2",
         "remove:cloud:optimism": "source ../.env && graph remove --node $GRAPH_NODE_URL Gladius_Metrics_Optimism_V2",
         "deploy:cloud:optimism": "source ../.env && graph deploy --node $GRAPH_NODE_URL --ipfs $IPFS_URL Gladius_Metrics_Optimism_V2",

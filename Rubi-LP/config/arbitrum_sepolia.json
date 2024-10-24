@@ -3,5 +3,7 @@
     "startBlock": 88942252,
     "address" : "0x9a49Cfb2d31Dd91d3cA942cb44D8383979703e56",
     "startBlock-2": 84094568,
-    "address-2" : "0x9375B15bB0E8f2B6beE9dFE43D4636B8fe1cC6d7"
+    "address-2" : "0x9375B15bB0E8f2B6beE9dFE43D4636B8fe1cC6d7",
+    "GladiusOrderReactor-startBlock": 88942252,
+    "GladiusOrderReactor-address" : "0x1456a1897509Bb9A42610d8fF5FE869D2612C181"
 }
