@@ -28,6 +28,8 @@ export function handleLPCreated(event: LPCreated): void {
     let token = new ArenaToken(event.params.baseToken)
     token.ipfsHash = event.params.ipfsHash;
     token.createdAt = event.block.timestamp;
+    token.position = position.id;
+    token.user = user.id;
     token.save();
   }
 }

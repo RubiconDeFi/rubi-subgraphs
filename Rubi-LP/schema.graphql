@@ -3,6 +3,8 @@ type User @entity {
     id: Bytes!
     " all positions for a user "
     positions: [Position!] @derivedFrom(field: "user")
+    " all arena tokens for a user "
+    arenaTokens: [ArenaToken!] @derivedFrom(field: "user")
 }
 
 type Position @entity {
@@ -33,6 +35,10 @@ type ArenaToken @entity {
     createdAt: BigInt!
     " Last trade "
     lastTrade: Trade
+    " related position "
+    position: Position!
+    " user that created the token "
+    user: User!
 }
 
 type Trade @entity(immutable: true) {
