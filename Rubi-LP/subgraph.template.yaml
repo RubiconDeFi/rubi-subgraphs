@@ -26,29 +26,6 @@ dataSources:
       eventHandlers:
         - event: LPCreated(indexed address,indexed address,address,address,string,string,string)
           handler: handleLPCreated
-  {{#address-2}}
-  - kind: ethereum
-    name: LPFactoryOld
-    network: {{ network }}
-    source:
-      address: '{{ address-2 }}'
-      abi: LPFactory
-      startBlock: {{ startBlock-2 }}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      file: ./src/mappings/LPFactory.old.ts
-      entities:
-        - User
-        - Position
-      abis:
-        - name: LPFactory
-          file: ./abis/lp-factory-old.json
-      eventHandlers:
-        - event: LPCreated(indexed address,indexed address,address,address)
-          handler: handleLPCreated
-  {{/address-2}}
   - kind: ethereum
     name: GladiusOrderReactor
     network: {{ network }}
