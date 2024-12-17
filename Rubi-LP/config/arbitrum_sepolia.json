@@ -1,0 +1,7 @@
+{
+    "network" : "arbitrum-sepolia",
+    "startBlock": 92516167,
+    "address" : "0x9d5BE2B97D6F74445285946aA9481057878651e8",
+    "GladiusOrderReactor-startBlock": 92516167,
+    "GladiusOrderReactor-address" : "0x1456a1897509Bb9A42610d8fF5FE869D2612C181"
+}

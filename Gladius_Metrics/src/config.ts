@@ -162,3 +162,4 @@ decimals.set(Address.fromString('0xc00e94cb662c3520282e6f5717214004a7f26888').to
 decimals.set(Address.fromString('0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2').toHexString(),18)
 decimals.set(Address.fromString('0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE').toHexString(),18)
 decimals.set(Address.fromString('0xfAbA6f8e4a5E8Ab82F62fe7C39859FA577269BE3').toHexString(),18)
+decimals.set(Address.fromString('0xd28301B86800bBCF1f09a55642ee3E115Edb1f67').toHexString(),18)

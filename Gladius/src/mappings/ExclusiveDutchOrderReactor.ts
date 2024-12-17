@@ -155,7 +155,7 @@ export function handleFill(event: Fill): void {
             const currentPrice = BigNumber.from(take_amt.toString()).div(BigNumber.from(give_amt.toString()))
         
             // if within two std deviations: update
-            if (currentPrice.gte(mean.sub(sigma.mul(5))) && currentPrice.lte(mean.add(sigma.mul(5)))) {
+            if (currentPrice.gte(mean.sub(sigma.mul(10))) && currentPrice.lte(mean.add(sigma.mul(10)))) {
               // update the candle entities
               updateCandles(take)
               pair.latestPrices = pair.latestPrices

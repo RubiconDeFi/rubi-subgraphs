@@ -178,7 +178,6 @@ export function handleLogTake(event: LogTake): void {
     let payAmtFormatted: BigDecimal = BigDecimal.fromString("0");
     let buyAmtFormatted: BigDecimal = BigDecimal.fromString("0");
 
-
     if (decimals.has(Address.fromHexString(payGem.address).toHexString())) {
         payGemDecimals = decimals.get(Address.fromHexString(payGem.address).toHexString()) as i32
         payAmtFormatted = toBigDecimal(event.params.take_amt, BigInt.fromI32(payGemDecimals as i32))
@@ -187,6 +186,18 @@ export function handleLogTake(event: LogTake): void {
     if (decimals.has(Address.fromHexString(buyGem.address).toHexString())) {
         buyGemDecimals = decimals.get(Address.fromHexString(buyGem.address).toHexString()) as i32
         buyAmtFormatted = toBigDecimal(event.params.give_amt, BigInt.fromI32(buyGemDecimals as i32))
+    }
+
+    let amtUsd: BigDecimal
+
+    if (buyGemPrice.equals(ZERO_BD) && payGemPrice.equals(ZERO_BD)) {
+        amtUsd = ZERO_BD
+    } else if (buyGemPrice.equals(ZERO_BD) && !payGemPrice.equals(ZERO_BD)) {
+        amtUsd = payAmtFormatted.times(payGemPrice)
+    } else if (!buyGemPrice.equals(ZERO_BD) && payGemPrice.equals(ZERO_BD)) {
+        amtUsd = buyAmtFormatted.times(buyGemPrice)
+    } else {
+        amtUsd = buyAmtFormatted.times(buyGemPrice)
     }
 
     let payAmtUsd = payAmtFormatted.times(payGemPrice)
@@ -211,32 +222,32 @@ export function handleLogTake(event: LogTake): void {
 
     // update the rubicon entity 
     let rubicon = fetchRubicon()
-    rubicon.total_volume_usd = rubicon.total_volume_usd.plus(buyAmtUsd)
+    rubicon.total_volume_usd = rubicon.total_volume_usd.plus(amtUsd)
     rubicon.save()
 
     // update the USD aggregate statistic entities 
     let hourVolume = fetchHourVolume(event)
-    hourVolume.volume_usd = hourVolume.volume_usd.plus(buyAmtUsd)
+    hourVolume.volume_usd = hourVolume.volume_usd.plus(amtUsd)
     hourVolume.save()
 
     let dayVolume = fetchDayVolume(event)
-    dayVolume.volume_usd = dayVolume.volume_usd.plus(buyAmtUsd)
+    dayVolume.volume_usd = dayVolume.volume_usd.plus(amtUsd)
     dayVolume.save()
 
     // update the token aggregate statistics for the buy gem
     buyGem.total_volume = buyGem.total_volume.plus(event.params.give_amt)
-    buyGem.total_volume_usd = buyGem.total_volume_usd.plus(buyAmtUsd)
+    buyGem.total_volume_usd = buyGem.total_volume_usd.plus(amtUsd)
     buyGem.save()
 
     // update the binned token aggregate statistics for the buy gem
     let hourBuyGem = fetchTokenHourData(event.params.buy_gem, event)
     hourBuyGem.total_volume = hourBuyGem.total_volume.plus(event.params.give_amt)
-    hourBuyGem.total_volume_usd = hourBuyGem.total_volume_usd.plus(buyAmtUsd)
+    hourBuyGem.total_volume_usd = hourBuyGem.total_volume_usd.plus(amtUsd)
     hourBuyGem.save()
 
     let dayBuyGem = fetchTokenDayData(event.params.buy_gem, event)
     dayBuyGem.total_volume = dayBuyGem.total_volume.plus(event.params.give_amt)
-    dayBuyGem.total_volume_usd = dayBuyGem.total_volume_usd.plus(buyAmtUsd)
+    dayBuyGem.total_volume_usd = dayBuyGem.total_volume_usd.plus(amtUsd)
     dayBuyGem.save()
 
     // create and update the take entity

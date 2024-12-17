@@ -1,0 +1,67 @@
+type User @entity {
+    " user address "
+    id: Bytes!
+    " all positions for a user "
+    positions: [Position!] @derivedFrom(field: "user")
+    " all arena tokens for a user "
+    arenaTokens: [ArenaToken!] @derivedFrom(field: "user")
+}
+
+type Position @entity {
+    " contract address "
+    id: Bytes!
+    " first token by alphanumeric sort "
+    token0: Bytes!
+    " second token by alphanumeric sort "
+    token1: Bytes!
+    " user entity "
+    user: User!
+    " amount of token0 "
+    token0Amount: BigInt!
+    " amount of token1 "
+    token1Amount: BigInt!
+    " position creation time"
+    timestamp: BigInt!
+    " outstanding position "
+    open: Boolean!
+}
+
+type ArenaToken @entity {
+    " arena token address "
+    id: Bytes!
+    " ipfs hash of metadata "
+    ipfsHash: String!
+    " creation unix timestamp "
+    createdAt: BigInt!
+    " Last trade "
+    lastTrade: Trade
+    " related position "
+    position: Position!
+    " user that created the token "
+    user: User!
+}
+
+type Trade @entity(immutable: true) {
+    id: Bytes!
+    inputToken: Bytes!
+    outputToken: Bytes!
+    inputAmount: BigInt!
+    outputAmount: BigInt!
+    transaction: Transaction!
+    timestamp: BigInt!
+    swapper: Bytes!
+    filler: Bytes!
+}
+
+type Transaction @entity(immutable: true) {
+    " the transaction hash "
+    id: Bytes!
+    " the transaction timestamp "
+    timestamp: BigInt!
+    " the transaction block number "
+    block_number: BigInt!
+    " the transaction block index "
+    block_index: BigInt!
+    " map to all fills created in the transaction "
+    trades: [Trade!]! @derivedFrom(field: "transaction")
+}
