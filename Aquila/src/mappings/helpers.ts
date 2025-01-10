@@ -1,9 +1,12 @@
 /* eslint-disable prefer-const */
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+<<<<<<< Updated upstream
 
 import { ERC20 } from '../../generated/Factory/ERC20'
 import { ERC20NameBytes } from '../../generated/Factory/ERC20NameBytes'
 import { ERC20SymbolBytes } from '../../generated/Factory/ERC20SymbolBytes'
+=======
+>>>>>>> Stashed changes
 import { User } from '../../generated/schema'
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
@@ -53,6 +56,7 @@ export function isNullEthValue(value: string): boolean {
   return value == '0x0000000000000000000000000000000000000000000000000000000000000001'
 }
 
+<<<<<<< Updated upstream
 export function fetchTokenSymbol(tokenAddress: Address): string {
   // static definitions overrides
 
@@ -127,6 +131,8 @@ export function fetchTokenDecimals(tokenAddress: Address): BigInt | null {
   }
   return null
 }
+=======
+>>>>>>> Stashed changes
 
 export function createUser(address: Address): void {
   let user = User.load(address.toHexString())

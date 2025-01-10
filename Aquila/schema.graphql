@@ -9,8 +9,13 @@ type UniswapFactory @entity {
   totalVolumeUSD: BigDecimal!
   totalVolumeETH: BigDecimal!
 
+<<<<<<< Updated upstream
   # untracked values - less confident USD scores
   untrackedVolumeUSD: BigDecimal!
+=======
+  # # untracked values - less confident USD scores
+  # untrackedVolumeUSD: BigDecimal!
+>>>>>>> Stashed changes
 
   # total liquidity
   totalLiquidityUSD: BigDecimal!
@@ -35,7 +40,11 @@ type Token @entity {
   # token specific volume
   tradeVolume: BigDecimal!
   tradeVolumeUSD: BigDecimal!
+<<<<<<< Updated upstream
   untrackedVolumeUSD: BigDecimal!
+=======
+  # untrackedVolumeUSD: BigDecimal!
+>>>>>>> Stashed changes
 
   # transactions across all pairs
   txCount: BigInt!
@@ -43,8 +52,13 @@ type Token @entity {
   # liquidity across all pairs
   totalLiquidity: BigDecimal!
 
+<<<<<<< Updated upstream
   # derived prices
   derivedETH: BigDecimal!
+=======
+  # # derived prices
+  # derivedETH: BigDecimal!
+>>>>>>> Stashed changes
 
   # derived fields
   tokenDayData: [TokenDayData!]! @derivedFrom(field: "token")
@@ -79,7 +93,11 @@ type Pair @entity {
   volumeToken0: BigDecimal!
   volumeToken1: BigDecimal!
   volumeUSD: BigDecimal!
+<<<<<<< Updated upstream
   untrackedVolumeUSD: BigDecimal!
+=======
+  # untrackedVolumeUSD: BigDecimal!
+>>>>>>> Stashed changes
   txCount: BigInt!
 
   # creation stats
@@ -187,6 +205,10 @@ type Swap @entity {
 type Bundle @entity {
   id: ID!
   ethPrice: BigDecimal! # price of ETH usd
+<<<<<<< Updated upstream
+=======
+  wethAddress: Bytes!
+>>>>>>> Stashed changes
 }
 
 # Data accumulated and condensed into day stats for all of Uniswap
@@ -196,7 +218,11 @@ type UniswapDayData @entity {
 
   dailyVolumeETH: BigDecimal!
   dailyVolumeUSD: BigDecimal!
+<<<<<<< Updated upstream
   dailyVolumeUntracked: BigDecimal!
+=======
+  # dailyVolumeUntracked: BigDecimal!
+>>>>>>> Stashed changes
 
   totalVolumeETH: BigDecimal!
   totalLiquidityETH: BigDecimal!

@@ -5,19 +5,28 @@ import { PairCreated } from '../../generated/Factory/Factory'
 import { Bundle, Pair, Token, UniswapFactory } from '../../generated/schema'
 import { Pair as PairTemplate } from '../../generated/templates'
 import {
+<<<<<<< Updated upstream
   fetchTokenDecimals,
   fetchTokenName,
   fetchTokenSymbol,
   fetchTokenTotalSupply,
+=======
+>>>>>>> Stashed changes
   ZERO_BD,
   ZERO_BI,
 } from './helpers'
 
 export function handleNewPair(event: PairCreated): void {
   // load factory (create if first exchange)
+<<<<<<< Updated upstream
   let factory = UniswapFactory.load(event.address.toHexString())
   if (factory === null) {
     factory = new UniswapFactory(event.address.toHexString())
+=======
+  let factory = UniswapFactory.load('1')
+  if (factory === null) {
+    factory = new UniswapFactory('1')
+>>>>>>> Stashed changes
     factory.pairCount = 0
     factory.totalVolumeETH = ZERO_BD
     factory.totalLiquidityETH = ZERO_BD
@@ -25,11 +34,14 @@ export function handleNewPair(event: PairCreated): void {
     factory.untrackedVolumeUSD = ZERO_BD
     factory.totalLiquidityUSD = ZERO_BD
     factory.txCount = ZERO_BI
+<<<<<<< Updated upstream
 
     // create new bundle
     let bundle = new Bundle('1')
     bundle.ethPrice = ZERO_BD
     bundle.save()
+=======
+>>>>>>> Stashed changes
   }
   factory.pairCount = factory.pairCount + 1
   factory.save()
@@ -41,6 +53,7 @@ export function handleNewPair(event: PairCreated): void {
   // fetch info if null
   if (token0 === null) {
     token0 = new Token(event.params.token0.toHexString())
+<<<<<<< Updated upstream
     // token0.symbol = fetchTokenSymbol(event.params.token0)
     // token0.name = fetchTokenName(event.params.token0)
     // token0.totalSupply = fetchTokenTotalSupply(event.params.token0)
@@ -54,17 +67,23 @@ export function handleNewPair(event: PairCreated): void {
 
     // token0.decimals = decimals
     token0.derivedETH = ZERO_BD
+=======
+>>>>>>> Stashed changes
     token0.tradeVolume = ZERO_BD
     token0.tradeVolumeUSD = ZERO_BD
     token0.untrackedVolumeUSD = ZERO_BD
     token0.totalLiquidity = ZERO_BD
+<<<<<<< Updated upstream
     // token0.allPairs = []
+=======
+>>>>>>> Stashed changes
     token0.txCount = ZERO_BI
   }
 
   // fetch info if null
   if (token1 === null) {
     token1 = new Token(event.params.token1.toHexString())
+<<<<<<< Updated upstream
     // token1.symbol = fetchTokenSymbol(event.params.token1)
     // token1.name = fetchTokenName(event.params.token1)
     // token1.totalSupply = fetchTokenTotalSupply(event.params.token1)
@@ -76,11 +95,16 @@ export function handleNewPair(event: PairCreated): void {
     // }
     // token1.decimals = decimals
     token1.derivedETH = ZERO_BD
+=======
+>>>>>>> Stashed changes
     token1.tradeVolume = ZERO_BD
     token1.tradeVolumeUSD = ZERO_BD
     token1.untrackedVolumeUSD = ZERO_BD
     token1.totalLiquidity = ZERO_BD
+<<<<<<< Updated upstream
     // token1.allPairs = []
+=======
+>>>>>>> Stashed changes
     token1.txCount = ZERO_BI
   }
 
@@ -104,12 +128,23 @@ export function handleNewPair(event: PairCreated): void {
   pair.token0Price = ZERO_BD
   pair.token1Price = ZERO_BD
 
+<<<<<<< Updated upstream
   // create the tracked contract based on the template
   PairTemplate.create(event.params.pair)
 
+=======
+>>>>>>> Stashed changes
   // save updated values
   token0.save()
   token1.save()
   pair.save()
   factory.save()
+<<<<<<< Updated upstream
+=======
+
+  // create the tracked contract based on the template
+  PairTemplate.create(event.params.pair)
+
+
+>>>>>>> Stashed changes
 }
