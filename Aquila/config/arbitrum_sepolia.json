@@ -1,5 +1,8 @@
 {
     "network" : "arbitrum-sepolia",
     "Factory-startBlock": 113604040,
-    "Factory-address" : "0xbf7AeE4a36346ddF757164EA947eC3784FF9bbc7"
+    "Factory-address" : "0xbf7AeE4a36346ddF757164EA947eC3784FF9bbc7",
+    "ChainlinkFeeds": [ 
+        { "name" : "ETH-USD", "address": "0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165" }
+    ]
 }
