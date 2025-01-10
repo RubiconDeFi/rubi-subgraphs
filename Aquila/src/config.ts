@@ -30,4 +30,9 @@ feedToTokenConfig.set(
   Address.fromString("0x4200000000000000000000000000000000000006")
 )
 
+feedToTokenConfig.set(
+  Address.fromString("0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165").toHexString(),
+  Address.fromString("0xc556bAe1e86B2aE9c22eA5E036b07E55E7596074")
+)
+
 export const decimals = new Map<string, number>();

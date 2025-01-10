@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { Address, BigDecimal, BigInt, store } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt, Bytes, store } from '@graphprotocol/graph-ts'
 import { log } from '@graphprotocol/graph-ts'
 
 import {
@@ -15,6 +15,7 @@ import {
 import { Burn, Mint, Swap, Sync, Transfer } from '../../generated/templates/Pair/Pair'
 import { updatePairDayData, updatePairHourData, updateTokenDayData, updateUniswapDayData } from './dayUpdates'
 import { ADDRESS_ZERO, BI_18, convertTokenToDecimal, createUser, ONE_BI, ZERO_BD } from './helpers'
+import { feedToTokenConfig } from '../config'
 // import { findEthPerToken, getEthPriceInUSD, getTrackedLiquidityUSD, getTrackedVolumeUSD } from './pricing'
 
 function isCompleteMint(mintId: string): boolean {
@@ -26,7 +27,6 @@ export function handleTransfer(event: Transfer): void {
   if (event.params.to.toHexString() == ADDRESS_ZERO && event.params.value.equals(BigInt.fromI32(1000))) {
     return
   }
-
 
   let factory = UniswapFactory.load('1')!
   let transactionHash = event.transaction.hash.toHexString()
@@ -219,7 +219,7 @@ export function handleSync(event: Sync): void {
   // pair.save()
 
   // update ETH price now that reserves could have changed
-  // let bundle = Bundle.load('1')!
+  // let bundle = Bundle.load('1')
   // bundle.ethPrice = getEthPriceInUSD()
   // bundle.save()
 
@@ -293,7 +293,15 @@ export function handleMint(event: Mint): void {
   token1.txCount = token1.txCount.plus(ONE_BI)
 
   // get new amounts of USD and ETH for tracking
-  let bundle = Bundle.load('1')!
+  let bundle = Bundle.load('1')
+
+    // hack for arb sepolia
+  if (!bundle) {
+    bundle = new Bundle('1')
+    bundle.wethAddress = feedToTokenConfig.get("0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165")!
+    bundle.ethPrice = BigDecimal.fromString("4123.39")
+  }
+
   let tokenAmount = (Address.fromString(token0.id) == bundle.wethAddress) ? token1Amount : token0Amount
   let wethAmount = (Address.fromString(token0.id) == bundle.wethAddress) ? token0Amount : token1Amount
   let weth = (Address.fromString(token0.id) == bundle.wethAddress) ? token0 : token1
@@ -361,7 +369,14 @@ export function handleBurn(event: Burn): void {
   token1.txCount = token1.txCount.plus(ONE_BI)
 
   // get new amounts of USD and ETH for tracking
-  let bundle = Bundle.load('1')!
+  let bundle = Bundle.load('1')
+
+  // hack for arb sepolia
+  if (!bundle) {
+    bundle = new Bundle('1')
+    bundle.wethAddress = feedToTokenConfig.get("0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165")!
+    bundle.ethPrice = BigDecimal.fromString("4123.39")
+  }
 
   let tokenAmount = (Address.fromString(token0.id) == bundle.wethAddress) ? token1Amount : token0Amount
   let wethAmount = (Address.fromString(token0.id) == bundle.wethAddress) ? token0Amount : token1Amount
@@ -418,7 +433,7 @@ export function handleSwap(event: Swap): void {
   let amount1Total = amount1Out.plus(amount1In)
 
   // ETH/USD prices
-  let bundle = Bundle.load('1')!
+  let bundle = Bundle.load('1')
 
   // // get total amounts of derived USD and ETH for tracking
   // let derivedAmountETH = token1.derivedETH
@@ -429,6 +444,12 @@ export function handleSwap(event: Swap): void {
 
   // only accounts for volume through white listed tokens
 
+  // hack for arb sepolia
+  if (!bundle) {
+    bundle = new Bundle('1')
+    bundle.wethAddress = feedToTokenConfig.get("0xd30e2101a97dcbAeBCBC04F14C3f624E67A35165")!
+    bundle.ethPrice = BigDecimal.fromString("4123.39")
+  }
 
   let weth = (Address.fromString(token0.id) == bundle.wethAddress) ? token0 : token1
   let token = (Address.fromString(token0.id) == bundle.wethAddress) ? token1 : token0
