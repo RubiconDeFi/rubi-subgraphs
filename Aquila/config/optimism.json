@@ -3,12 +3,12 @@
     "Factory-startBlock": 130470810,
     "Factory-address" : "0x11bb952Dc97DD062271E6AA9E0Defe2719559944",
     "ChainlinkFeeds": [
-      { "name" : "ETH-USD", "address": "0x13e3Ee699D1909E989722E753853AE30b17e08c5" },
-      { "name" : "BTC-USD", "address": "0xD702DD976Fb76Fffc2D3963D037dfDae5b04E593" },
-      { "name" : "USDC-USD", "address": "0x16a9FA2FDa030272Ce99B29CF780dFA30361E0f3" },
-      { "name" : "USDT-USD", "address": "0xECef79E109e997bCA29c1c0897ec9d7b03647F5E" },
-      { "name" : "DAI-USD", "address": "0x8dBa75e83DA73cc766A7e5a0ee71F656BAb470d6" },
-      { "name" : "WSTETH-USD", "address": "0x698B585CbC4407e2D54aa898B2600B53C68958f7" },
-      { "name" : "OP-USD", "address": "0x0D276FC14719f9292D5C1eA2198673d1f4269246" }
+      { "name" : "ETH-USD", "address": "0x02f5E9e9dcc66ba6392f6904D5Fcf8625d9B19C9" },
+      { "name" : "BTC-USD", "address": "0x0C1272d2aC652D10d03bb4dEB0D31F15ea3EAb2b" },
+      { "name" : "USDC-USD", "address": "0xd1Cb03cc31caa72D34dba7eBE21897D9580c4AF0" },
+      { "name" : "USDT-USD", "address": "0xAc37790fF4aBf9483fAe2D1f62fC61fE6b8E4789" },
+      { "name" : "DAI-USD", "address": "0xbCe7579e241e5d676c2371Dc21891489dAcDA250" },
+      { "name" : "WSTETH-USD", "address": "0x0d110cC7876d73c3C4190324bCF4C59416bBD259" },
+      { "name" : "OP-USD", "address": "0x4F6dFDFd4d68F68b2692E79f9e94796fC8015770" }
     ]
 }

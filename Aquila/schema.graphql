@@ -20,6 +20,22 @@ type UniswapFactory @entity {
   txCount: BigInt!
 }
 
+
+type ArenaToken @entity {
+    " arena token address "
+    id: Bytes!
+    " ipfs hash of metadata "
+    ipfsHash: String!
+    " creation unix timestamp "
+    createdAt: BigInt!
+    " Last trade "
+    lastTrade: Swap
+    " related position "
+    position: Pair!
+    " user that created the token "
+    user: User!
+}
+
 type Token @entity {
   # token address
   id: Bytes!
@@ -27,13 +43,13 @@ type Token @entity {
   # mirrored from the smart contract
   # symbol: String!
   # name: String!
-  # decimals: BigInt!
+  decimals: BigInt
 
   # used for other stats like marketcap
   # totalSupply: BigInt!
 
   # token specific volume
-  tradeVolume: BigDecimal!
+  tradeVolume: BigInt!
   tradeVolumeUSD: BigDecimal!
   # untrackedVolumeUSD: BigDecimal!
 
@@ -94,8 +110,8 @@ type Pair @entity {
   liquidityProviderCount: BigInt! # used to detect new exchanges
   # derived fields
   pairHourData: [PairHourData!]! @derivedFrom(field: "pair")
-  mints: [Mint!]! @derivedFrom(field: "pair")
-  burns: [Burn!]! @derivedFrom(field: "pair")
+  # mints: [Mint!]! @derivedFrom(field: "pair")
+  # burns: [Burn!]! @derivedFrom(field: "pair")
   swaps: [Swap!]! @derivedFrom(field: "pair")
 }
 
@@ -110,8 +126,8 @@ type Transaction @entity {
   timestamp: BigInt!
   # This is not the reverse of Mint.transaction; it is only used to
   # track incomplete mints (similar for burns and swaps)
-  mints: [Mint!]!
-  burns: [Burn!]!
+  # mints: [Mint!]!
+  # burns: [Burn!]!
   swaps: [Swap!]!
 }
 
@@ -176,10 +192,10 @@ type Swap @entity {
   # populated from the Swap event
   sender: Bytes!
   from: Bytes! # the EOA that initiated the txn
-  amount0In: BigDecimal!
-  amount1In: BigDecimal!
-  amount0Out: BigDecimal!
-  amount1Out: BigDecimal!
+  amount0In: BigInt!
+  amount1In: BigInt!
+  amount0Out: BigInt!
+  amount1Out: BigInt!
   to: Bytes!
   logIndex: BigInt
 
@@ -265,7 +281,7 @@ type TokenDayData @entity {
   dailyTxns: BigInt!
 
   # liquidity stats
-  totalLiquidityToken: BigDecimal!
+  totalLiquidityToken: BigInt!
   # totalLiquidityETH: BigDecimal!
   totalLiquidityUSD: BigDecimal!
 

@@ -85,7 +85,7 @@ export function updatePairHourData(event: ethereum.Event): PairHourData {
   return pairHourData as PairHourData
 }
 
-export function updateTokenDayData(token: Token, event: ethereum.Event, amountUSD): TokenDayData {
+export function updateTokenDayData(token: Token, event: ethereum.Event, amountUSD: BigDecimal): TokenDayData {
   let timestamp = event.block.timestamp.toI32()
   let dayID = timestamp / 86400
   let dayStartTimestamp = dayID * 86400
@@ -104,7 +104,7 @@ export function updateTokenDayData(token: Token, event: ethereum.Event, amountUS
     tokenDayData.totalLiquidityUSD = ZERO_BD
   }
   // tokenDayData.priceUSD = price
-  // tokenDayData.totalLiquidityToken = token.totalLiquidity
+  tokenDayData.totalLiquidityToken = token.totalLiquidity
   // tokenDayData.totalLiquidityETH = token.totalLiquidity.times(token.derivedETH as BigDecimal)
   tokenDayData.totalLiquidityUSD = amountUSD
   tokenDayData.dailyTxns = tokenDayData.dailyTxns.plus(ONE_BI)

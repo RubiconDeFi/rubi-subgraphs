@@ -67,10 +67,10 @@ export function fetchToken(tokenAddress: Address): Token {
     if (token == null) {
         token = new Token(tokenAddress)
         token.currentPrice = ZERO_BD
-        token.tradeVolume = ZERO_BD
+        token.tradeVolume = ZERO_BI
         token.tradeVolumeUSD = ZERO_BD
         // token0.untrackedVolumeUSD = ZERO_BD
-        // token.totalLiquidity = ZERO_BD
+        token.totalLiquidity = ZERO_BI
         token.txCount = ZERO_BI
         token.save()
     }

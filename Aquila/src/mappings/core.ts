@@ -48,6 +48,7 @@ export function handleTransfer(event: Transfer): void {
     transaction = new Transaction(transactionHash)
     transaction.blockNumber = event.block.number
     transaction.timestamp = event.block.timestamp
+    transaction.swaps = []
   }
 
   if (to == ADDRESS_ZERO && from == pair.id) return;
@@ -77,10 +78,17 @@ export function handleSync(event: Sync): void {
   pair.reserve0 = event.params.reserve0
   pair.reserve1 = event.params.reserve1
 
-  if (pair.reserve1.notEqual(ZERO_BI)) pair.token0Price = pair.reserve0.toBigDecimal().div(pair.reserve1.toBigDecimal())
-  else pair.token0Price = ZERO_BD
-  if (pair.reserve0.notEqual(ZERO_BI)) pair.token1Price = pair.reserve1.toBigDecimal().div(pair.reserve0.toBigDecimal())
-  else pair.token1Price = ZERO_BD
+  if (pair.reserve1.notEqual(ZERO_BI)) {
+    pair.token0Price = pair.reserve0.toBigDecimal().div(pair.reserve1.toBigDecimal())
+  } else {
+    pair.token0Price = ZERO_BD
+  }
+
+  if (pair.reserve0.notEqual(ZERO_BI)) {
+    pair.token1Price = pair.reserve1.toBigDecimal().div(pair.reserve0.toBigDecimal())
+  } else {
+    pair.token1Price = ZERO_BD
+  }
 
   // now correctly set liquidity amounts for each token
   token0.totalLiquidity = token0.totalLiquidity.plus(pair.reserve0)
@@ -92,27 +100,25 @@ export function handleSync(event: Sync): void {
 
   if (token0.currentPrice == ZERO_BD && token1.currentPrice == ZERO_BD) {
     pair.save();
-    return;
   } else if (token0.currentPrice != ZERO_BD && token1.currentPrice != ZERO_BD) {
     pair.reserve0USD = token0.currentPrice.times(pair.reserve0.toBigDecimal())
     pair.reserve1USD = token1.currentPrice.times(pair.reserve1.toBigDecimal())
-  } else if (token0.currentPrice != ZERO_BD) {
+    pair.save()
+  } else if (token0.currentPrice != ZERO_BD && token0.decimals) {
     pair.reserve0USD = token0.currentPrice.times(pair.reserve0.toBigDecimal())
-    pair.reserve1USD = pair.reserve0.toBigDecimal()
-      .div(pair.reserve1.toBigDecimal())
-      .times(token0.currentPrice)
-      .times(pair.reserve1.toBigDecimal())
-  } else {
+      .div(BigInt.fromI32(10)
+        .pow(token0.decimals.toU32() as u8)
+        .toBigDecimal())
+    pair.reserve1USD = pair.reserve0USD
+    pair.save()
+  } else if (token1.currentPrice != ZERO_BD && token1.decimals)  {
     pair.reserve1USD = token1.currentPrice.times(pair.reserve1.toBigDecimal())
-    pair.reserve0USD = pair.reserve1.toBigDecimal()
-      .div(pair.reserve0.toBigDecimal())
-      .times(token1.currentPrice)
-      .times(pair.reserve0.toBigDecimal())
+      .div(BigInt.fromI32(10)
+        .pow(token1.decimals!.toU32() as u8)
+        .toBigDecimal())
+    pair.reserve0USD = pair.reserve1USD
+    pair.save()
   }
-
-  // save entities
-  pair.save()
-
 }
 
 export function handleMint(event: Mint): void {
@@ -283,17 +289,18 @@ export function handleSwap(event: Swap): void {
   let pair = Pair.load(event.address)!
   let token0 = Token.load(pair.token0)
   let token1 = Token.load(pair.token1)
+
   if (token0 === null || token1 === null) {
     return
   }
-  let amount0In = convertTokenToDecimal(event.params.amount0In, BigInt.fromI32(18))
-  let amount1In = convertTokenToDecimal(event.params.amount1In, BigInt.fromI32(18))
-  let amount0Out = convertTokenToDecimal(event.params.amount0Out, BigInt.fromI32(18))
-  let amount1Out = convertTokenToDecimal(event.params.amount1Out, BigInt.fromI32(18))
 
   // totals for volume updates
-  let amount0Total = amount0Out.plus(amount0In)
-  let amount1Total = amount1Out.plus(amount1In)
+  let amount0In = event.params.amount0In;
+  let amount0Out = event.params.amount0Out;
+  let amount1In = event.params.amount1In;
+  let amount1Out = event.params.amount1Out;
+  let amount0Total = amount0Out.plus(amount0In).toBigDecimal();
+  let amount1Total = amount1Out.plus(amount1In).toBigDecimal();
 
   // // get total amounts of derived USD and ETH for tracking
   // let derivedAmountETH = token1.derivedETH
@@ -304,26 +311,24 @@ export function handleSwap(event: Swap): void {
 
   // only accounts for volume through white listed tokens
 
-  let trackedAmountUSD; 
+  let trackedAmountUSD: BigDecimal; 
 
   if (token0.currentPrice == ZERO_BD && token1.currentPrice == ZERO_BD) {
     trackedAmountUSD = BigDecimal.zero();
   } else if (token0.currentPrice != ZERO_BD) {
-    let token0Decimals = decimals.get(token0.id)
-    if (!token0Decimals) {
+    if (!token0.decimals) {
       trackedAmountUSD = BigDecimal.zero()
     } else {
       trackedAmountUSD = amount0Total.times(token0.currentPrice).div(BigInt.fromI32(10)
-      .pow(token0Decimals.toU32() as u8)
+      .pow(token0.decimals.toU32() as u8)
       .toBigDecimal())
     }
   } else {
-    let token1Decimals = decimals.get(token1.id)
-    if (!token1Decimals) {
+    if (!token1.decimals) {
       trackedAmountUSD = BigDecimal.zero()
     } else {
       trackedAmountUSD = amount1Total.times(token1.currentPrice).div(BigInt.fromI32(10)
-      .pow(token1Decimals.toU32() as u8)
+      .pow(token1.decimals.toU32() as u8)
       .toBigDecimal())
     }
   }
@@ -368,10 +373,11 @@ export function handleSwap(event: Swap): void {
     transaction = new Transaction(event.transaction.hash)
     transaction.blockNumber = event.block.number
     transaction.timestamp = event.block.timestamp
-    transaction.mints = []
+    // transaction.mints = []
     transaction.swaps = []
-    transaction.burns = []
+    // transaction.burns = []
   }
+
   let swaps = transaction.swaps
   let swap = new SwapEvent(
     event.transaction.hash.concat(Bytes.fromI32(swaps.length)),
