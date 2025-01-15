@@ -104,186 +104,33 @@ export function handleSync(event: Sync): void {
     pair.reserve0USD = token0.currentPrice.times(pair.reserve0.toBigDecimal())
     pair.reserve1USD = token1.currentPrice.times(pair.reserve1.toBigDecimal())
     pair.save()
-  } else if (token0.currentPrice != ZERO_BD && token0.decimals) {
+  } else if (token0.currentPrice != ZERO_BD) {
+
     pair.reserve0USD = token0.currentPrice.times(pair.reserve0.toBigDecimal())
-      .div(BigInt.fromI32(10)
-        .pow(token0.decimals.toU32() as u8)
-        .toBigDecimal())
+    .div(BigInt.fromI32(10)
+      .pow(token0.decimals!.toU32() as u8)
+      .toBigDecimal())
+    
     pair.reserve1USD = pair.reserve0USD
     pair.save()
-  } else if (token1.currentPrice != ZERO_BD && token1.decimals)  {
+  } else if (token1.currentPrice != ZERO_BD)  {
     pair.reserve1USD = token1.currentPrice.times(pair.reserve1.toBigDecimal())
-      .div(BigInt.fromI32(10)
-        .pow(token1.decimals!.toU32() as u8)
-        .toBigDecimal())
+    .div(BigInt.fromI32(10)
+      .pow(token1.decimals!.toU32() as u8)
+      .toBigDecimal())
+    
     pair.reserve0USD = pair.reserve1USD
+    pair.save()
+  } else {
+    pair.reserve0USD = BigDecimal.zero()
+    pair.reserve1USD = BigDecimal.zero()
     pair.save()
   }
 }
 
-export function handleMint(event: Mint): void {
-//   // loaded from a previous handler creating this transaction
-//   // transfer event is emitted first and mint event is emitted afterwards, good to confirm with a protocol eng
-//   let transaction = Transaction.load(event.transaction.hash)
-//   if (transaction === null) {
-//     return
-//   }
+export function handleMint(event: Mint): void { }
 
-//   let mints = transaction.mints
-//   let mint = MintEvent.load(mints[mints.length - 1])
-
-//   if (mint === null) {
-//     return
-//   }
-
-//   let pair = Pair.load(event.address)!
-//   let uniswap = UniswapFactory.load(Bytes.fromI32(1))!
-
-//   let token0 = Token.load(pair.token0)
-//   let token1 = Token.load(pair.token1)
-
-//   if (token0 === null || token1 === null) {
-//     return
-//   }
-
-//   // update exchange info (except balances, sync will cover that)
-
-//   // let token0Amount = convertTokenToDecimal(event.params.amount0, BigInt.fromI32(18))
-//   // let token1Amount = convertTokenToDecimal(event.params.amount1, BigInt.fromI32(18))
-
-//   // update txn counts
-//   token0.txCount = token0.txCount.plus(ONE_BI)
-//   token1.txCount = token1.txCount.plus(ONE_BI)
-
-//   let token0Price: BigDecimal = token0.currentPrice;
-//   let token1Price: BigDecimal = token1.currentPrice;
-
-//   let token0Decimals: i32;
-//   let token1Decimals: i32;
-
-//   let token0Formatted: BigDecimal = BigDecimal.fromString("0");
-//   let token1Formatted: BigDecimal = BigDecimal.fromString("0");
-
-//   if (decimals.has(token0.id)) {
-//       token0Decimals = decimals.get(token0.id)
-//       token0Formatted = toBigDecimal(event.params.amount0, BigInt.fromI32(token0Decimals))
-//   }
-
-//   if (decimals.has(token1.id)) {
-//       token1Decimals = decimals.get(token1.id)
-//       token1Formatted = toBigDecimal(event.params.amount1, BigInt.fromI32(token1Decimals))
-//   }
-
-//   let amtUsd: BigDecimal
-
-//   if (token0Price.equals(ZERO_BD) && token1Price.equals(ZERO_BD)) {
-//       amtUsd = ZERO_BD
-//   } else if (token0Price.equals(ZERO_BD) && !token1Price.equals(ZERO_BD)) {
-//       amtUsd = token1Formatted.times(token1Price)
-//   } else if (!token0Price.equals(ZERO_BD) && token1Price.equals(ZERO_BD)) {
-//       amtUsd = token0Formatted.times(token0Price)
-//   } else {
-//       amtUsd = token0Formatted.times(token0Price)
-//   }
-
-//   // let amountTotalUSD = token1.derivedETH.times(token1Amount)
-//   //   .plus(token0.derivedETH.times(token0Amount))
-//   //   .times(bundle.ethPrice)
-
-//   // update txn counts
-//   pair.txCount = pair.txCount.plus(ONE_BI)
-//   uniswap.txCount = uniswap.txCount.plus(ONE_BI)
-
-//   // save entities
-//   token0.save()
-//   token1.save()
-//   pair.save()
-//   uniswap.save()
-
-//   mint.sender = event.params.sender
-//   mint.amount0 = event.params.amount0
-//   mint.amount1 = event.params.amount1
-//   mint.logIndex = event.logIndex
-//   mint.amountUSD = amtUsd as BigDecimal
-//   mint.save()
-
-//   // update day entities
-//   updatePairDayData(event)
-//   updatePairHourData(event)
-//   updateUniswapDayData(event)
-//   updateTokenDayData(token0, event, bundle.ethPrice, wethAmount.times(bundle.ethPrice))
-//   updateTokenDayData(token1, event, wethAmount.times(bundle.ethPrice).div(tokenAmount), wethAmount.times(bundle.ethPrice))
-}
-
-export function handleBurn(event: Burn): void {
-//   let transaction = Transaction.load(event.transaction.hash)
-
-//   // safety check
-//   if (transaction === null) {
-//     return
-//   }
-
-//   let burns = transaction.burns
-//   let burn = BurnEvent.load(burns[burns.length - 1])
-
-//   if (burn === null) {
-//     return
-//   }
-
-//   let pair = Pair.load(event.address)!
-//   let uniswap = UniswapFactory.load(Bytes.fromI32(1))!
-
-//   //update token info
-//   let token0 = Token.load(pair.token0)
-//   let token1 = Token.load(pair.token1)
-//   if (token0 === null || token1 === null) {
-//     return
-//   }
-
-//   let token0Amount = convertTokenToDecimal(event.params.amount0, BigInt.fromI32(18))
-//   let token1Amount = convertTokenToDecimal(event.params.amount1, BigInt.fromI32(18))
-
-//   // update txn counts
-//   token0.txCount = token0.txCount.plus(ONE_BI)
-//   token1.txCount = token1.txCount.plus(ONE_BI)
-
-//   let tokenAmount = (token0.id == bundle.wethAddress) ? token1Amount : token0Amount
-//   let wethAmount = (token0.id == bundle.wethAddress) ? token0Amount : token1Amount
-//   let weth = (token0.id == bundle.wethAddress) ? token0 : token1
-//   let token = (token0.id == bundle.wethAddress) ? token1 : token0
-//   let amountTotalUSD = wethAmount.times(bundle.ethPrice).times(BigInt.fromI32(2).toBigDecimal())
-
-//   // let amountTotalUSD = token1.derivedETH
-//   //   .times(token1Amount)
-//   //   .plus(token0.derivedETH.times(token0Amount))
-//   //   .times(bundle.ethPrice)
-
-//   // update txn counts
-//   uniswap.txCount = uniswap.txCount.plus(ONE_BI)
-//   pair.txCount = pair.txCount.plus(ONE_BI)
-
-//   // update global counter and save
-//   token0.save()
-//   token1.save()
-//   pair.save()
-//   uniswap.save()
-
-//   // update burn
-//   burn.sender = event.params.sender
-//   burn.amount0 = token0Amount as BigDecimal
-//   burn.amount1 = token1Amount as BigDecimal
-//   burn.to = event.params.to
-//   burn.logIndex = event.logIndex
-//   burn.amountUSD = amountTotalUSD as BigDecimal
-//   burn.save()
-
-//   // update day entities
-//   updatePairDayData(event)
-//   updatePairHourData(event)
-//   updateUniswapDayData(event)
-//   updateTokenDayData(weth as Token, event, bundle.ethPrice, wethAmount.times(bundle.ethPrice))
-//   updateTokenDayData(token as Token, event, wethAmount.times(bundle.ethPrice).div(tokenAmount), wethAmount.times(bundle.ethPrice))
-}
+export function handleBurn(event: Burn): void { }
 
 export function handleSwap(event: Swap): void {
   let pair = Pair.load(event.address)!
@@ -302,35 +149,20 @@ export function handleSwap(event: Swap): void {
   let amount0Total = amount0Out.plus(amount0In).toBigDecimal();
   let amount1Total = amount1Out.plus(amount1In).toBigDecimal();
 
-  // // get total amounts of derived USD and ETH for tracking
-  // let derivedAmountETH = token1.derivedETH
-  //   .times(amount1Total)
-  //   .plus(token0.derivedETH.times(amount0Total))
-  //   .div(BigDecimal.fromString('2'))
-  // let derivedAmountUSD = derivedAmountETH.times(bundle.ethPrice)
-
-  // only accounts for volume through white listed tokens
-
   let trackedAmountUSD: BigDecimal; 
 
   if (token0.currentPrice == ZERO_BD && token1.currentPrice == ZERO_BD) {
     trackedAmountUSD = BigDecimal.zero();
   } else if (token0.currentPrice != ZERO_BD) {
-    if (!token0.decimals) {
-      trackedAmountUSD = BigDecimal.zero()
-    } else {
       trackedAmountUSD = amount0Total.times(token0.currentPrice).div(BigInt.fromI32(10)
-      .pow(token0.decimals.toU32() as u8)
+      .pow(token0.decimals!.toU32() as u8)
       .toBigDecimal())
-    }
-  } else {
-    if (!token1.decimals) {
-      trackedAmountUSD = BigDecimal.zero()
-    } else {
+  } else if (token1.currentPrice != ZERO_BD) {
       trackedAmountUSD = amount1Total.times(token1.currentPrice).div(BigInt.fromI32(10)
-      .pow(token1.decimals.toU32() as u8)
+      .pow(token1.decimals!.toU32() as u8)
       .toBigDecimal())
-    }
+  } else {
+    trackedAmountUSD = BigDecimal.zero()
   }
 
   // let trackedAmountUSD = getTrackedVolumeUSD(amount0Total, token0 as Token, amount1Total, token1 as Token, pair as Pair)
