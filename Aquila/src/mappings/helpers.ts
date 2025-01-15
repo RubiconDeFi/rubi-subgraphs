@@ -1,8 +1,8 @@
 /* eslint-disable prefer-const */
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { User } from '../../generated/schema'
+import { Token, User } from '../../generated/schema'
 
-export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
+export const ADDRESS_ZERO = Address.fromHexString('0x0000000000000000000000000000000000000000')
 
 export let ZERO_BI = BigInt.fromI32(0)
 export let ONE_BI = BigInt.fromI32(1)
@@ -49,12 +49,38 @@ export function isNullEthValue(value: string): boolean {
   return value == '0x0000000000000000000000000000000000000000000000000000000000000001'
 }
 
-
-export function createUser(address: Address): void {
-  let user = User.load(address.toHexString())
+export function createUser(address: Address): User {
+  let user = User.load(address)
   if (user === null) {
-    user = new User(address.toHexString())
+    user = new User(address)
     user.usdSwapped = ZERO_BD
     user.save()
   }
+  return user;
+}
+
+export function fetchToken(tokenAddress: Address): Token {
+    // attempt to load the token from the store
+    let token = Token.load(tokenAddress)
+
+    // if the token is null, create it
+    if (token == null) {
+        token = new Token(tokenAddress)
+        token.currentPrice = ZERO_BD
+        token.tradeVolume = ZERO_BD
+        token.tradeVolumeUSD = ZERO_BD
+        // token0.untrackedVolumeUSD = ZERO_BD
+        // token.totalLiquidity = ZERO_BD
+        token.txCount = ZERO_BI
+        token.save()
+    }
+    return token as Token
+}
+
+export function toBigDecimal(quantity: BigInt, decimals: BigInt): BigDecimal {
+    return quantity.divDecimal(
+      BigInt.fromI32(10)
+        .pow(decimals.toU32() as u8)
+        .toBigDecimal(),
+    );
 }
