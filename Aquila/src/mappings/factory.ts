@@ -51,6 +51,7 @@ export function handleNewPair(event: PairCreated): void {
   // pair.untrackedVolumeUSD = ZERO_BD
   pair.token0Price = ZERO_BD
   pair.token1Price = ZERO_BD
+  pair.tracked = false;
 
   // save updated values
   token0.save()

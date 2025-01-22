@@ -13,9 +13,7 @@ import {
 } from '../../generated/schema'
 import { Burn, Mint, Swap, Sync, Transfer } from '../../generated/templates/Pair/Pair'
 import { updatePairDayData, updatePairHourData, updateTokenDayData, updateUniswapDayData } from './dayUpdates'
-import { ADDRESS_ZERO, BI_18, convertTokenToDecimal, createUser, ONE_BI, toBigDecimal, ZERO_BD, ZERO_BI } from './helpers'
-import { decimals, feedToTokenConfig } from '../config'
-// import { findEthPerToken, getEthPriceInUSD, getTrackedLiquidityUSD, getTrackedVolumeUSD } from './pricing'
+import { ADDRESS_ZERO, BI_18, convertTokenToDecimal, createUser, ONE_BI, toBigDecimal, updateCandles, ZERO_BD, ZERO_BI } from './helpers'
 
 function isCompleteMint(mintId: Bytes): boolean {
   return MintEvent.load(mintId)!.sender !== null // sufficient checks
@@ -69,7 +67,8 @@ export function handleSync(event: Sync): void {
   let uniswap = UniswapFactory.load(Bytes.fromI32(1))!
 
   // reset factory liquidity by subtracting onluy tarcked liquidity
-  // uniswap.totalLiquidityETH = uniswap.totalLiquidityETH.minus(pair.trackedReserveETH as BigDecimal)
+
+  uniswap.totalLiquidityUSD = uniswap.totalLiquidityUSD.minus(pair.reserve0USD).minus(pair.reserve1USD)
 
   // reset token total liquidity amounts
   token0.totalLiquidity = token0.totalLiquidity.minus(pair.reserve0)
@@ -94,38 +93,38 @@ export function handleSync(event: Sync): void {
   token0.totalLiquidity = token0.totalLiquidity.plus(pair.reserve0)
   token1.totalLiquidity = token1.totalLiquidity.plus(pair.reserve1)
 
-  uniswap.save()
-  token0.save()
-  token1.save()
-
-  if (token0.currentPrice == ZERO_BD && token1.currentPrice == ZERO_BD) {
-    pair.save();
-  } else if (token0.currentPrice != ZERO_BD && token1.currentPrice != ZERO_BD) {
-    pair.reserve0USD = token0.currentPrice.times(pair.reserve0.toBigDecimal())
-    pair.reserve1USD = token1.currentPrice.times(pair.reserve1.toBigDecimal())
-    pair.save()
+  if (token0.currentPrice != ZERO_BD && token1.currentPrice != ZERO_BD) {
+    let reserve0AMTFormatted = pair.reserve0.toBigDecimal().div(
+      BigInt.fromI32(10).pow(token0.decimals!.toU32() as u8).toBigDecimal()
+    )
+    let reserve1AMTFormatted = pair.reserve1.toBigDecimal().div(
+      BigInt.fromI32(10).pow(token1.decimals!.toU32() as u8).toBigDecimal()
+    )
+    pair.reserve0USD = token0.currentPrice.times(reserve0AMTFormatted)
+    pair.reserve1USD = token1.currentPrice.times(reserve1AMTFormatted)
   } else if (token0.currentPrice != ZERO_BD) {
-
-    pair.reserve0USD = token0.currentPrice.times(pair.reserve0.toBigDecimal())
-    .div(BigInt.fromI32(10)
-      .pow(token0.decimals!.toU32() as u8)
-      .toBigDecimal())
-    
+    let reserve0AMTFormatted = pair.reserve0.toBigDecimal().div(
+      BigInt.fromI32(10).pow(token0.decimals!.toU32() as u8).toBigDecimal()
+    )
+    pair.reserve0USD = token0.currentPrice.times(reserve0AMTFormatted)  
     pair.reserve1USD = pair.reserve0USD
-    pair.save()
-  } else if (token1.currentPrice != ZERO_BD)  {
-    pair.reserve1USD = token1.currentPrice.times(pair.reserve1.toBigDecimal())
-    .div(BigInt.fromI32(10)
-      .pow(token1.decimals!.toU32() as u8)
-      .toBigDecimal())
-    
+  } else if (token1.currentPrice != ZERO_BD) {
+    let reserve1AMTFormatted = pair.reserve1.toBigDecimal().div(
+      BigInt.fromI32(10).pow(token1.decimals!.toU32() as u8).toBigDecimal()
+    )
+    pair.reserve1USD = token1.currentPrice.times(reserve1AMTFormatted)
     pair.reserve0USD = pair.reserve1USD
-    pair.save()
   } else {
     pair.reserve0USD = BigDecimal.zero()
     pair.reserve1USD = BigDecimal.zero()
-    pair.save()
   }
+
+  uniswap.totalLiquidityUSD = uniswap.totalLiquidityUSD.plus(pair.reserve0USD).plus(pair.reserve1USD)
+
+  uniswap.save()
+  token0.save()
+  token1.save()
+  pair.save()
 }
 
 export function handleMint(event: Mint): void { }
@@ -153,19 +152,24 @@ export function handleSwap(event: Swap): void {
 
   if (token0.currentPrice == ZERO_BD && token1.currentPrice == ZERO_BD) {
     trackedAmountUSD = BigDecimal.zero();
+  } else if (token0.currentPrice != ZERO_BD && token1.currentPrice != ZERO_BD) {
+    trackedAmountUSD = amount0Total.times(token0.currentPrice).div(BigInt.fromI32(10)
+      .pow(token0.decimals!.toU32() as u8)
+      .toBigDecimal())
+    trackedAmountUSD = trackedAmountUSD.plus(amount1Total.times(token1.currentPrice).div(BigInt.fromI32(10)
+      .pow(token1.decimals!.toU32() as u8)
+      .toBigDecimal()))
   } else if (token0.currentPrice != ZERO_BD) {
       trackedAmountUSD = amount0Total.times(token0.currentPrice).div(BigInt.fromI32(10)
       .pow(token0.decimals!.toU32() as u8)
-      .toBigDecimal())
+      .toBigDecimal()).times(BigInt.fromI32(2).toBigDecimal())
   } else if (token1.currentPrice != ZERO_BD) {
       trackedAmountUSD = amount1Total.times(token1.currentPrice).div(BigInt.fromI32(10)
       .pow(token1.decimals!.toU32() as u8)
-      .toBigDecimal())
+      .toBigDecimal()).times(BigInt.fromI32(2).toBigDecimal())
   } else {
     trackedAmountUSD = BigDecimal.zero()
   }
-
-  // let trackedAmountUSD = getTrackedVolumeUSD(amount0Total, token0 as Token, amount1Total, token1 as Token, pair as Pair)
 
   // // update token0 global volume and token liquidity stats
   token0.tradeVolume = token0.tradeVolume.plus(amount0In.plus(amount0Out))
@@ -191,7 +195,6 @@ export function handleSwap(event: Swap): void {
   // update global values, only used tracked amounts for volume
   let uniswap = UniswapFactory.load(Bytes.fromI32(1))!
   uniswap.totalVolumeUSD = uniswap.totalVolumeUSD.plus(trackedAmountUSD)
-  // uniswap.totalVolumeETH = uniswap.totalVolumeETH.plus(wethAmount)
   uniswap.txCount = uniswap.txCount.plus(ONE_BI)
 
   // save entities
@@ -212,7 +215,7 @@ export function handleSwap(event: Swap): void {
 
   let swaps = transaction.swaps
   let swap = new SwapEvent(
-    event.transaction.hash.concat(Bytes.fromI32(swaps.length)),
+    event.transaction.hash.concat(Bytes.fromI32(event.logIndex.toI32())),
   )
 
   // update swap event
@@ -231,6 +234,8 @@ export function handleSwap(event: Swap): void {
   // use the tracked amount if we have it
   swap.amountUSD = trackedAmountUSD
   swap.save()
+
+  updateCandles(swap)
 
   // update the transaction
 

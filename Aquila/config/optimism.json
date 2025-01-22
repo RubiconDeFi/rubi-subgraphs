@@ -1,7 +1,9 @@
 {
     "network" : "optimism",
-    "Factory-startBlock": 130470810,
-    "Factory-address" : "0x11bb952Dc97DD062271E6AA9E0Defe2719559944",
+    "Factory-startBlock": 130750391,
+    "Factory-address" : "0x3B2C6fe3039B42f00E98b76531C05932abfB258e",
+    "Arena-startBlock": 130702059,
+    "Arena-address": "0x059075ef47a94bDd55004859E09780A1609C9755",
     "ChainlinkFeeds": [
       { "name" : "ETH-USD", "address": "0x02f5E9e9dcc66ba6392f6904D5Fcf8625d9B19C9" },
       { "name" : "BTC-USD", "address": "0x0C1272d2aC652D10d03bb4dEB0D31F15ea3EAb2b" },

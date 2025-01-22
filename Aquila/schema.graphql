@@ -76,6 +76,9 @@ type Pair @entity {
   # pair address
   id: Bytes!
 
+  # flag to know if total liquidity is being tracked to keep tvl calculation corret
+  tracked: Boolean!
+
   # mirrored from the smart contract
   token0: Token!
   token1: Token!
@@ -287,4 +290,129 @@ type TokenDayData @entity {
 
   # price stats
   # priceUSD: BigDecimal!
+}
+
+type CandleOneMinute @entity {
+    " token0 + token1 + timestamp / 60 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Swap!
+    " closing trade of the candle "
+    high: Swap!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Swap!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Swap!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleFiveMinute @entity {
+    " token0 + token1 + timestamp / 300 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Swap!
+    " closing trade of the candle "
+    high: Swap!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Swap!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Swap!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleFifteenMinute @entity {
+    " token0 + token1 + timestamp / 900 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Swap!
+    " closing trade of the candle "
+    high: Swap!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Swap!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Swap!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleOneHour @entity {
+    " token0 + token1 + timestamp / 3600 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Swap!
+    " closing trade of the candle "
+    high: Swap!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Swap!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Swap!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleOneDay @entity {
+    " token0 + token1 + timestamp / 86400 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Swap!
+    " closing trade of the candle "
+    high: Swap!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Swap!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Swap!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
 }
