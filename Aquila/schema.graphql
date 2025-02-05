@@ -28,8 +28,6 @@ type ArenaToken @entity {
     ipfsHash: String!
     " creation unix timestamp "
     createdAt: BigInt!
-    " Last trade "
-    lastTrade: Swap
     " related position "
     position: Pair!
     " user that created the token "
@@ -78,6 +76,9 @@ type Pair @entity {
 
   # flag to know if total liquidity is being tracked to keep tvl calculation corret
   tracked: Boolean!
+
+  " Last trade "
+  lastTrade: Swap
 
   # mirrored from the smart contract
   token0: Token!
@@ -304,13 +305,13 @@ type CandleOneMinute @entity {
     " closing timestamp of the candle "
     close_timestamp: BigInt!
     " opening trade of the candle "
-    open: Swap!
+    open: Take!
     " closing trade of the candle "
-    high: Swap!
+    high: Take!
     " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
-    low: Swap!
+    low: Take!
     " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
-    close: Swap!
+    close: Take!
     " the ratio of token0 to token 1 at the high "
     high_ratio: BigDecimal!
     " the ratio of token0 to token 1 at the low "
@@ -329,13 +330,13 @@ type CandleFiveMinute @entity {
     " closing timestamp of the candle "
     close_timestamp: BigInt!
     " opening trade of the candle "
-    open: Swap!
+    open: Take!
     " closing trade of the candle "
-    high: Swap!
+    high: Take!
     " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
-    low: Swap!
+    low: Take!
     " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
-    close: Swap!
+    close: Take!
     " the ratio of token0 to token 1 at the high "
     high_ratio: BigDecimal!
     " the ratio of token0 to token 1 at the low "
@@ -354,13 +355,13 @@ type CandleFifteenMinute @entity {
     " closing timestamp of the candle "
     close_timestamp: BigInt!
     " opening trade of the candle "
-    open: Swap!
+    open: Take!
     " closing trade of the candle "
-    high: Swap!
+    high: Take!
     " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
-    low: Swap!
+    low: Take!
     " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
-    close: Swap!
+    close: Take!
     " the ratio of token0 to token 1 at the high "
     high_ratio: BigDecimal!
     " the ratio of token0 to token 1 at the low "
@@ -379,13 +380,13 @@ type CandleOneHour @entity {
     " closing timestamp of the candle "
     close_timestamp: BigInt!
     " opening trade of the candle "
-    open: Swap!
+    open: Take!
     " closing trade of the candle "
-    high: Swap!
+    high: Take!
     " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
-    low: Swap!
+    low: Take!
     " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
-    close: Swap!
+    close: Take!
     " the ratio of token0 to token 1 at the high "
     high_ratio: BigDecimal!
     " the ratio of token0 to token 1 at the low "
@@ -404,15 +405,41 @@ type CandleOneDay @entity {
     " closing timestamp of the candle "
     close_timestamp: BigInt!
     " opening trade of the candle "
-    open: Swap!
+    open: Take!
     " closing trade of the candle "
-    high: Swap!
+    high: Take!
     " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
-    low: Swap!
+    low: Take!
     " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
-    close: Swap!
+    close: Take!
     " the ratio of token0 to token 1 at the high "
     high_ratio: BigDecimal!
     " the ratio of token0 to token 1 at the low "
     low_ratio: BigDecimal!
+}
+
+# To make candles work with the rest of the app
+type Take @entity(immutable: true) {
+    " the transaction hash and log index of the take "
+    id: Bytes!
+    " the transaction that the take was a part of "
+    transaction: Transaction!
+    " the timestamp of the transaction that the take was a part of "
+    timestamp: BigInt!
+    " the event log index of the take "
+    index: BigInt!
+    " the user that took the offer "
+    taker: User!
+    " the user that originated the transaction that the take was a part of "
+    from_address: User!
+    " the pair associated with the take "
+    pair: Pair!
+    " the pay token of the offer (the asset the maker is selling & the asset the taker is buying) "
+    take_gem: Bytes!
+    " the buy token of the offer (the asset the maker is buying & the asset the taker is paying in) "
+    give_gem: Bytes!
+    " the amount of pay token the taker is buying "
+    take_amt: BigInt!
+    " the amount of buy token the taker is paying in "
+    give_amt: BigInt!
 }

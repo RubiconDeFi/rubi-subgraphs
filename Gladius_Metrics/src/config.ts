@@ -29,6 +29,16 @@ feedToTokenConfig.set(Address.fromString("0xbCe7579e241e5d676c2371Dc21891489dAcD
   Address.fromString("0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1")
 ])
 
+// OP / USD
+feedToTokenConfig.set(Address.fromString("0x4F6dFDFd4d68F68b2692E79f9e94796fC8015770").toHexString(), [
+  Address.fromString("0x4200000000000000000000000000000000000042")
+])
+
+// WSTETH / USD
+feedToTokenConfig.set(Address.fromString("0x0d110cC7876d73c3C4190324bCF4C59416bBD259").toHexString(), [
+  Address.fromString("0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb")
+])
+
 // ARB
 // ETH / USD
 feedToTokenConfig.set(Address.fromString("0x3607e46698d218B3a5Cae44bF381475C0a5e2ca7").toHexString(), [
@@ -112,11 +122,16 @@ feedToTokenConfig.set(Address.fromString("0x21b1E4eA0E9AE2e79932662300eB12A0f90A
 
 export const decimals = new Map<string, number>();
 
+//OP
 decimals.set(Address.fromString('0x7F5c764cBc14f9669B88837ca1490cCa17c31607').toHexString(),6)
+decimals.set(Address.fromString('0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85').toHexString(),6)
 decimals.set(Address.fromString('0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1').toHexString(),18)
 decimals.set(Address.fromString('0x94b008aA00579c1307B0EF2c499aD98a8ce58e58').toHexString(),6)
 decimals.set(Address.fromString('0x4200000000000000000000000000000000000006').toHexString(),18)
 decimals.set(Address.fromString('0x4200000000000000000000000000000000000042').toHexString(),18)
+decimals.set(Address.fromString('0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb').toHexString(),18)
+decimals.set(Address.fromString('0x68f180fcCe6836688e9084f035309E29Bf0A2095').toHexString(),8)
+
 decimals.set(Address.fromString('0x68f180fcCe6836688e9084f035309E29Bf0A2095').toHexString(),8)
 decimals.set(Address.fromString('0x8700dAec35aF8Ff88c16BdF0418774CB3D7599B4').toHexString(),18)
 decimals.set(Address.fromString('0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1').toHexString(),18)

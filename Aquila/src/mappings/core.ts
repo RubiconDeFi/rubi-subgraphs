@@ -7,6 +7,7 @@ import {
   Mint as MintEvent,
   Pair,
   Swap as SwapEvent,
+  Take,
   Token,
   Transaction,
   UniswapFactory,
@@ -190,18 +191,13 @@ export function handleSwap(event: Swap): void {
   pair.volumeToken0 = pair.volumeToken0.plus(amount0Total)
   pair.volumeToken1 = pair.volumeToken1.plus(amount1Total)
   pair.txCount = pair.txCount.plus(ONE_BI)
-  pair.save()
 
   // update global values, only used tracked amounts for volume
   let uniswap = UniswapFactory.load(Bytes.fromI32(1))!
   uniswap.totalVolumeUSD = uniswap.totalVolumeUSD.plus(trackedAmountUSD)
   uniswap.txCount = uniswap.txCount.plus(ONE_BI)
 
-  // save entities
-  pair.save()
-  token0.save()
-  token1.save()
-  uniswap.save()
+
 
   let transaction = Transaction.load(event.transaction.hash)
   if (transaction === null) {
@@ -233,9 +229,30 @@ export function handleSwap(event: Swap): void {
   swap.logIndex = event.logIndex
   // use the tracked amount if we have it
   swap.amountUSD = trackedAmountUSD
+
+  pair.lastTrade = swap.id
+
+  // save entities
+  pair.save()
+  token0.save()
+  token1.save()
+  uniswap.save()
   swap.save()
 
-  updateCandles(swap)
+  let take = new Take(swap.id)
+  take.transaction = event.transaction.hash
+  take.timestamp = event.block.timestamp
+  take.index = event.logIndex
+  take.taker = swap.to
+  take.from_address = swap.sender
+  take.pair = pair.id
+  take.take_gem = pair.token0
+  take.take_amt = swap.amount0Out.plus(swap.amount0In)
+  take.give_gem = pair.token1
+  take.give_amt = swap.amount1Out.plus(swap.amount1In)
+  take.save()
+
+  updateCandles(take)
 
   // update the transaction
 
