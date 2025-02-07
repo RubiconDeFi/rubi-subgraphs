@@ -31,9 +31,7 @@ export function handleTransfer(event: Transfer): void {
 
   // user stats
   let from = event.params.from
-  let sender = createUser(from)
   let to = event.params.to
-  let recipient = createUser(to)
 
   // get pair and load contract
   let pair = Pair.load(event.address)!
@@ -137,6 +135,12 @@ export function handleSwap(event: Swap): void {
   let token0 = Token.load(pair.token0)
   let token1 = Token.load(pair.token1)
 
+  let from = event.params.sender
+  let to = event.params.to
+
+  let sender = createUser(from)
+  let recipient = createUser(to)
+
   if (token0 === null || token1 === null) {
     return
   }
@@ -219,17 +223,15 @@ export function handleSwap(event: Swap): void {
   swap.pair = pair.id
   swap.timestamp = transaction.timestamp
   swap.transaction = transaction.id
-  swap.sender = event.params.sender
   swap.amount0In = amount0In
   swap.amount1In = amount1In
   swap.amount0Out = amount0Out
   swap.amount1Out = amount1Out
-  swap.to = event.params.to
-  swap.from = event.transaction.from
+  swap.to = recipient.id
+  swap.from = sender.id
   swap.logIndex = event.logIndex
   // use the tracked amount if we have it
   swap.amountUSD = trackedAmountUSD
-
   pair.lastTrade = swap.id
 
   // save entities
@@ -239,17 +241,19 @@ export function handleSwap(event: Swap): void {
   uniswap.save()
   swap.save()
 
+  let token0isTake = swap.amount0In.gt(swap.amount0Out)
+
   let take = new Take(swap.id)
   take.transaction = event.transaction.hash
   take.timestamp = event.block.timestamp
   take.index = event.logIndex
   take.taker = swap.to
-  take.from_address = swap.sender
+  take.from_address = swap.from
   take.pair = pair.id
-  take.take_gem = pair.token0
-  take.take_amt = swap.amount0Out.plus(swap.amount0In)
-  take.give_gem = pair.token1
-  take.give_amt = swap.amount1Out.plus(swap.amount1In)
+  take.take_gem = token0isTake ? pair.token0 : pair.token1
+  take.take_amt = token0isTake ? swap.amount0In.minus(swap.amount0Out) : swap.amount1In.minus(swap.amount1Out)
+  take.give_gem = token0isTake ? pair.token1 : pair.token0
+  take.give_amt = token0isTake ? swap.amount1Out.minus(swap.amount1In) : swap.amount0Out.minus(swap.amount0In)
   take.save()
 
   updateCandles(take)
