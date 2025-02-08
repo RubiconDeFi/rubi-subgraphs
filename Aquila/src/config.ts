@@ -1,6 +1,7 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts"
 
 export const feedToTokenConfig = new Map<string, Address[]>();
+export const decimals = new Map<string, BigInt>();
 
 // OP
 // ETH / USD
@@ -45,10 +46,14 @@ feedToTokenConfig.set(Address.fromString("0x3607e46698d218B3a5Cae44bF381475C0a5e
   Address.fromString("0x82aF49447D8a07e3bd95BD0d56f35241523fBab1") // WETH
 ])
 
+decimals.set(Address.fromString('0x82aF49447D8a07e3bd95BD0d56f35241523fBab1').toHexString(),BigInt.fromI32(18))
+
 // BTC / USD
 feedToTokenConfig.set(Address.fromString("0x942d00008D658dbB40745BBEc89A93c253f9B882").toHexString(), [
   Address.fromString("0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f") // WBTC
 ])
+
+decimals.set(Address.fromString('0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f').toHexString(),BigInt.fromI32(8))
 
 // USDC / USD
 feedToTokenConfig.set(Address.fromString("0x2946220288DbBF77dF0030fCecc2a8348CbBE32C").toHexString(), [
@@ -56,15 +61,57 @@ feedToTokenConfig.set(Address.fromString("0x2946220288DbBF77dF0030fCecc2a8348CbB
   Address.fromString("0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8") // USDC.e
 ])
 
+decimals.set(Address.fromString('0xaf88d065e77c8cC2239327C5EDb3A432268e5831').toHexString(),BigInt.fromI32(6))
+decimals.set(Address.fromString('0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8').toHexString(),BigInt.fromI32(6))
+
 // USDT / USD
 feedToTokenConfig.set(Address.fromString("0xCb35fE6E53e71b30301Ec4a3948Da4Ad3c65ACe4").toHexString(), [
   Address.fromString("0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9")
 ])
 
+decimals.set(Address.fromString('0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9').toHexString(),BigInt.fromI32(6))
+
 // DAI / USD
 feedToTokenConfig.set(Address.fromString("0xFc06bB03a9e1D8033f87eA6A682cbd65477A43b9").toHexString(), [
   Address.fromString("0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1")
 ])
+
+decimals.set(Address.fromString('0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1').toHexString(),BigInt.fromI32(18))
+
+// ARB / USD
+feedToTokenConfig.set(Address.fromString("0x46de66F10343b59BAcc37dF9b3F67cD0CcC121A3").toHexString(), [
+  Address.fromString("0x912CE59144191C1204E64559FE8253a0e49E6548")
+])
+
+decimals.set(Address.fromString('0x912CE59144191C1204E64559FE8253a0e49E6548').toHexString(),BigInt.fromI32(18))
+
+// LINK / USD
+feedToTokenConfig.set(Address.fromString("0x9b8DdcF800a7BfCdEbaD6D65514dE59160a2C9CC").toHexString(), [
+  Address.fromString("0xf97f4df75117a78c1A5a0DBb814Af92458539FB4")
+])
+
+decimals.set(Address.fromString('0xf97f4df75117a78c1A5a0DBb814Af92458539FB4').toHexString(),BigInt.fromI32(18))
+
+// LUSD / USD
+feedToTokenConfig.set(Address.fromString("0x20CD97619A51d1a6f1910ce62d98Aceb9a13d5e6").toHexString(), [
+  Address.fromString("0x93b346b6BC2548dA6A1E7d98E9a421B42541425b")
+])
+
+decimals.set(Address.fromString('0x93b346b6BC2548dA6A1E7d98E9a421B42541425b').toHexString(),BigInt.fromI32(18))
+
+// GHO / USD
+feedToTokenConfig.set(Address.fromString("0x41230419afFF6c7fFecF715fA57958D53F803De9").toHexString(), [
+  Address.fromString("0x7dfF72693f6A4149b17e7C6314655f6A9F7c8B33")
+])
+
+decimals.set(Address.fromString('0x7dfF72693f6A4149b17e7C6314655f6A9F7c8B33').toHexString(),BigInt.fromI32(18))
+
+// FRAX / USD
+feedToTokenConfig.set(Address.fromString("0x5D041081725468Aa43e72ff0445Fde2Ad1aDE775").toHexString(), [
+  Address.fromString("0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F")
+])
+
+decimals.set(Address.fromString('0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F').toHexString(),BigInt.fromI32(18))
 
 // ARB SEPOLIA
 // ETH / USD
@@ -117,10 +164,15 @@ feedToTokenConfig.set(Address.fromString("0x57d2d46Fc7ff2A7142d479F2f59e1E3F9544
   Address.fromString("0x4200000000000000000000000000000000000006")
 ])
 
-// BTC / USD
-// feedToTokenConfig.set(Address.fromString("0x852aE0B1Af1aAeDB0fC4428B4B24420780976ca8").toHexString(), [
-//   Address.fromString("")
-// ])
+decimals.set(Address.fromString('0x4200000000000000000000000000000000000006').toHexString(),BigInt.fromI32(18))
+
+// cbBTC / USD
+feedToTokenConfig.set(Address.fromString("0x07DA0E54543a844a80ABE69c8A12F22B3aA59f9D").toHexString(), [
+  Address.fromString("0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf")
+])
+
+decimals.set(Address.fromString("0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf").toHexString(),BigInt.fromI32(8))
+
 
 // USDC / USD
 feedToTokenConfig.set(Address.fromString("0x0Ee7145e1370653533e2F2E824424bE2AA95A4Aa").toHexString(), [
@@ -128,18 +180,17 @@ feedToTokenConfig.set(Address.fromString("0x0Ee7145e1370653533e2F2E824424bE2AA95
   Address.fromString("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913") // USDC
 ])
 
-// USDT / USD
-// feedToTokenConfig.set(Address.fromString("0xDC2D2fA8E7b824A2c16128446E288280dcB12844").toHexString(), [
-//   Address.fromString("")
-// ])
+decimals.set(Address.fromString('0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA').toHexString(),BigInt.fromI32(6))
+decimals.set(Address.fromString('0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913').toHexString(),BigInt.fromI32(6))
 
 // DAI / USD
 feedToTokenConfig.set(Address.fromString("0x21b1E4eA0E9AE2e79932662300eB12A0f90AbE59").toHexString(), [
   Address.fromString("0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb")
 ])
 
+decimals.set(Address.fromString('0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb').toHexString(),BigInt.fromI32(18))
 
-export const decimals = new Map<string, BigInt>();
+
 
 // OP
 decimals.set(Address.fromString('0x7F5c764cBc14f9669B88837ca1490cCa17c31607').toHexString(),BigInt.fromI32(6))
@@ -160,16 +211,13 @@ decimals.set(Address.fromString("0xb1D4538B4571d411F07960EF2838Ce337FE1E80E").to
 
 
 // Others
-decimals.set(Address.fromString('0x8700dAec35aF8Ff88c16BdF0418774CB3D7599B4').toHexString(),BigInt.fromI32(18))
-decimals.set(Address.fromString('0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1').toHexString(),BigInt.fromI32(18))
-decimals.set(Address.fromString('0x920Cf626a271321C151D027030D5d08aF699456b').toHexString(),BigInt.fromI32(18))
-decimals.set(Address.fromString('0x9e1028F5F1D5eDE59748FFceE5532509976840E0').toHexString(),BigInt.fromI32(18))
-decimals.set(Address.fromString('0x8c6f28f2F1A3C87F0f938b96d27520d9751ec8d9').toHexString(),BigInt.fromI32(18))
-decimals.set(Address.fromString('0x82aF49447D8a07e3bd95BD0d56f35241523fBab1').toHexString(),BigInt.fromI32(18))
-decimals.set(Address.fromString('0xaf88d065e77c8cC2239327C5EDb3A432268e5831').toHexString(),BigInt.fromI32(6))
-decimals.set(Address.fromString('0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8').toHexString(),BigInt.fromI32(6))
-decimals.set(Address.fromString('0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9').toHexString(),BigInt.fromI32(6))
-decimals.set(Address.fromString('0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f').toHexString(),BigInt.fromI32(8))
+// decimals.set(Address.fromString('0x8700dAec35aF8Ff88c16BdF0418774CB3D7599B4').toHexString(),BigInt.fromI32(18))
+// decimals.set(Address.fromString('0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1').toHexString(),BigInt.fromI32(18))
+// decimals.set(Address.fromString('0x920Cf626a271321C151D027030D5d08aF699456b').toHexString(),BigInt.fromI32(18))
+// decimals.set(Address.fromString('0x9e1028F5F1D5eDE59748FFceE5532509976840E0').toHexString(),BigInt.fromI32(18))
+// decimals.set(Address.fromString('0x8c6f28f2F1A3C87F0f938b96d27520d9751ec8d9').toHexString(),BigInt.fromI32(18))
+
+
 decimals.set(Address.fromString('0x912CE59144191C1204E64559FE8253a0e49E6548').toHexString(),BigInt.fromI32(18))
 decimals.set(Address.fromString('0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8').toHexString(),BigInt.fromI32(18))
 decimals.set(Address.fromString('0x000F1720A263f96532D1ac2bb9CDC12b72C6f386').toHexString(),BigInt.fromI32(6))
@@ -179,8 +227,6 @@ decimals.set(Address.fromString('0x4Cb9a7AE498CEDcBb5EAe9f25736aE7d428C9D66').to
 decimals.set(Address.fromString('0x539bdE0d7Dbd336b79148AA742883198BBF60342').toHexString(),BigInt.fromI32(18))
 decimals.set(Address.fromString('0x18c11FD286C5EC11c3b683Caa813B77f5163A122').toHexString(),BigInt.fromI32(18))
 decimals.set(Address.fromString('0xf97f4df75117a78c1A5a0DBb814Af92458539FB4').toHexString(),BigInt.fromI32(18))
-decimals.set(Address.fromString('0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA').toHexString(),BigInt.fromI32(6))
-decimals.set(Address.fromString('0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb').toHexString(),BigInt.fromI32(18))
 decimals.set(Address.fromString('0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed').toHexString(),BigInt.fromI32(18))
 decimals.set(Address.fromString('0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe').toHexString(),BigInt.fromI32(18))
 decimals.set(Address.fromString('0x940181a94A35A4569E4529A3CDfB74e38FD98631').toHexString(),BigInt.fromI32(18))

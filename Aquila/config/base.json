@@ -1,0 +1,11 @@
+{
+  "network" : "base",
+  "Factory-startBlock": 25155131,
+  "Factory-address" : "0xA5cA8Ba2e3017E9aF3Bd9EDa69e9E8C263Abf6cD",
+  "ChainlinkFeeds": [
+    { "name" : "ETH-USD", "address": "0x57d2d46Fc7ff2A7142d479F2f59e1E3F95447077" },
+    { "name" : "USDC-USD", "address": "0x0Ee7145e1370653533e2F2E824424bE2AA95A4Aa" },
+    { "name" : "DAI-USD", "address": "0x21b1E4eA0E9AE2e79932662300eB12A0f90AbE59" },
+    { "name" : "CBBTC-USD", "address": "0x07DA0E54543a844a80ABE69c8A12F22B3aA59f9D" }
+  ]
+}
