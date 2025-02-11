@@ -1,5 +1,16 @@
 {
     "network" : "optimism",
-    "Factory-startBlock": 129370027,
-    "Factory-address" : "0x356fadb4159Bc9133EB62040654A04a2d59177Ff"
+    "Factory-startBlock": 130750391,
+    "Factory-address" : "0x3B2C6fe3039B42f00E98b76531C05932abfB258e",
+    "Arena-startBlock": 130702059,
+    "Arena-address": "0x059075ef47a94bDd55004859E09780A1609C9755",
+    "ChainlinkFeeds": [
+      { "name" : "ETH-USD", "address": "0x02f5E9e9dcc66ba6392f6904D5Fcf8625d9B19C9" },
+      { "name" : "BTC-USD", "address": "0x0C1272d2aC652D10d03bb4dEB0D31F15ea3EAb2b" },
+      { "name" : "USDC-USD", "address": "0xd1Cb03cc31caa72D34dba7eBE21897D9580c4AF0" },
+      { "name" : "USDT-USD", "address": "0xAc37790fF4aBf9483fAe2D1f62fC61fE6b8E4789" },
+      { "name" : "DAI-USD", "address": "0xbCe7579e241e5d676c2371Dc21891489dAcDA250" },
+      { "name" : "WSTETH-USD", "address": "0x0d110cC7876d73c3C4190324bCF4C59416bBD259" },
+      { "name" : "OP-USD", "address": "0x4F6dFDFd4d68F68b2692E79f9e94796fC8015770" }
+    ]
 }

@@ -1,5 +1,12 @@
 {
     "network" : "arbitrum-sepolia",
-    "Factory-startBlock": 107944076,
-    "Factory-address" : "0x698838b1f1027032F5dDde2DE833203bAE5AD73f"
+    "Factory-startBlock": 113604040,
+    "Factory-address" : "0xbf7AeE4a36346ddF757164EA947eC3784FF9bbc7",
+    "Arena-startBlock": 114822690,
+    "Arena-address": "0xDb897b6A77265FA5652754CC1DD11c1Df003f47d",
+    "ChainlinkFeeds": [ 
+      { "name" : "ETH-USD", "address": "0xf3138B59cAcbA1a4d7d24fA7b184c20B3941433e" },
+      { "name" : "USDC-USD", "address": "0xfe43Eb2649F3bcce80443F9E43C793146148C141" },
+      { "name" : "LINK-USD", "address": "0x961AD289351459A45fC90884eF3AB0278ea95DDE" }
+    ]
 }

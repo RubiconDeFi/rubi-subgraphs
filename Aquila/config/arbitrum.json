@@ -1,0 +1,19 @@
+{
+  "network" : "arbitrum",
+  "Factory-startBlock": 296296702,
+  "Factory-address" : "0xEca3EA559b7566e610d113bbA8D1B15B085C9c68",
+  "Arena-startBlock": 304555101,
+  "Arena-address": "0xf9Aa81AfBA1FDeDc74C5d1426c124bae07b86830",
+  "ChainlinkFeeds": [
+    { "name" : "ETH-USD", "address": "0x3607e46698d218B3a5Cae44bF381475C0a5e2ca7" },
+    { "name" : "BTC-USD", "address": "0x942d00008D658dbB40745BBEc89A93c253f9B882" },
+    { "name" : "USDC-USD", "address": "0x2946220288DbBF77dF0030fCecc2a8348CbBE32C" },
+    { "name" : "USDT-USD", "address": "0xCb35fE6E53e71b30301Ec4a3948Da4Ad3c65ACe4" },
+    { "name" : "DAI-USD", "address": "0xFc06bB03a9e1D8033f87eA6A682cbd65477A43b9" },
+    { "name" : "ARB-USD", "address": "0x46de66F10343b59BAcc37dF9b3F67cD0CcC121A3" },
+    { "name" : "LINK-USD", "address": "0x9b8DdcF800a7BfCdEbaD6D65514dE59160a2C9CC" },
+    { "name" : "GHO-USD", "address": "0x41230419afFF6c7fFecF715fA57958D53F803De9" },
+    { "name" : "FRAX-USD", "address": "0x5D041081725468Aa43e72ff0445Fde2Ad1aDE775" },
+    { "name" : "LUSD-USD", "address": "0x20CD97619A51d1a6f1910ce62d98Aceb9a13d5e6" }
+  ]
+}

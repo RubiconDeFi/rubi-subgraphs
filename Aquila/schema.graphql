@@ -1,6 +1,6 @@
 type UniswapFactory @entity {
   # factory address
-  id: ID!
+  id: Bytes!
 
   # pair info
   pairCount: Int!
@@ -9,42 +9,58 @@ type UniswapFactory @entity {
   totalVolumeUSD: BigDecimal!
   totalVolumeETH: BigDecimal!
 
-  # untracked values - less confident USD scores
-  untrackedVolumeUSD: BigDecimal!
+  # # untracked values - less confident USD scores
+  # untrackedVolumeUSD: BigDecimal!
 
   # total liquidity
   totalLiquidityUSD: BigDecimal!
-  totalLiquidityETH: BigDecimal!
+  # totalLiquidityETH: BigDecimal!
 
   # transactions
   txCount: BigInt!
 }
 
+
+type ArenaToken @entity {
+    " arena token address "
+    id: Bytes!
+    " ipfs hash of metadata "
+    ipfsHash: String!
+    " creation unix timestamp "
+    createdAt: BigInt!
+    " related position "
+    position: Pair!
+    " user that created the token "
+    user: User!
+}
+
 type Token @entity {
   # token address
-  id: ID!
+  id: Bytes!
 
   # mirrored from the smart contract
   # symbol: String!
   # name: String!
-  # decimals: BigInt!
+  decimals: BigInt
 
   # used for other stats like marketcap
   # totalSupply: BigInt!
 
   # token specific volume
-  tradeVolume: BigDecimal!
+  tradeVolume: BigInt!
   tradeVolumeUSD: BigDecimal!
-  untrackedVolumeUSD: BigDecimal!
+  # untrackedVolumeUSD: BigDecimal!
 
   # transactions across all pairs
   txCount: BigInt!
 
   # liquidity across all pairs
-  totalLiquidity: BigDecimal!
+  totalLiquidity: BigInt!
 
-  # derived prices
-  derivedETH: BigDecimal!
+  # # derived prices
+  # derivedETH: BigDecimal!
+
+  currentPrice: BigDecimal!
 
   # derived fields
   tokenDayData: [TokenDayData!]! @derivedFrom(field: "token")
@@ -56,20 +72,28 @@ type Token @entity {
 
 type Pair @entity {
   # pair address
-  id: ID!
+  id: Bytes!
+
+  # flag to know if total liquidity is being tracked to keep tvl calculation corret
+  tracked: Boolean!
+
+  " Last trade "
+  lastTrade: Swap
 
   # mirrored from the smart contract
   token0: Token!
   token1: Token!
-  # reserve0: BigDecimal!
-  # reserve1: BigDecimal!
+  reserve0: BigInt!
+  reserve1: BigInt!
   totalSupply: BigDecimal!
 
   # derived liquidity
-  reserveETH: BigDecimal!
-  reserveUSD: BigDecimal!
+  # reserveETH: BigDecimal!
+  reserve0USD: BigDecimal!
+  reserve1USD: BigDecimal!
+
   # used for separating per pair reserves and global
-  trackedReserveETH: BigDecimal!
+  # trackedReserveETH: BigDecimal!
 
   # Price in terms of the asset pair
   token0Price: BigDecimal!
@@ -79,7 +103,7 @@ type Pair @entity {
   volumeToken0: BigDecimal!
   volumeToken1: BigDecimal!
   volumeUSD: BigDecimal!
-  untrackedVolumeUSD: BigDecimal!
+  # untrackedVolumeUSD: BigDecimal!
   txCount: BigInt!
 
   # creation stats
@@ -90,30 +114,30 @@ type Pair @entity {
   liquidityProviderCount: BigInt! # used to detect new exchanges
   # derived fields
   pairHourData: [PairHourData!]! @derivedFrom(field: "pair")
-  mints: [Mint!]! @derivedFrom(field: "pair")
-  burns: [Burn!]! @derivedFrom(field: "pair")
+  # mints: [Mint!]! @derivedFrom(field: "pair")
+  # burns: [Burn!]! @derivedFrom(field: "pair")
   swaps: [Swap!]! @derivedFrom(field: "pair")
 }
 
 type User @entity {
-  id: ID!
+  id: Bytes!
   usdSwapped: BigDecimal!
 }
 
 type Transaction @entity {
-  id: ID! # txn hash
+  id: Bytes! # txn hash
   blockNumber: BigInt!
   timestamp: BigInt!
   # This is not the reverse of Mint.transaction; it is only used to
   # track incomplete mints (similar for burns and swaps)
-  mints: [Mint!]!
-  burns: [Burn!]!
+  # mints: [Mint!]!
+  # burns: [Burn!]!
   swaps: [Swap!]!
 }
 
 type Mint @entity {
   # transaction hash + "-" + index in mints Transaction array
-  id: ID!
+  id: Bytes!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
   pair: Pair!
@@ -124,8 +148,8 @@ type Mint @entity {
 
   # populated from the Mint event
   sender: Bytes
-  amount0: BigDecimal
-  amount1: BigDecimal
+  amount0: BigInt
+  amount1: BigInt
   logIndex: BigInt
   # derived amount based on available prices of tokens
   amountUSD: BigDecimal
@@ -137,7 +161,7 @@ type Mint @entity {
 
 type Burn @entity {
   # transaction hash + "-" + index in mints Transaction array
-  id: ID!
+  id: Bytes!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
   pair: Pair!
@@ -162,20 +186,19 @@ type Burn @entity {
   feeLiquidity: BigDecimal
 }
 
-type Swap @entity {
+type Swap @entity(immutable: true) {
   # transaction hash + "-" + index in swaps Transaction array
-  id: ID!
+  id: Bytes!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
   pair: Pair!
 
   # populated from the Swap event
-  sender: Bytes!
   from: Bytes! # the EOA that initiated the txn
-  amount0In: BigDecimal!
-  amount1In: BigDecimal!
-  amount0Out: BigDecimal!
-  amount1Out: BigDecimal!
+  amount0In: BigInt!
+  amount1In: BigInt!
+  amount0Out: BigInt!
+  amount1Out: BigInt!
   to: Bytes!
   logIndex: BigInt
 
@@ -183,23 +206,43 @@ type Swap @entity {
   amountUSD: BigDecimal!
 }
 
-# stores for USD calculations
-type Bundle @entity {
-  id: ID!
-  ethPrice: BigDecimal! # price of ETH usd
+# To make candles work with the rest of the app
+type Take @entity(immutable: true) {
+  " the transaction hash and log index of the take "
+  id: Bytes!
+  " the transaction that the take was a part of "
+  transaction: Transaction!
+  " the timestamp of the transaction that the take was a part of "
+  timestamp: BigInt!
+  " the event log index of the take "
+  index: BigInt!
+  " the user that took the offer "
+  taker: Bytes!
+  " the user that originated the transaction that the take was a part of "
+  from_address: Bytes!
+  " the pair associated with the take "
+  pair: Pair!
+  " the pay token of the offer (the asset the maker is selling & the asset the taker is buying) "
+  take_gem: Bytes!
+  " the buy token of the offer (the asset the maker is buying & the asset the taker is paying in) "
+  give_gem: Bytes!
+  " the amount of pay token the taker is buying "
+  take_amt: BigInt!
+  " the amount of buy token the taker is paying in "
+  give_amt: BigInt!
 }
 
 # Data accumulated and condensed into day stats for all of Uniswap
 type UniswapDayData @entity {
-  id: ID! # timestamp rounded to current day by dividing by 86400
+  id: Bytes! # timestamp rounded to current day by dividing by 86400
   date: Int!
 
   dailyVolumeETH: BigDecimal!
   dailyVolumeUSD: BigDecimal!
-  dailyVolumeUntracked: BigDecimal!
+  # dailyVolumeUntracked: BigDecimal!
 
   totalVolumeETH: BigDecimal!
-  totalLiquidityETH: BigDecimal!
+  # totalLiquidityETH: BigDecimal!
   totalVolumeUSD: BigDecimal! # Accumulate at each trade, not just calculated off whatever totalVolume is. making it more accurate as it is a live conversion
   totalLiquidityUSD: BigDecimal!
 
@@ -207,19 +250,20 @@ type UniswapDayData @entity {
 }
 
 type PairHourData @entity {
-  id: ID!
+  id: Bytes!
   hourStartUnix: Int! # unix timestamp for start of hour
   pair: Pair!
 
   # reserves
-  reserve0: BigDecimal!
-  reserve1: BigDecimal!
+  reserve0: BigInt!
+  reserve1: BigInt!
 
   # total supply for LP historical returns
   totalSupply: BigDecimal
 
   # derived liquidity
-  reserveUSD: BigDecimal!
+  reserve0USD: BigDecimal!
+  reserve1USD: BigDecimal!
 
   # volume stats
   hourlyVolumeToken0: BigDecimal!
@@ -230,21 +274,22 @@ type PairHourData @entity {
 
 # Data accumulated and condensed into day stats for each exchange
 type PairDayData @entity {
-  id: ID!
+  id: Bytes!
   date: Int!
   pairAddress: Bytes!
   token0: Token!
   token1: Token!
 
   # reserves
-  reserve0: BigDecimal!
-  reserve1: BigDecimal!
+  reserve0: BigInt!
+  reserve1: BigInt!
 
   # total supply for LP historical returns
   totalSupply: BigDecimal
 
   # derived liquidity
-  reserveUSD: BigDecimal!
+  reserve0USD: BigDecimal!
+  reserve1USD: BigDecimal!
 
   # volume stats
   dailyVolumeToken0: BigDecimal!
@@ -254,7 +299,7 @@ type PairDayData @entity {
 }
 
 type TokenDayData @entity {
-  id: ID!
+  id: Bytes!
   date: Int!
   token: Token!
 
@@ -265,10 +310,135 @@ type TokenDayData @entity {
   dailyTxns: BigInt!
 
   # liquidity stats
-  totalLiquidityToken: BigDecimal!
-  totalLiquidityETH: BigDecimal!
+  totalLiquidityToken: BigInt!
+  # totalLiquidityETH: BigDecimal!
   totalLiquidityUSD: BigDecimal!
 
   # price stats
-  priceUSD: BigDecimal!
+  # priceUSD: BigDecimal!
+}
+
+type CandleOneMinute @entity {
+    " token0 + token1 + timestamp / 60 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleFiveMinute @entity {
+    " token0 + token1 + timestamp / 300 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleFifteenMinute @entity {
+    " token0 + token1 + timestamp / 900 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleOneHour @entity {
+    " token0 + token1 + timestamp / 3600 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+
+type CandleOneDay @entity {
+    " token0 + token1 + timestamp / 86400 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
 }
