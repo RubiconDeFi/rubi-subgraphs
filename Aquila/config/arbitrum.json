@@ -2,6 +2,8 @@
   "network" : "arbitrum",
   "Factory-startBlock": 296296702,
   "Factory-address" : "0xEca3EA559b7566e610d113bbA8D1B15B085C9c68",
+  "Arena-startBlock": 304555101,
+  "Arena-address": "0xf9Aa81AfBA1FDeDc74C5d1426c124bae07b86830",
   "ChainlinkFeeds": [
     { "name" : "ETH-USD", "address": "0x3607e46698d218B3a5Cae44bF381475C0a5e2ca7" },
     { "name" : "BTC-USD", "address": "0x942d00008D658dbB40745BBEc89A93c253f9B882" },
