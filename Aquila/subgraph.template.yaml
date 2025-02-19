@@ -6,7 +6,7 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: Factory
-    network:  {{ network }}
+    network: {{ network }}
     source:
       address: '{{ Factory-address }}'
       abi: Factory
@@ -34,7 +34,7 @@ dataSources:
   {{#Arena-address}}
   - kind: ethereum/contract
     name: ArenaFactory
-    network:  {{ network }}
+    network: {{ network }}
     source:
       address: '{{ Arena-address }}'
       abi: Arena

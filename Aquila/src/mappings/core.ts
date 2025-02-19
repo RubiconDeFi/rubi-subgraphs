@@ -136,7 +136,7 @@ export function handleSwap(event: Swap): void {
   let token1 = Token.load(pair.token1)
 
   let from = event.params.sender
-  let to = event.params.to
+  let to = event.params.to.notEqual(event.params.sender) ? event.params.to : event.transaction.from;
 
   let sender = createUser(from)
   let recipient = createUser(to)
